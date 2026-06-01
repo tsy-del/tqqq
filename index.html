@@ -10,7 +10,12 @@
     <div class="container">
         <h1>📈 TQQQ Plan</h1>
         <div id="dashboard">
-            <p>正在加載數據...</p>
+            <div class="price-card">
+                <span class="label">TQQQ 當前價格</span>
+                <div id="tqqq-price" class="price">--.--</div>
+                <div id="price-change" class="change">--%</div>
+            </div>
+            <p class="status">最後更新: <span id="last-update">-</span></p>
         </div>
     </div>
     <script src="script.js"></script>
