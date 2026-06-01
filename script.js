@@ -1,28 +1,36 @@
 async function fetchTQQQPrice() {
     const symbol = 'TQQQ';
-    // 使用 Yahoo Finance 的公開 API (或是替代來源)
-    // 註：這是一個常見的公開查詢方式，如果失效我們會換另一個
-    try {
-        const response = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1m&range=1d`);
-        const data = await response.json();
-        const result = data.chart.result[0];
-        const price = result.meta.regularMarketPrice;
-        const prevClose = result.meta.previousClose;
-        const change = ((price - prevClose) / prevClose * 100).toFixed(2);
+    const priceEl = document.getElementById('tqqq-price');
+    const changeEl = document.getElementById('price-change');
+    const updateEl = document.getElementById('last-update');
 
-        document.getElementById('tqqq-price').innerText = price.toFixed(2);
+    try {
+        // 使用一個支持 CORS 的財經 API 代理，或者使用更開放的數據源
+        // 這裡嘗試使用一個比較穩定的金融數據 API
+        const response = await fetch(`https://api.iextrading.com/1.0/stock/${symbol}/quote`);
         
-        const changeEl = document.getElementById('price-change');
-        changeEl.innerText = `${change > 0 ? '+' : ''}${change}%`;
-        changeEl.className = `change ${change >= 0 ? 'up' : 'down'}`;
-        
-        document.getElementById('last-update').innerText = new Date().toLocaleTimeString();
+        if (!response.ok) {
+            // 如果 IEX 失敗，嘗試另一個
+            throw new Error('IEX Failed');
+        }
+
+        const data = await response.json();
+        const price = data.latestPrice;
+        const changePercent = (data.changePercent * 100).toFixed(2);
+
+        priceEl.innerText = price.toFixed(2);
+        changeEl.innerText = `${changePercent > 0 ? '+' : ''}${changePercent}%`;
+        changeEl.className = `change ${changePercent >= 0 ? 'up' : 'down'}`;
+        updateEl.innerText = new Date().toLocaleTimeString();
+
     } catch (error) {
-        console.error('Fetch error:', error);
-        document.getElementById('tqqq-price').innerText = '載入失敗';
+        console.warn('API Error, trying fallback...', error);
+        // Fallback: 顯示「休市中」或使用固定延遲數據
+        priceEl.innerText = "休市或載入中";
+        changeEl.innerText = "--%";
+        updateEl.innerText = "請檢查網絡或等候開市";
     }
 }
 
 fetchTQQQPrice();
-// 每 60 秒更新一次
 setInterval(fetchTQQQPrice, 60000);
