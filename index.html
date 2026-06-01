@@ -4,45 +4,222 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TQQQ Plan Dashboard</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg: #0a0a0c;
+            --card-bg: #1c1c1e;
+            --text: #e0e0e0;
+            --accent: #007aff;
+            --success: #34c759;
+            --danger: #ff3b30;
+            --dim: #8e8e93;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 { margin: 0; color: var(--accent); }
+        h2 { font-size: 1.2rem; margin: 20px 0 10px; border-left: 4px solid var(--accent); padding-left: 10px; }
+
+        .last-updated { font-size: 0.8rem; color: var(--dim); }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .card.highlight .value {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .market-prices {
+            background: #2c2c2e;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-around;
+            font-size: 0.85rem;
+        }
+
+        .price-item span { font-weight: bold; color: var(--accent); }
+
+        .milestone-item {
+            background: var(--card-bg);
+            margin-bottom: 10px;
+            padding: 12px;
+            border-radius: 10px;
+        }
+
+        .milestone-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .status-tag {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .status-COMPLETED { background: var(--success); color: #fff; }
+        .status-IN_PROGRESS { background: var(--accent); color: #fff; }
+        .status-PENDING { background: var(--dim); color: #fff; }
+
+        .strategy-box {
+            font-size: 0.8rem;
+            color: var(--dim);
+            margin-top: 8px;
+            padding: 8px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+        }
+
+        .account-card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .holdings-table {
+            width: 100%;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            border-collapse: collapse;
+        }
+
+        .holdings-table td { padding: 5px 0; }
+        .holdings-table .qty { color: var(--dim); }
+        .holdings-table .up { color: var(--success); }
+        .holdings-table .down { color: var(--danger); }
+    </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>📈 TQQQ Plan</h1>
-            <p class="last-updated">數據更新時間: <span id="last-update">-</span></p>
-            <div id="dashboard-status"></div>
+            <p class="last-updated">最後同步: <span id="last-update">2026/6/1 12:10:00</span></p>
         </header>
 
         <section class="summary-grid">
             <div class="card highlight">
                 <h3>總資產 (HKD)</h3>
-                <div id="total-value" class="value">--</div>
+                <div class="value">$1,812,950</div>
             </div>
             <div class="card highlight">
                 <h3>總盈虧 (HKD)</h3>
-                <div id="total-profit" class="value">--</div>
+                <div class="value" style="color:#34c759">$596,936</div>
             </div>
         </section>
 
         <section class="market-prices">
             <div class="price-row">
-                <div class="price-item">TQQQ: <span id="tqqq-price">--</span></div>
-                <div class="price-item">SOXL: <span id="soxl-price">--</span></div>
-                <div class="price-item">USD/HKD: <span id="rate">--</span></div>
+                <div class="price-item">TQQQ: <span>$85.74</span></div>
+                <div class="price-item">SOXL: <span>$224.34</span></div>
+                <div class="price-item">USD/HKD: <span>7.8</span></div>
             </div>
         </section>
 
         <section class="section">
             <h2>🏆 目標進度 (Milestones)</h2>
-            <div id="milestones-container"></div>
+            <div id="milestones-container">
+                <div class="milestone-item">
+                    <div class="milestone-header">
+                        <span>Stage 1: 買樓雜費</span>
+                        <span class="status-tag status-COMPLETED">COMPLETED</span>
+                    </div>
+                    <div style="font-size: 0.9rem; margin-top:5px;">目標價: <b style="color:#007aff;">TQQQ $78.69</b></div>
+                    <div class="strategy-box">觸及即走：沽出約 455 股，套現 $45 萬現金鎖定稅項與佣金。</div>
+                </div>
+                <div class="milestone-item">
+                    <div class="milestone-header">
+                        <span>Stage 2: 100萬首期</span>
+                        <span class="status-tag status-IN_PROGRESS">IN_PROGRESS</span>
+                    </div>
+                    <div style="font-size: 0.9rem; margin-top:5px;">目標價: <b style="color:#007aff;">TQQQ $126.96</b></div>
+                    <div class="strategy-box">移動止賺：啟動 Trailing Stop。高位任飛，高位回落 10% 即強制套現 $100 萬。</div>
+                </div>
+                <div class="milestone-item">
+                    <div class="milestone-header">
+                        <span>Stage 3: 裝修全包</span>
+                        <span class="status-tag status-PENDING">PENDING</span>
+                    </div>
+                    <div style="font-size: 0.9rem; margin-top:5px;">目標價: <b style="color:#007aff;">TQQQ $153.25</b></div>
+                    <div class="strategy-box">回贈＋餘兵：收樓拿走按揭回贈填補，其餘股份放長線重新滾動。</div>
+                </div>
+            </div>
         </section>
 
         <section class="section">
             <h2>💰 帳戶持倉 (Accounts)</h2>
-            <div id="accounts-container"></div>
+            <div id="accounts-container">
+                <div class="account-card">
+                    <div class="milestone-header" style="border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 10px;">
+                        <span>帳戶 A (滾動首期)</span>
+                        <span style="color:#007aff;">$383,622</span>
+                    </div>
+                    <table class="holdings-table">
+                        <tr>
+                            <td><b>TQQQ</b> <span class="qty">x544</span></td>
+                            <td align="right" style="font-size:0.75rem; color:#8e8e93;">成本 $57.83</td>
+                            <td align="right" class="up" style="font-weight:bold; width:70px;">+48.3%</td>
+                        </tr>
+                        <tr>
+                            <td><b>SOXL</b> <span class="qty">x11</span></td>
+                            <td align="right" style="font-size:0.75rem; color:#8e8e93;">成本 $116.96</td>
+                            <td align="right" class="up" style="font-weight:bold; width:70px;">+91.8%</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="account-card">
+                    <div class="milestone-header" style="border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 10px;">
+                        <span>帳戶 B (固定基金)</span>
+                        <span style="color:#007aff;">$1,429,328</span>
+                    </div>
+                    <table class="holdings-table">
+                        <tr>
+                            <td><b>TQQQ</b> <span class="qty">x2137</span></td>
+                            <td align="right" style="font-size:0.75rem; color:#8e8e93;">成本 $57.63</td>
+                            <td align="right" class="up" style="font-weight:bold; width:70px;">+48.8%</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         </section>
     </div>
-    <script src="script.js"></script>
 </body>
 </html>
