@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TQQQ Plan | v2.0.4</title>
+    <title>TQQQ Plan | v2.0.5</title>
     <style>
         :root { --bg: #09090b; --card: #18181b; --glass: rgba(255, 255, 255, 0.03); --border: rgba(255, 255, 255, 0.08); --accent: #3b82f6; --success: #10b981; --danger: #ef4444; --text-main: #fafafa; --text-dim: #71717a; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -15,7 +15,7 @@
         .v-tag { font-size: 10px; color: var(--text-dim); background: var(--glass); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); }
         .last-update { font-size: 11px; color: var(--text-dim); margin-top: 6px; letter-spacing: 0.05em; }
         .main-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
-        .summary-card { background: var(--card); border: 1px solid var(--border); padding: 18px; border-radius: 20px; position: relative; overflow: hidden; }
+        .summary-card { background: var(--card); border: 1px solid var(--border); padding: 18px; border-radius: 20px; position: relative; }
         .summary-card::before { content: ''; position: absolute; top:0; left:0; width:4px; height:100%; background: var(--accent); }
         .summary-label { font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; margin-bottom: 6px; }
         .summary-value { font-size: 20px; font-weight: 700; }
@@ -31,7 +31,6 @@
         .m-status { font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 8px; }
         .status-COMPLETED { background: rgba(16,185,129,0.1); color: var(--success); border: 1px solid var(--success); }
         .status-IN_PROGRESS { background: rgba(59,130,246,0.1); color: var(--accent); border: 1px solid var(--accent); }
-        .status-PENDING { background: var(--glass); color: var(--text-dim); border: 1px solid var(--border); }
         .m-target { font-size: 13px; color: var(--text-dim); margin-bottom: 14px; }
         .highlight { color: #fff; font-weight: 700; }
         .progress-details { margin-bottom: 14px; }
@@ -53,7 +52,7 @@
 </head>
 <body>
     <div class="container">
-        <header><div class="header-top"><h1>📈 TQQQ Plan</h1><span class="v-tag">v2.0.4</span></div><div class="last-update">Sync: 2026-06-01 13:26:36</div></header>
+        <header><div class="header-top"><h1>📈 TQQQ Plan</h1><span class="v-tag">v2.0.5</span></div><div class="last-update">Sync: 2026-06-01 13:29:01</div></header>
         <section class="main-summary">
             <div class="summary-card"><div class="summary-label">Total Value (HKD)</div><div class="summary-value">$1,787,550</div></div>
             <div class="summary-card"><div class="summary-label">Total Profit</div><div class="summary-value" style="color:#10b981">$571,541</div></div>
@@ -69,8 +68,8 @@
                     <span class="m-title">Stage 1: 買樓雜費</span>
                     <span class="m-status status-COMPLETED">COMPLETED</span>
                 </div>
-                <div class="m-target">目標額: <span class="highlight">$450,000</span> (累計 $450,000)</div>
-                <div style="font-size: 11px; color: var(--success); margin-bottom: 10px;">✅ 已鎖定 $45 萬雜費</div>
+                <div class="m-target">目標金額: <span class="highlight">$450,000</span></div>
+                <div style="font-size: 11px; color: var(--success); margin-bottom: 10px;">✅ 盈利已覆蓋 $45 萬雜費</div>
                 <div class="m-strategy">觸及即走：沽出約 455 股，套現 $45 萬現金鎖定稅項與佣金。</div>
             </div>
             <div class="milestone-card">
@@ -78,17 +77,21 @@
                     <span class="m-title">Stage 2: 100萬首期</span>
                     <span class="m-status status-IN_PROGRESS">IN_PROGRESS</span>
                 </div>
-                <div class="m-target">目標額: <span class="highlight">$1,000,000</span> (累計 $1,450,000)</div>
+                <div class="m-target">目標金額: <span class="highlight">$1,000,000</span></div>
                 
                 <div class="progress-details">
                     <div class="detail-row">
-                        <span>首期進度 (扣除雜費)</span>
-                        <span class="detail-val">100.0%</span>
+                        <span>首期進度 (淨利潤扣除雜費)</span>
+                        <span class="detail-val">12.2%</span>
                     </div>
-                    <div class="progress-bg"><div class="progress-fill" style="width: 100%"></div></div>
+                    <div class="progress-bg"><div class="progress-fill" style="width: 12.154055399999955%"></div></div>
                     <div class="detail-row" style="margin-top: 8px;">
-                        <span>超額金額</span>
-                        <span class="detail-val" style="color: var(--success);">$337,550</span>
+                        <span>可用利潤</span>
+                        <span class="detail-val" style="color: #fff;">$121,541</span>
+                    </div>
+                    <div class="detail-row">
+                        <span>尚欠金額</span>
+                        <span class="detail-val" style="color: var(--accent);">$878,459</span>
                     </div>
                 </div>
                 <div class="m-strategy">移動止賺：啟動 Trailing Stop。高位任飛，高位回落 10% 即強制套現 $100 萬。</div>
@@ -98,7 +101,7 @@
                     <span class="m-title">Stage 3: 裝修全包</span>
                     <span class="m-status status-PENDING">PENDING</span>
                 </div>
-                <div class="m-target">目標額: <span class="highlight">$550,000</span> (累計 $2,000,000)</div>
+                <div class="m-target">目標金額: <span class="highlight">$550,000</span></div>
                 
                 <div class="m-strategy">回贈＋餘兵：收樓拿走按揭回贈填補，其餘股份放長線重新滾動。</div>
             </div></section>
