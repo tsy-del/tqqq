@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>TQQQ Plan | v3.0 Live</title>
+<html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>TQQQ Plan | v4.0 (Native)</title>
 <style>
 :root { --bg: #09090b; --card: #18181b; --glass: rgba(255, 255, 255, 0.03); --border: rgba(255, 255, 255, 0.08); --accent: #3b82f6; --success: #10b981; --danger: #ef4444; --text-main: #fafafa; --text-dim: #71717a; }
 * { box-sizing: border-box; }
@@ -8,7 +8,7 @@ body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg);
 header { margin-bottom: 28px; }
 .header-top { display: flex; justify-content: space-between; align-items: center; }
 h1 { font-size: 26px; font-weight: 800; margin: 0; }
-.v-tag { font-size: 10px; color: var(--success); background: rgba(16,185,129,0.1); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--success); font-weight: bold; }
+.v-tag { font-size: 10px; color: var(--text-dim); background: var(--glass); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); }
 .last-update { font-size: 11px; color: var(--text-dim); margin-top: 6px; }
 .main-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
 .summary-card { background: var(--card); border: 1px solid var(--border); padding: 18px; border-radius: 20px; position: relative; }
@@ -22,7 +22,7 @@ h1 { font-size: 26px; font-weight: 800; margin: 0; }
 .ticker-item { background: var(--glass); border: 1px solid var(--border); padding: 10px 14px; border-radius: 14px; display: flex; align-items: center; gap: 10px; }
 .ticker-symbol { font-weight: 700; font-size: 13px; color: var(--text-dim); }
 .ticker-price { font-family: monospace; font-size: 13px; color: #fff; }
-.session-tag { display: none; font-size: 9px; padding: 1px 4px; border-radius: 3px; background: rgba(59,130,246,0.2); color: var(--accent); margin-left: 4px; border: 0.5px solid var(--accent); }
+.session-tag { font-size: 9px; padding: 1px 4px; border-radius: 3px; background: rgba(59,130,246,0.2); color: var(--accent); margin-left: 4px; border: 0.5px solid var(--accent); }
 
 h2 { font-size: 13px; font-weight: 700; margin: 0 0 16px; color: var(--text-dim); letter-spacing: 0.1em; display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
 h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
@@ -53,25 +53,75 @@ h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 .asset-status { font-weight: 800; font-size: 15px; }
 .up { color: var(--success); }
 .down { color: var(--danger); }
-</style>
-<script src="script.js"></script>
-</head>
+</style></head>
 <body><div class="container">
-<header><div class="header-top"><h1>📈 TQQQ Plan</h1><span class="v-tag">🔴 LIVE</span></div><div class="last-update" id="last-update">Connecting to live market...</div></header>
+<header><div class="header-top"><h1>📈 TQQQ Plan</h1><span class="v-tag">v4.0</span></div><div class="last-update">Sync: 2026-06-01 16:08:38</div></header>
 <section class="main-summary">
-    <div class="summary-card"><div class="summary-label">Total Value (HKD)</div><div class="summary-value" id="total-value">--</div></div>
+    <div class="summary-card"><div class="summary-label">Total Value (HKD)</div><div class="summary-value">$1,794,260</div></div>
     <div class="summary-card">
         <div class="summary-label">Total Profit</div>
-        <div class="profit-display">
-            <div class="summary-value" id="total-profit">--</div>
-            <div class="profit-pct" id="total-profit-pct">--</div>
+        <div class="profit-display" style="color:#10b981">
+            <div class="summary-value">$578,250</div>
+            <div class="profit-pct">+47.6%</div>
         </div>
     </div>
 </section>
 <section class="ticker-bar">
-    <div class="ticker-item"><span class="ticker-symbol">TQQQ</span><span class="ticker-price" id="tqqq-price">--</span><span class="session-tag" id="tqqq-label">EXT</span></div>
-    <div class="ticker-item"><span class="ticker-symbol">SOXL</span><span class="ticker-price" id="soxl-price">--</span><span class="session-tag" id="soxl-label">EXT</span></div>
+    <div class="ticker-item"><span class="ticker-symbol">TQQQ</span><span class="ticker-price">$84.85</span><span class="session-tag" style="display:inline-block">EXT</span></div>
+    <div class="ticker-item"><span class="ticker-symbol">SOXL</span><span class="ticker-price">$231.86</span><span class="session-tag" style="display:none">EXT</span></div>
 </section>
-<section><h2>Strategic Targets</h2><div id="milestones-container">Loading...</div></section>
-<section style="margin-top: 32px;"><h2>Holdings</h2><div id="accounts-container">Loading...</div></section>
+<section><h2>Strategic Targets</h2><div class="milestone-card">
+                <div class="m-header"><span class="m-title">Stage 1: 買樓雜費</span><span class="m-status status-COMPLETED">COMPLETED</span></div>
+                <div style="font-size: 11px; color: var(--success); margin-bottom: 10px;">✅ 盈利已覆蓋 $45 萬雜費</div>
+            <div class="progress-details">
+                <div class="price-gap-box">
+                    <div class="pg-row"><span>目標價</span><span class="pg-val">$78.69</span></div>
+                    <div class="pg-row"><span>目前現價 (EXT)</span><span class="pg-val" style="color:var(--accent);">$84.85</span></div>
+                    <div class="pg-row main-gap"><span>超額</span><span class="pg-val" style="color:var(--success);">已達標</span></div>
+                </div>
+                <div class="detail-row" style="margin-top: 15px;"><span>雜費利潤進度</span><span class="detail-val">100.0%</span></div>
+                <div class="progress-bg"><div class="progress-fill" style="width: 100.0%"></div></div>
+                <div class="detail-row" style="margin-top: 8px;"><span>可用利潤</span><span class="detail-val">已鎖定 $450,000</span></div>
+            </div><div class="m-strategy">觸及即走：沽出約 455 股，套現 $45 萬現金鎖定稅項與佣金。</div></div><div class="milestone-card">
+                <div class="m-header"><span class="m-title">Stage 2: 100萬首期</span><span class="m-status status-IN_PROGRESS">IN_PROGRESS</span></div>
+                
+            <div class="progress-details">
+                <div class="price-gap-box">
+                    <div class="pg-row"><span>目標價</span><span class="pg-val">$126.96</span></div>
+                    <div class="pg-row"><span>目前現價 (EXT)</span><span class="pg-val" style="color:var(--accent);">$84.85</span></div>
+                    <div class="pg-row main-gap"><span>尚差價格</span><span class="pg-val" style="color:var(--accent);">+42.11 (49.6%)</span></div>
+                </div>
+                <div class="detail-row" style="margin-top: 15px;"><span>首期利潤進度</span><span class="detail-val">12.8%</span></div>
+                <div class="progress-bg"><div class="progress-fill" style="width: 12.825019199999957%"></div></div>
+                <div class="detail-row" style="margin-top: 8px;"><span>可用利潤</span><span class="detail-val">$128,250</span></div>
+            </div><div class="m-strategy">移動止賺：啟動 Trailing Stop。高位任飛，高位回落 10% 即強制套現 $100 萬。</div></div><div class="milestone-card">
+                <div class="m-header"><span class="m-title">Stage 3: 裝修全包</span><span class="m-status status-PENDING">PENDING</span></div>
+                
+            <div class="progress-details">
+                <div class="price-gap-box">
+                    <div class="pg-row"><span>目標價</span><span class="pg-val">$153.25</span></div>
+                    <div class="pg-row"><span>目前現價 (EXT)</span><span class="pg-val" style="color:var(--accent);">$84.85</span></div>
+                    <div class="pg-row main-gap"><span>尚差價格</span><span class="pg-val" style="color:var(--accent);">+68.40 (80.6%)</span></div>
+                </div>
+                <div class="detail-row" style="margin-top: 15px;"><span>裝修利潤進度</span><span class="detail-val">0.0%</span></div>
+                <div class="progress-bg"><div class="progress-fill" style="width: 0.0%"></div></div>
+                <div class="detail-row" style="margin-top: 8px;"><span>可用利潤</span><span class="detail-val">$0</span></div>
+            </div><div class="m-strategy">回贈＋餘兵：收樓拿走按揭回贈填補，其餘股份放長線重新滾動。</div></div></section>
+<section style="margin-top: 32px;"><h2>Holdings</h2><div class="account-block">
+                <div class="account-header"><span>帳戶 A (滾動首期)</span><span class="acc-val">$379,929</span></div>
+                <div class="holdings-list"><div class="asset-row"><div class="asset-info">
+                    <div class="asset-name">TQQQ <span class="qty">× 544</span></div>
+                    <div class="asset-cost">成本 $57.825 | 現價 $84.85</div></div>
+                    <div style="text-align: right;"><div class="asset-status up">+46.7%</div>
+                    <div style="font-size: 10px; color: var(--text-dim);">$114,672</div></div></div><div class="asset-row"><div class="asset-info">
+                    <div class="asset-name">SOXL <span class="qty">× 11</span></div>
+                    <div class="asset-cost">成本 $116.96 | 現價 $231.86</div></div>
+                    <div style="text-align: right;"><div class="asset-status up">+98.2%</div>
+                    <div style="font-size: 10px; color: var(--text-dim);">$9,858</div></div></div></div></div><div class="account-block">
+                <div class="account-header"><span>帳戶 B (固定基金)</span><span class="acc-val">$1,414,331</span></div>
+                <div class="holdings-list"><div class="asset-row"><div class="asset-info">
+                    <div class="asset-name">TQQQ <span class="qty">× 2137</span></div>
+                    <div class="asset-cost">成本 $57.63 | 現價 $84.85</div></div>
+                    <div style="text-align: right;"><div class="asset-status up">+47.2%</div>
+                    <div style="font-size: 10px; color: var(--text-dim);">$453,719</div></div></div></div></div></section>
 </div></body></html>
