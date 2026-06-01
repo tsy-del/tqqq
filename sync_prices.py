@@ -179,6 +179,41 @@ def update_files():
                 </div>
             </div>"""
 
+        # 終極總目標
+        total_target = 2000000
+        overall_prog = min(100, max(0, (total_profit_hkd / total_target) * 100))
+        overall_shortfall = max(0, total_target - total_profit_hkd)
+
+        if total_profit_hkd >= total_target:
+            overall_status = "COMPLETED"
+            overall_status_class = "status-COMPLETED"
+            overall_shortfall_str = "$0"
+            is_overall_collapsed = "collapsed"
+        else:
+            overall_status = "IN_PROGRESS"
+            overall_status_class = "status-IN_PROGRESS"
+            overall_shortfall_str = format_hkd(overall_shortfall)
+            is_overall_collapsed = ""
+
+        milestones_html += f"""<div class="milestone-card {is_overall_collapsed}" style="border: 1px solid var(--accent); box-shadow: 0 0 15px rgba(59,130,246,0.1);">
+            <div class="m-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <span class="m-title">🏆 終極總目標：純賺 200 萬</span>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <span class="m-status {overall_status_class}">{overall_status}</span>
+            </div>
+            <div class="m-body">
+                <div class="progress-details" style="margin-top: 10px;">
+                    <div class="detail-row"><span>整體利潤進度</span><span class="detail-val">{overall_prog:.1f}%</span></div>
+                    <div class="progress-bg"><div class="progress-fill" style="width: {overall_prog}%; background: linear-gradient(90deg, #3b82f6, #10b981);"></div></div>
+                    <div class="detail-row" style="margin-top: 8px;"><span>目前總純利</span><span class="detail-val" style="color:var(--success);">{format_hkd(total_profit_hkd)}</span></div>
+                    <div class="detail-row" style="margin-top: 4px;"><span>距離 200 萬尚欠</span><span class="detail-val" style="color:var(--accent);">{overall_shortfall_str}</span></div>
+                </div>
+                <div class="m-strategy">不計成本，目標純利達到 $2,000,000 以完成所有規劃 (雜費、首期、裝修)。</div>
+            </div>
+        </div>"""
+
         accounts_html = ""
         for acc in data['accounts']:
             rows = ""
