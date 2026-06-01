@@ -1,15 +1,17 @@
 async function loadData() {
     try {
         console.log("Fetching data.json...");
-        // 強制忽略緩存
-        const response = await fetch('data.json?v=' + Date.now());
+        // 強制忽略緩存：使用更加隨機的參數
+        const cacheBuster = Math.random().toString(36).substring(7);
+        const response = await fetch('data.json?cb=' + cacheBuster);
+        
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         console.log("Data loaded:", data);
         renderDashboard(data);
     } catch (e) {
         console.error("Failed to load data.json", e);
-        document.body.innerHTML += `<div style="color:red; padding:20px;">載入數據失敗，請確認 data.json 是否存在。錯誤: ${e.message}</div>`;
+        document.getElementById('dashboard-status').innerHTML = `<div style="color:#ff3b30; padding:10px; font-size:0.8rem;">數據載入失敗: ${e.message}</div>`;
     }
 }
 
@@ -65,19 +67,24 @@ function renderDashboard(data) {
                         return `
                             <tr>
                                 <td><b>${h.asset}</b> <span class="qty">x${h.quantity}</span></td>
-                                <td align="right">成本: $${h.avg_price_usd}</td>
-                                <td align="right" class="${gain >= 0 ? 'up' : 'down'}" style="font-weight:bold; width:80px;">${gain >= 0 ? '+' : ''}${gain}%</td>
+                                <td align="right" style="font-size:0.75rem; color:#8e8e93;">成本 $${h.avg_price_usd}</td>
+                                <td align="right" class="${gain >= 0 ? 'up' : 'down'}" style="font-weight:bold; width:70px;">${gain >= 0 ? '+' : ''}${gain}%</td>
                             </tr>
                         `;
                     }).join('')}
                 </table>
             </div>
         `).join('');
-        console.log("Dashboard rendered successfully.");
+        
+        // 成功渲染後隱藏錯誤提示
+        const statusEl = document.getElementById('dashboard-status');
+        if (statusEl) statusEl.style.display = 'none';
+
     } catch (renderError) {
         console.error("Rendering error:", renderError);
     }
 }
 
-// 頁面加載完成後執行
-window.onload = loadData;
+// 立即執行並在 window.onload 再次確認
+loadData();
+window.addEventListener('load', loadData);
