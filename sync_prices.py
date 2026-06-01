@@ -2,6 +2,7 @@ import yfinance as yf
 import os
 import json
 import time
+from datetime import datetime, timezone, timedelta
 import subprocess
 
 # Path configurations
@@ -65,7 +66,9 @@ def update_files():
         
         data['market_prices']['tqqq_usd'] = tqqq_price
         data['market_prices']['soxl_usd'] = soxl_price
-        current_time_str = time.strftime('%Y-%m-%d %H:%M:%S')
+        # 確保使用香港時間 (GitHub Server 預設是 UTC)
+        hk_tz = timezone(timedelta(hours=8))
+        current_time_str = datetime.now(hk_tz).strftime('%Y-%m-%d %H:%M:%S')
         data['last_updated'] = current_time_str
         
         total_value_hkd = 0
@@ -159,7 +162,7 @@ def update_files():
                 <div class="holdings-list">{rows}</div></div>"""
 
         new_html = f"""<!DOCTYPE html>
-<html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>TQQQ Plan | v4.1 (Cloud Sync)</title>
+<html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>TQQQ Plan | v4.2 (Auto Cloud Sync)</title>
 <style>
 :root {{ --bg: #09090b; --card: #18181b; --glass: rgba(255, 255, 255, 0.03); --border: rgba(255, 255, 255, 0.08); --accent: #3b82f6; --success: #10b981; --danger: #ef4444; --text-main: #fafafa; --text-dim: #71717a; }}
 * {{ box-sizing: border-box; }}
@@ -218,7 +221,7 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
 .down {{ color: var(--danger); }}
 </style></head>
 <body><div class="container">
-<header><div class="header-top"><h1>📈 TQQQ Plan</h1><span class="v-tag">v4.1</span></div><div class="last-update">Sync: {current_time_str}</div></header>
+<header><div class="header-top"><h1>📈 TQQQ Plan</h1><span class="v-tag">v4.2</span></div><div class="last-update">Last Update: {current_time_str}</div></header>
 <section class="main-summary">
     <div class="summary-card"><div class="summary-label">Total Value (HKD)</div><div class="summary-value">{format_hkd(total_value_hkd)}</div></div>
     <div class="summary-card">
@@ -251,7 +254,7 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
         subprocess.run(["git", "add", "data.json", "index.html", "sync_prices.py", ".github/workflows/sync.yml"], check=True)
         status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
         if status.stdout.strip():
-            subprocess.run(["git", "commit", "-m", f"v4.1: Cloud Sync Action configured at {current_time_str}"], check=True)
+            subprocess.run(["git", "commit", "-m", f"v4.2: Auto Cloud Sync config at {current_time_str}"], check=True)
             subprocess.run(["git", "push", "origin", "main"], check=True)
             subprocess.run(["git", "push", "origin", "main:gh-pages", "--force"], check=True)
             print("Update and push completed successfully.")
