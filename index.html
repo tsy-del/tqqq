@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TQQQ Plan | v2.0.9</title>
+    <title>TQQQ Plan | v2.1.0</title>
     <style>
         :root { --bg: #09090b; --card: #18181b; --glass: rgba(255, 255, 255, 0.03); --border: rgba(255, 255, 255, 0.08); --accent: #3b82f6; --success: #10b981; --danger: #ef4444; --text-main: #fafafa; --text-dim: #71717a; }
         * { box-sizing: border-box; }
@@ -26,20 +26,27 @@
         .session-tag { font-size: 9px; padding: 1px 4px; border-radius: 3px; background: rgba(59,130,246,0.2); color: var(--accent); margin-left: 4px; border: 0.5px solid var(--accent); }
         h2 { font-size: 13px; font-weight: 700; margin: 0 0 16px; color: var(--text-dim); letter-spacing: 0.1em; display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
         h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-        .milestone-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 16px; }
-        .m-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .m-title { font-weight: 700; font-size: 16px; }
+        
+        .milestone-card { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 20px; margin-bottom: 16px; }
+        .m-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .m-title { font-weight: 700; font-size: 17px; }
         .m-status { font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 8px; }
         .status-COMPLETED { background: rgba(16,185,129,0.1); color: var(--success); border: 1px solid var(--success); }
         .status-IN_PROGRESS { background: rgba(59,130,246,0.1); color: var(--accent); border: 1px solid var(--accent); }
-        .m-target { font-size: 13px; color: var(--text-dim); margin-bottom: 14px; }
-        .highlight { color: #fff; font-weight: 700; }
+        
+        .price-gap-box { background: rgba(255,255,255,0.03); padding: 12px; border-radius: 16px; border: 1px solid var(--border); }
+        .pg-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; color: var(--text-dim); }
+        .pg-val { color: #fff; font-weight: 600; }
+        .main-gap { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); color: #fff; }
+        .main-gap .pg-val { color: var(--accent); font-size: 15px; }
+
         .progress-details { margin-bottom: 14px; }
         .detail-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-dim); margin-bottom: 4px; }
         .detail-val { font-weight: 700; color: #fff; }
-        .m-strategy { font-size: 12px; color: var(--text-dim); line-height: 1.6; padding-top: 14px; border-top: 1px solid var(--border); }
+        .m-strategy { font-size: 12px; color: var(--text-dim); line-height: 1.6; padding-top: 14px; border-top: 1px solid var(--border); margin-top: 15px; }
         .progress-bg { background: rgba(255,255,255,0.03); height: 8px; border-radius: 10px; overflow: hidden; }
         .progress-fill { background: linear-gradient(90deg, var(--accent), #60a5fa); height: 100%; border-radius: 10px; }
+        
         .account-block { margin-bottom: 28px; }
         .account-header { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; margin-bottom: 12px; padding: 0 4px; }
         .asset-row { background: var(--card); border: 1px solid var(--border); padding: 14px 18px; border-radius: 18px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
@@ -53,7 +60,7 @@
 </head>
 <body>
     <div class="container">
-        <header><div class="header-top"><h1>📈 TQQQ Plan</h1><span class="v-tag">v2.0.9</span></div><div class="last-update">Update: 2026-06-01 14:09:42</div></header>
+        <header><div class="header-top"><h1>📈 TQQQ Plan</h1><span class="v-tag">v2.1.0</span></div><div class="last-update">Sync: 2026-06-01 14:10:13</div></header>
         <section class="main-summary">
             <div class="summary-card"><div class="summary-label">Total Value (HKD)</div><div class="summary-value">$1,783,898</div></div>
             <div class="summary-card"><div class="summary-label">Total Profit</div><div class="summary-value" style="color:#10b981">$567,889</div></div>
@@ -65,19 +72,29 @@
         </section>
         <section><h2>Strategic Targets</h2><div class="milestone-card">
                 <div class="m-header"><span class="m-title">Stage 1: 買樓雜費</span><span class="m-status status-COMPLETED">COMPLETED</span></div>
-                <div class="m-target">目標金額: <span class="highlight">$450,000</span></div>
-                <div style="font-size: 11px; color: var(--success); margin-bottom: 10px;">✅ 盈利已覆蓋 $45 萬雜費</div><div class="m-strategy">觸及即走：沽出約 455 股，套現 $45 萬現金鎖定稅項與佣金。</div></div><div class="milestone-card">
+                <div style="font-size: 11px; color: var(--success); margin-bottom: 10px;">✅ 已覆蓋 $45 萬雜費</div>
+                <div class="m-strategy">觸及即走：沽出約 455 股，套現 $45 萬現金鎖定稅項與佣金。</div></div><div class="milestone-card">
                 <div class="m-header"><span class="m-title">Stage 2: 100萬首期</span><span class="m-status status-IN_PROGRESS">IN_PROGRESS</span></div>
-                <div class="m-target">目標金額: <span class="highlight">$1,000,000</span></div>
                 
                 <div class="progress-details">
-                    <div class="detail-row"><span>首期進度 (淨利扣雜費)</span><span class="detail-val">11.8%</span></div>
+                    <div class="price-gap-box">
+                        <div class="pg-row"><span>目標價</span><span class="pg-val">$126.96</span></div>
+                        <div class="pg-row"><span>現價</span><span class="pg-val">$84.39</span></div>
+                        <div class="pg-row main-gap"><span>價格差距</span><span class="pg-val">+42.57 (50.4%)</span></div>
+                    </div>
+                    <div class="detail-row" style="margin-top: 15px;">
+                        <span>首期利潤進度</span>
+                        <span class="detail-val">11.8%</span>
+                    </div>
                     <div class="progress-bg"><div class="progress-fill" style="width: 11.78885939999998%"></div></div>
-                    <div class="detail-row" style="margin-top: 8px;"><span>可用利潤</span><span class="detail-val" style="color: #fff;">$117,889</span></div>
-                    <div class="detail-row"><span>尚欠金額</span><span class="detail-val" style="color: var(--accent);">$882,111</span></div>
-                </div><div class="m-strategy">移動止賺：啟動 Trailing Stop。高位任飛，高位回落 10% 即強制套現 $100 萬。</div></div><div class="milestone-card">
+                    <div class="detail-row" style="margin-top: 8px;">
+                        <span>可用利潤</span>
+                        <span class="detail-val">$117,889</span>
+                    </div>
+                </div>
+                <div class="m-strategy">移動止賺：啟動 Trailing Stop。高位任飛，高位回落 10% 即強制套現 $100 萬。</div></div><div class="milestone-card">
                 <div class="m-header"><span class="m-title">Stage 3: 裝修全包</span><span class="m-status status-PENDING">PENDING</span></div>
-                <div class="m-target">目標金額: <span class="highlight">$550,000</span></div>
+                
                 <div class="m-strategy">回贈＋餘兵：收樓拿走按揭回贈填補，其餘股份放長線重新滾動。</div></div></section>
         <section style="margin-top: 32px;"><h2>Holdings</h2><div class="account-block">
                 <div class="account-header"><span>帳戶 A (滾動首期)</span><span class="acc-val">$377,235</span></div>
