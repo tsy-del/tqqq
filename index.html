@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TQQQ Plan | Dashboard v2.0.1</title>
+    <title>TQQQ Plan | Dashboard v2.0.2</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -56,11 +56,16 @@
         .status-IN_PROGRESS { background: rgba(59,130,246,0.1); color: var(--accent); border: 1px solid var(--accent); }
         .status-PENDING { background: var(--glass); color: var(--text-dim); border: 1px solid var(--border); }
         .m-target { font-size: 14px; color: var(--text-dim); margin-bottom: 14px; }
-        .m-target .highlight { color: #fff; }
+        .m-target .highlight { color: #fff; font-weight: 700; }
+        
+        .progress-details { margin-bottom: 14px; }
+        .detail-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-dim); margin-bottom: 4px; }
+        .detail-val { font-weight: 700; color: #fff; }
+        
         .m-strategy { font-size: 12px; color: var(--text-dim); line-height: 1.6; padding-top: 14px; border-top: 1px solid var(--border); }
         .strategy-alert { background: rgba(239,68,68,0.1); color: var(--danger); padding: 10px; border-radius: 10px; font-size: 11px; font-weight: 600; margin-bottom: 14px; border: 1px solid var(--danger); }
         
-        .progress-bg { background: rgba(255,255,255,0.03); height: 8px; border-radius: 10px; margin-bottom: 14px; overflow: hidden; }
+        .progress-bg { background: rgba(255,255,255,0.03); height: 8px; border-radius: 10px; overflow: hidden; }
         .progress-fill { background: linear-gradient(90deg, var(--accent), #60a5fa); height: 100%; border-radius: 10px; }
 
         .account-block { margin-bottom: 28px; }
@@ -80,9 +85,9 @@
         <header>
             <div class="header-top">
                 <h1>📈 TQQQ Plan</h1>
-                <span class="v-tag">v2.0.1</span>
+                <span class="v-tag">v2.0.2</span>
             </div>
-            <div class="last-update">Real-time Sync: 2026-06-01 13:14:42 (HKT)</div>
+            <div class="last-update">Real-time Sync: 2026-06-01 13:15:58 (HKT)</div>
         </header>
 
         <section class="main-summary">
@@ -119,8 +124,8 @@
                     <span class="m-title">Stage 1: 買樓雜費</span>
                     <span class="m-status status-COMPLETED">COMPLETED</span>
                 </div>
-                <div class="m-target">目標: TQQQ <span class="highlight">$78.69</span></div>
-                
+                <div class="m-target">目標價: <span class="highlight">$78.69</span></div>
+                <div style="font-size: 11px; color: var(--success); margin-bottom: 10px;">✅ 已達成目標</div>
                 
                 <div class="m-strategy">觸及即走：沽出約 455 股，套現 $45 萬現金鎖定稅項與佣金。</div>
             </div>
@@ -129,8 +134,19 @@
                     <span class="m-title">Stage 2: 100萬首期</span>
                     <span class="m-status status-IN_PROGRESS">IN_PROGRESS</span>
                 </div>
-                <div class="m-target">目標: TQQQ <span class="highlight">$126.96</span></div>
-                <div class="progress-bg"><div class="progress-fill" style="width: 66.60365469439195%"></div></div>
+                <div class="m-target">目標價: <span class="highlight">$126.96</span></div>
+                
+                <div class="progress-details">
+                    <div class="detail-row">
+                        <span>目前進度</span>
+                        <span class="detail-val">66.6%</span>
+                    </div>
+                    <div class="progress-bg"><div class="progress-fill" style="width: 66.60365469439195%"></div></div>
+                    <div class="detail-row" style="margin-top: 8px;">
+                        <span>距離目標</span>
+                        <span class="detail-val" style="color: var(--accent);">+$42.40 (50.1%)</span>
+                    </div>
+                </div>
                 
                 <div class="m-strategy">移動止賺：啟動 Trailing Stop。高位任飛，高位回落 10% 即強制套現 $100 萬。</div>
             </div>
@@ -139,7 +155,7 @@
                     <span class="m-title">Stage 3: 裝修全包</span>
                     <span class="m-status status-PENDING">PENDING</span>
                 </div>
-                <div class="m-target">目標: TQQQ <span class="highlight">$153.25</span></div>
+                <div class="m-target">目標價: <span class="highlight">$153.25</span></div>
                 
                 
                 <div class="m-strategy">回贈＋餘兵：收樓拿走按揭回贈填補，其餘股份放長線重新滾動。</div>
@@ -147,7 +163,7 @@
         </section>
 
         <section style="margin-top: 32px;">
-            <h2>Holdings</h2>
+            <h2>Holdings Details</h2>
             
             <div class="account-block">
                 <div class="account-header">
@@ -158,16 +174,22 @@
                 <div class="asset-row">
                     <div class="asset-info">
                         <div class="asset-name">TQQQ <span class="qty">× 544</span></div>
-                        <div class="asset-cost">成本 $57.825</div>
+                        <div class="asset-cost">成本 $57.825 | 現價 $84.56</div>
                     </div>
-                    <div class="asset-status up">+46.2%</div>
+                    <div style="text-align: right;">
+                        <div class="asset-status up">+46.2%</div>
+                        <div style="font-size: 10px; color: var(--text-dim);">$113,442</div>
+                    </div>
                 </div>
                 <div class="asset-row">
                     <div class="asset-info">
                         <div class="asset-name">SOXL <span class="qty">× 11</span></div>
-                        <div class="asset-cost">成本 $116.96</div>
+                        <div class="asset-cost">成本 $116.96 | 現價 $224.34</div>
                     </div>
-                    <div class="asset-status up">+91.8%</div>
+                    <div style="text-align: right;">
+                        <div class="asset-status up">+91.8%</div>
+                        <div style="font-size: 10px; color: var(--text-dim);">$9,213</div>
+                    </div>
                 </div></div>
             </div>
             <div class="account-block">
@@ -179,9 +201,12 @@
                 <div class="asset-row">
                     <div class="asset-info">
                         <div class="asset-name">TQQQ <span class="qty">× 2137</span></div>
-                        <div class="asset-cost">成本 $57.63</div>
+                        <div class="asset-cost">成本 $57.63 | 現價 $84.56</div>
                     </div>
-                    <div class="asset-status up">+46.7%</div>
+                    <div style="text-align: right;">
+                        <div class="asset-status up">+46.7%</div>
+                        <div style="font-size: 10px; color: var(--text-dim);">$448,885</div>
+                    </div>
                 </div></div>
             </div>
         </section>
