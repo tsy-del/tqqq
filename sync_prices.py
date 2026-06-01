@@ -55,7 +55,10 @@ def get_latest_prices():
     t_reg = t_info.get('regularMarketPrice') or t_price
     t_label = "EXT" if abs(t_price - t_reg) > 0.01 else "REG"
     
-    return t_price, t_label, s_price
+    s_reg = s_info.get('regularMarketPrice') or s_price
+    s_label = "EXT" if abs(s_price - s_reg) > 0.01 else "REG"
+    
+    return t_price, t_label, s_price, s_label
 
 def update_files():
     try:
@@ -66,17 +69,15 @@ def update_files():
         with open(DATA_FILE, 'r') as f:
             data = json.load(f)
         
-        tqqq_price, t_label, soxl_price = get_latest_prices()
+        tqqq_price, t_label, soxl_price, s_label = get_latest_prices()
         
         old_tqqq = data['market_prices'].get('tqqq_usd', 0)
         old_soxl = data['market_prices'].get('soxl_usd', 0)
         
         # 價格防洗版機制 (如果價格無變，則不 Push)
         if tqqq_price == old_tqqq and soxl_price == old_soxl:
-            print(f"Prices unchanged (TQQQ: {tqqq_price}, SOXL: {soxl_price}). Checking if HTML needs update anyway...")
-            # We don't return here if we want to force the v4.1 UI update,
-            # but in normal runs we would. Let's let it pass this ONE TIME 
-            # to push the new GitHub Actions button.
+            print(f"Prices unchanged (TQQQ: {tqqq_price}, SOXL: {soxl_price}). Skipping Git push to save history.")
+            pass
             
         rate = data['market_prices']['usd_hkd_rate']
         
@@ -307,7 +308,7 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
 </section>
 <section class="ticker-bar">
     <div class="ticker-item"><span class="ticker-symbol">TQQQ</span><span class="ticker-price">${tqqq_price}</span><span class="session-tag" style="display:{'inline-block' if t_label == 'EXT' else 'none'}">{t_label}</span></div>
-    <div class="ticker-item"><span class="ticker-symbol">SOXL</span><span class="ticker-price">${soxl_price}</span><span class="session-tag" style="display:none">EXT</span></div>
+    <div class="ticker-item"><span class="ticker-symbol">SOXL</span><span class="ticker-price">${soxl_price}</span><span class="session-tag" style="display:{'inline-block' if s_label == 'EXT' else 'none'}">{s_label}</span></div>
 </section>
 
 <section><h2>Strategic Targets</h2>{milestones_html}</section>
@@ -334,7 +335,7 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
         else:
             print("No changes to commit. Stopping script early.")
             
-        return True
+        pass
     except Exception as e:
         print(f"Error: {e}")
         return False
