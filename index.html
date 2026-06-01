@@ -3,51 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TQQQ Plan | Dashboard v2.0.2</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
+    <title>TQQQ Plan | v2.0.3</title>
     <style>
-        :root {
-            --bg: #09090b;
-            --card: #18181b;
-            --glass: rgba(255, 255, 255, 0.03);
-            --border: rgba(255, 255, 255, 0.08);
-            --accent: #3b82f6;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --text-main: #fafafa;
-            --text-dim: #71717a;
-        }
+        :root { --bg: #09090b; --card: #18181b; --glass: rgba(255, 255, 255, 0.03); --border: rgba(255, 255, 255, 0.08); --accent: #3b82f6; --success: #10b981; --danger: #ef4444; --text-main: #fafafa; --text-dim: #71717a; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { 
-            font-family: -apple-system, system-ui, sans-serif; 
-            background: var(--bg); color: var(--text-main); 
-            margin: 0; padding: 24px 16px; 
-            display: flex; justify-content: center;
-        }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 24px 16px; display: flex; justify-content: center; }
         .container { max-width: 480px; width: 100%; }
         header { margin-bottom: 28px; }
         .header-top { display: flex; justify-content: space-between; align-items: center; }
         h1 { font-size: 26px; font-weight: 800; margin: 0; letter-spacing: -0.05em; }
         .v-tag { font-size: 10px; color: var(--text-dim); background: var(--glass); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); }
         .last-update { font-size: 11px; color: var(--text-dim); margin-top: 6px; letter-spacing: 0.05em; }
-        
         .main-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
         .summary-card { background: var(--card); border: 1px solid var(--border); padding: 18px; border-radius: 20px; position: relative; overflow: hidden; }
         .summary-card::before { content: ''; position: absolute; top:0; left:0; width:4px; height:100%; background: var(--accent); }
         .summary-label { font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; margin-bottom: 6px; }
-        .summary-value { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
-        
+        .summary-value { font-size: 20px; font-weight: 700; }
         .ticker-bar { display: flex; gap: 10px; margin-bottom: 32px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
         .ticker-item { background: var(--glass); border: 1px solid var(--border); padding: 10px 14px; border-radius: 14px; display: flex; align-items: center; gap: 10px; }
         .ticker-symbol { font-weight: 700; font-size: 13px; color: var(--text-dim); }
         .ticker-price { font-family: monospace; font-size: 13px; color: #fff; }
-
         h2 { font-size: 13px; font-weight: 700; margin: 0 0 16px; color: var(--text-dim); letter-spacing: 0.1em; display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
         h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
         .milestone-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 16px; }
         .m-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .m-title { font-weight: 700; font-size: 16px; }
@@ -55,25 +32,19 @@
         .status-COMPLETED { background: rgba(16,185,129,0.1); color: var(--success); border: 1px solid var(--success); }
         .status-IN_PROGRESS { background: rgba(59,130,246,0.1); color: var(--accent); border: 1px solid var(--accent); }
         .status-PENDING { background: var(--glass); color: var(--text-dim); border: 1px solid var(--border); }
-        .m-target { font-size: 14px; color: var(--text-dim); margin-bottom: 14px; }
-        .m-target .highlight { color: #fff; font-weight: 700; }
-        
+        .m-target { font-size: 13px; color: var(--text-dim); margin-bottom: 14px; }
+        .highlight { color: #fff; font-weight: 700; }
         .progress-details { margin-bottom: 14px; }
         .detail-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-dim); margin-bottom: 4px; }
         .detail-val { font-weight: 700; color: #fff; }
-        
         .m-strategy { font-size: 12px; color: var(--text-dim); line-height: 1.6; padding-top: 14px; border-top: 1px solid var(--border); }
-        .strategy-alert { background: rgba(239,68,68,0.1); color: var(--danger); padding: 10px; border-radius: 10px; font-size: 11px; font-weight: 600; margin-bottom: 14px; border: 1px solid var(--danger); }
-        
         .progress-bg { background: rgba(255,255,255,0.03); height: 8px; border-radius: 10px; overflow: hidden; }
         .progress-fill { background: linear-gradient(90deg, var(--accent), #60a5fa); height: 100%; border-radius: 10px; }
-
         .account-block { margin-bottom: 28px; }
         .account-header { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; margin-bottom: 12px; padding: 0 4px; }
-        .holdings-list { display: flex; flex-direction: column; gap: 10px; }
-        .asset-row { background: var(--card); border: 1px solid var(--border); padding: 14px 18px; border-radius: 18px; display: flex; justify-content: space-between; align-items: center; }
+        .asset-row { background: var(--card); border: 1px solid var(--border); padding: 14px 18px; border-radius: 18px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .asset-name { font-weight: 700; font-size: 15px; }
-        .qty { font-size: 11px; color: var(--text-dim); font-weight: 400; margin-left: 6px; }
+        .qty { font-size: 11px; color: var(--text-dim); margin-left: 6px; }
         .asset-cost { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
         .asset-status { font-weight: 800; font-size: 15px; }
         .up { color: var(--success); }
@@ -82,51 +53,24 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <div class="header-top">
-                <h1>📈 TQQQ Plan</h1>
-                <span class="v-tag">v2.0.2</span>
-            </div>
-            <div class="last-update">Real-time Sync: 2026-06-01 13:19:42 (HKT)</div>
-        </header>
-
+        <header><div class="header-top"><h1>📈 TQQQ Plan</h1><span class="v-tag">v2.0.3</span></div><div class="last-update">Sync: 2026-06-01 13:20:07</div></header>
         <section class="main-summary">
-            <div class="summary-card">
-                <div class="summary-label">Net Value</div>
-                <div class="summary-value">$1,787,550</div>
-            </div>
-            <div class="summary-card" style="--accent: var(--success)">
-                <div class="summary-label">Total P/L</div>
-                <div class="summary-value" style="color:#10b981">$571,541</div>
-            </div>
+            <div class="summary-card"><div class="summary-label">Total Value (HKD)</div><div class="summary-value">$1,787,550</div></div>
+            <div class="summary-card"><div class="summary-label">Total Profit</div><div class="summary-value" style="color:#10b981">$571,541</div></div>
         </section>
-
         <section class="ticker-bar">
-            <div class="ticker-item">
-                <span class="ticker-symbol">TQQQ</span>
-                <span class="ticker-price">$84.56</span>
-            </div>
-            <div class="ticker-item">
-                <span class="ticker-symbol">SOXL</span>
-                <span class="ticker-price">$224.34</span>
-            </div>
-            <div class="ticker-item">
-                <span class="ticker-symbol">USD/HKD</span>
-                <span class="ticker-price">7.8</span>
-            </div>
+            <div class="ticker-item"><span class="ticker-symbol">TQQQ</span><span class="ticker-price">$84.56</span></div>
+            <div class="ticker-item"><span class="ticker-symbol">SOXL</span><span class="ticker-price">$224.34</span></div>
+            <div class="ticker-item"><span class="ticker-symbol">USD/HKD</span><span class="ticker-price">7.8</span></div>
         </section>
-
-        <section>
-            <h2>Strategic Targets</h2>
-            
+        <section><h2>Strategic Targets</h2>
             <div class="milestone-card">
                 <div class="m-header">
                     <span class="m-title">Stage 1: 買樓雜費</span>
                     <span class="m-status status-COMPLETED">COMPLETED</span>
                 </div>
-                <div class="m-target">目標價: <span class="highlight">$78.69</span></div>
-                <div style="font-size: 11px; color: var(--success); margin-bottom: 10px;">✅ 已達成目標</div>
-                
+                <div class="m-target">目標額: <span class="highlight">$450,000</span> (累計 $450,000)</div>
+                <div style="font-size: 11px; color: var(--success); margin-bottom: 10px;">✅ 已鎖定 $45 萬雜費</div>
                 <div class="m-strategy">觸及即走：沽出約 455 股，套現 $45 萬現金鎖定稅項與佣金。</div>
             </div>
             <div class="milestone-card">
@@ -134,20 +78,19 @@
                     <span class="m-title">Stage 2: 100萬首期</span>
                     <span class="m-status status-IN_PROGRESS">IN_PROGRESS</span>
                 </div>
-                <div class="m-target">目標價: <span class="highlight">$126.96</span></div>
+                <div class="m-target">目標額: <span class="highlight">$1,000,000</span> (累計 $1,450,000)</div>
                 
                 <div class="progress-details">
                     <div class="detail-row">
-                        <span>目前進度</span>
-                        <span class="detail-val">66.6%</span>
+                        <span>首期進度 (扣除雜費)</span>
+                        <span class="detail-val">100.0%</span>
                     </div>
-                    <div class="progress-bg"><div class="progress-fill" style="width: 66.60365469439195%"></div></div>
+                    <div class="progress-bg"><div class="progress-fill" style="width: 100%"></div></div>
                     <div class="detail-row" style="margin-top: 8px;">
-                        <span>距離目標</span>
-                        <span class="detail-val" style="color: var(--accent);">+$42.40 (50.1%)</span>
+                        <span>尚欠金額</span>
+                        <span class="detail-val" style="color: var(--accent);">$-337,550</span>
                     </div>
                 </div>
-                
                 <div class="m-strategy">移動止賺：啟動 Trailing Stop。高位任飛，高位回落 10% 即強制套現 $100 萬。</div>
             </div>
             <div class="milestone-card">
@@ -155,21 +98,13 @@
                     <span class="m-title">Stage 3: 裝修全包</span>
                     <span class="m-status status-PENDING">PENDING</span>
                 </div>
-                <div class="m-target">目標價: <span class="highlight">$153.25</span></div>
-                
+                <div class="m-target">目標額: <span class="highlight">$550,000</span> (累計 $2,000,000)</div>
                 
                 <div class="m-strategy">回贈＋餘兵：收樓拿走按揭回贈填補，其餘股份放長線重新滾動。</div>
-            </div>
-        </section>
-
-        <section style="margin-top: 32px;">
-            <h2>Holdings Details</h2>
-            
+            </div></section>
+        <section style="margin-top: 32px;"><h2>Holdings</h2>
             <div class="account-block">
-                <div class="account-header">
-                    <span>帳戶 A (滾動首期)</span>
-                    <span class="acc-val">$378,053</span>
-                </div>
+                <div class="account-header"><span>帳戶 A (滾動首期)</span><span class="acc-val">$378,053</span></div>
                 <div class="holdings-list">
                 <div class="asset-row">
                     <div class="asset-info">
@@ -193,10 +128,7 @@
                 </div></div>
             </div>
             <div class="account-block">
-                <div class="account-header">
-                    <span>帳戶 B (固定基金)</span>
-                    <span class="acc-val">$1,409,497</span>
-                </div>
+                <div class="account-header"><span>帳戶 B (固定基金)</span><span class="acc-val">$1,409,497</span></div>
                 <div class="holdings-list">
                 <div class="asset-row">
                     <div class="asset-info">
@@ -208,8 +140,7 @@
                         <div style="font-size: 10px; color: var(--text-dim);">$448,885</div>
                     </div>
                 </div></div>
-            </div>
-        </section>
+            </div></section>
     </div>
 </body>
 </html>
