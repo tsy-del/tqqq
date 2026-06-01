@@ -77,7 +77,7 @@ def update_files():
         # 價格防洗版機制 (如果價格無變，則不 Push)
         if tqqq_price == old_tqqq and soxl_price == old_soxl:
             print(f"Prices unchanged (TQQQ: {tqqq_price}, SOXL: {soxl_price}). Skipping Git push to save history.")
-            pass
+            return True
             
         rate = data['market_prices']['usd_hkd_rate']
         
@@ -335,7 +335,7 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
         else:
             print("No changes to commit. Stopping script early.")
             
-        pass
+        return True
     except Exception as e:
         print(f"Error: {e}")
         return False
