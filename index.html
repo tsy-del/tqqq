@@ -3,20 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TQQQ Plan</title>
+    <title>TQQQ Plan Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>📈 TQQQ Plan</h1>
-        <div id="dashboard">
-            <div class="price-card">
-                <span class="label">TQQQ 當前價格</span>
-                <div id="tqqq-price" class="price">--.--</div>
-                <div id="price-change" class="change">--%</div>
+        <header>
+            <h1>📈 TQQQ Plan</h1>
+            <p class="last-updated">數據更新時間: <span id="last-update">-</span></p>
+        </header>
+
+        <section class="summary-grid">
+            <div class="card highlight">
+                <h3>總資產 (HKD)</h3>
+                <div id="total-value" class="value">--</div>
             </div>
-            <p class="status">最後更新: <span id="last-update">-</span></p>
-        </div>
+            <div class="card highlight">
+                <h3>總盈虧 (HKD)</h3>
+                <div id="total-profit" class="value">--</div>
+            </div>
+        </section>
+
+        <section class="market-prices">
+            <div class="price-row">
+                <div class="price-item">TQQQ: <span id="tqqq-price">--</span></div>
+                <div class="price-item">SOXL: <span id="soxl-price">--</span></div>
+                <div class="price-item">USD/HKD: <span id="rate">--</span></div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>🏆 目標進度 (Milestones)</h2>
+            <div id="milestones-container"></div>
+        </section>
+
+        <section class="section">
+            <h2>💰 帳戶持倉 (Accounts)</h2>
+            <div id="accounts-container"></div>
+        </section>
     </div>
     <script src="script.js"></script>
 </body>

@@ -1,40 +1,66 @@
-async function fetchTQQQPrice() {
-    const priceEl = document.getElementById('tqqq-price');
-    const changeEl = document.getElementById('price-change');
-    const updateEl = document.getElementById('last-update');
-
-    const updateUI = (price, change, source) => {
-        if (!price) return false;
-        priceEl.innerText = parseFloat(price).toFixed(2);
-        changeEl.innerText = `${change >= 0 ? '+' : ''}${parseFloat(change).toFixed(2)}%`;
-        changeEl.className = `change ${change >= 0 ? 'up' : 'down'}`;
-        updateEl.innerText = new Date().toLocaleTimeString() + ` (${source})`;
-        return true;
-    };
-
-    // 方案 1: Finnhub (這是一個非常穩定的來源，我確保 Token 正確)
+async function loadData() {
     try {
-        const token = 'cvv7re1r01q94u760980cvv7re1r01q94u76098g'; // 補全完整的 Token
-        const response = await fetch(`https://finnhub.io/api/v1/quote?symbol=TQQQ&token=${token}`);
+        const response = await fetch('data.json?t=' + Date.now());
         const data = await response.json();
-        if (data && data.c && data.c !== 0) {
-            const change = ((data.c - data.pc) / data.pc) * 100;
-            if (updateUI(data.c, change, "Cloud")) return;
-        }
-    } catch (e) { console.error("Source 1 failed"); }
-
-    // 方案 2: Yahoo Finance API (透過另一個公開的 Mirror 接口)
-    try {
-        const response = await fetch(`https://corsproxy.io/?https://query1.finance.yahoo.com/v8/finance/chart/TQQQ?interval=1m&range=1d`);
-        const data = await response.json();
-        const result = data.chart.result[0].meta;
-        const change = ((result.regularMarketPrice - result.previousClose) / result.previousClose) * 100;
-        if (updateUI(result.regularMarketPrice, change, "Market")) return;
-    } catch (e) { console.error("Source 2 failed"); }
-
-    priceEl.innerText = "開市中/休市中";
-    updateEl.innerText = "正在嘗試連接數據源...";
+        renderDashboard(data);
+    } catch (e) {
+        console.error("Failed to load data.json", e);
+    }
 }
 
-fetchTQQQPrice();
-setInterval(fetchTQQQPrice, 30000);
+function formatHKD(num) {
+    return new Intl.NumberFormat('zh-HK', { style: 'currency', currency: 'HKD', maximumFractionDigits: 0 }).format(num);
+}
+
+function renderDashboard(data) {
+    // Basic Info
+    document.getElementById('last-update').innerText = new Date(data.last_updated).toLocaleString();
+    document.getElementById('total-value').innerText = formatHKD(data.portfolio_summary.total_value_hkd);
+    const profit = data.portfolio_summary.total_profit_hkd;
+    document.getElementById('total-profit').innerText = formatHKD(profit);
+    document.getElementById('total-profit').style.color = profit >= 0 ? '#34c759' : '#ff3b30';
+
+    // Market Prices
+    document.getElementById('tqqq-price').innerText = `$${data.market_prices.tqqq_usd}`;
+    document.getElementById('soxl-price').innerText = `$${data.market_prices.soxl_usd}`;
+    document.getElementById('rate').innerText = data.market_prices.usd_hkd_rate;
+
+    // Milestones
+    const milesContainer = document.getElementById('milestones-container');
+    milesContainer.innerHTML = data.milestones.map(m => `
+        <div class="milestone-item">
+            <div class="milestone-header">
+                <span>Stage ${m.stage}: ${m.name}</span>
+                <span class="status-tag status-${m.status}">${m.status}</span>
+            </div>
+            <div style="font-size: 0.9rem;">目標: TQQQ $${m.tqqq_target_usd}</div>
+            <div class="strategy-box">${m.strategy}</div>
+        </div>
+    `).join('');
+
+    // Accounts
+    const accContainer = document.getElementById('accounts-container');
+    accContainer.innerHTML = data.accounts.map(acc => `
+        <div class="account-card">
+            <div class="milestone-header">
+                <span>${acc.account_name}</span>
+                <span>${formatHKD(acc.total_value_hkd)}</span>
+            </div>
+            <table class="holdings-table">
+                ${acc.holdings.map(h => {
+                    const gain = ((h.current_price_usd - h.avg_price_usd) / h.avg_price_usd * 100).toFixed(1);
+                    return `
+                        <tr>
+                            <td><b>${h.asset}</b> <span class="qty">x${h.quantity}</span></td>
+                            <td align="right">成本: $${h.avg_price_usd}</td>
+                            <td align="right" class="${gain >= 0 ? 'up' : 'down'}">${gain >= 0 ? '+' : ''}${gain}%</td>
+                        </tr>
+                    `;
+                }).join('')}
+            </table>
+        </div>
+    `).join('');
+}
+
+loadData();
+// No auto-price fetch for now since data is static from user input

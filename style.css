@@ -1,48 +1,121 @@
+:root {
+    --bg: #0a0a0c;
+    --card-bg: #1c1c1e;
+    --text: #e0e0e0;
+    --accent: #007aff;
+    --success: #34c759;
+    --danger: #ff3b30;
+    --dim: #8e8e93;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: #0a0a0c;
-    color: #e0e0e0;
+    background-color: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 15px;
     display: flex;
     justify-content: center;
-    padding: 20px;
 }
+
 .container {
-    max-width: 500px;
+    max-width: 600px;
     width: 100%;
-    background: #1c1c1e;
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+header {
     text-align: center;
+    margin-bottom: 20px;
 }
-h1 {
-    color: #007aff;
-    margin-bottom: 25px;
-    font-weight: 600;
+
+h1 { margin: 0; color: var(--accent); }
+h2 { font-size: 1.2rem; margin: 20px 0 10px; border-left: 4px solid var(--accent); padding-left: 10px; }
+
+.last-updated { font-size: 0.8rem; color: var(--dim); }
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
 }
-.price-card {
+
+.card {
+    background: var(--card-bg);
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.card.highlight .value {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.market-prices {
     background: #2c2c2e;
-    padding: 20px;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-around;
+    font-size: 0.85rem;
+}
+
+.price-item span { font-weight: bold; color: var(--accent); }
+
+.milestone-item {
+    background: var(--card-bg);
+    margin-bottom: 10px;
+    padding: 12px;
+    border-radius: 10px;
+}
+
+.milestone-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.status-tag {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.status-COMPLETED { background: var(--success); color: #fff; }
+.status-IN_PROGRESS { background: var(--accent); color: #fff; }
+.status-PENDING { background: var(--dim); color: #fff; }
+
+.strategy-box {
+    font-size: 0.8rem;
+    color: var(--dim);
+    margin-top: 8px;
+    padding: 8px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 4px;
+}
+
+.account-card {
+    background: var(--card-bg);
+    padding: 15px;
     border-radius: 12px;
     margin-bottom: 15px;
 }
-.label {
-    font-size: 0.9rem;
-    color: #8e8e93;
+
+.holdings-table {
+    width: 100%;
+    margin-top: 10px;
+    font-size: 0.85rem;
+    border-collapse: collapse;
 }
-.price {
-    font-size: 3rem;
-    font-weight: 700;
-    margin: 10px 0;
-    color: #fff;
-}
-.change {
-    font-size: 1.2rem;
-    font-weight: 500;
-}
-.status {
-    font-size: 0.75rem;
-    color: #636366;
-}
-.up { color: #34c759; }
-.down { color: #ff3b30; }
+
+.holdings-table td { padding: 5px 0; }
+.holdings-table .qty { color: var(--dim); }
+.holdings-table .up { color: var(--success); }
+.holdings-table .down { color: var(--danger); }
