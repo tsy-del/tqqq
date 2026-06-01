@@ -253,12 +253,12 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
     <div class="ticker-item"><span class="ticker-symbol">SOXL</span><span class="ticker-price">${soxl_price}</span><span class="session-tag" style="display:none">EXT</span></div>
 </section>
 
+<section><h2>Strategic Targets</h2>{milestones_html}</section>
+<section style="margin-top: 32px; margin-bottom: 32px;"><h2>Holdings</h2>{accounts_html}</section>
+
 <a href="https://github.com/tsy-del/tqqq/actions/workflows/sync.yml" target="_blank" class="sync-btn">
     🔄 手動觸發雲端更新 (GitHub Actions)
 </a>
-
-<section><h2>Strategic Targets</h2>{milestones_html}</section>
-<section style="margin-top: 32px;"><h2>Holdings</h2>{accounts_html}</section>
 </div></body></html>"""
         
         with open(DATA_FILE, 'w') as f:
