@@ -63,12 +63,15 @@ function formatHKD(num) {
     return new Intl.NumberFormat('zh-HK', { style: 'currency', currency: 'HKD', maximumFractionDigits: 0 }).format(num);
 }
 
-// 獲取實時價格 (使用 allorigins 繞過 CORS 直接打 Yahoo Finance)
+// 獲取實時價格 (使用 allorigins /get 以確保繞過所有 CORS 限制)
 async function fetchRealTimePrice(ticker) {
     try {
-        const url = `https://api.allorigins.win/raw?url=${encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/'+ticker)}`;
+        const url = `https://api.allorigins.win/get?url=${encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/'+ticker)}`;
         const res = await fetch(url, { cache: "no-store" });
-        const data = await res.json();
+        const proxyData = await res.json();
+        
+        // 解析 allorigins 包裝的 JSON
+        const data = JSON.parse(proxyData.contents);
         
         const meta = data.chart.result[0].meta;
         const regPrice = meta.regularMarketPrice;
@@ -101,10 +104,12 @@ async function renderDashboard() {
     const tqqqData = await fetchRealTimePrice('TQQQ');
     const soxlData = await fetchRealTimePrice('SOXL');
     
+    const lastUpdateEl = document.getElementById('last-update');
+    
     if (!tqqqData || !soxlData) {
-        document.getElementById('last-update').innerText = "數據載入失敗，請重新整理";
-        document.getElementById('last-update').style.color = "red";
-        return;
+        lastUpdateEl.innerText = "數據載入失敗，將於 5 秒後重試...";
+        lastUpdateEl.style.color = "var(--danger)";
+        return; // 不要覆蓋現有的介面，保留上次的數據
     }
 
     const tqqq_price = tqqqData.price;
@@ -131,7 +136,9 @@ async function renderDashboard() {
 
     // 3. Update DOM Elements
     const now = new Date();
-    document.getElementById('last-update').innerText = "Live Sync: " + now.toLocaleTimeString('zh-HK');
+    lastUpdateEl.innerText = "Live Sync: " + now.toLocaleTimeString('zh-HK');
+    lastUpdateEl.style.color = "var(--text-dim)";
+    
     document.getElementById('total-value').innerText = formatHKD(total_value_hkd);
     
     const profitEl = document.getElementById('total-profit');
@@ -144,8 +151,17 @@ async function renderDashboard() {
     document.getElementById('tqqq-price').innerText = `$${tqqq_price}`;
     document.getElementById('soxl-price').innerText = `$${soxl_price}`;
     
-    if (tqqqData.isExt) document.getElementById('tqqq-label').style.display = 'inline-block';
-    if (soxlData.isExt) document.getElementById('soxl-label').style.display = 'inline-block';
+    if (tqqqData.isExt) {
+        document.getElementById('tqqq-label').style.display = 'inline-block';
+    } else {
+        document.getElementById('tqqq-label').style.display = 'none';
+    }
+    
+    if (soxlData.isExt) {
+        document.getElementById('soxl-label').style.display = 'inline-block';
+    } else {
+        document.getElementById('soxl-label').style.display = 'none';
+    }
 
     // 4. Milestones
     const stage1_reserve = 450000;
