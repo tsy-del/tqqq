@@ -62,6 +62,11 @@ def get_latest_prices():
 
 def update_files():
     try:
+        # 在開始任何動作前，先強制與 GitHub 同步 (防止手動更新造成的 Git Push Rejected)
+        os.chdir(REPO_DIR)
+        subprocess.run(["git", "fetch", "origin", "main"], check=True)
+        subprocess.run(["git", "reset", "--hard", "origin/main"], check=True)
+        
         if not os.path.exists(DATA_FILE): 
             print("data.json not found")
             return False
