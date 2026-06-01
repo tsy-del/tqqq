@@ -1,19 +1,70 @@
-async function loadData() {
-    try {
-        console.log("Fetching data.json...");
-        // 強制忽略緩存：使用更加隨機的參數
-        const cacheBuster = Math.random().toString(36).substring(7);
-        const response = await fetch('data.json?cb=' + cacheBuster);
-        
-        if (!response.ok) throw new Error('Network response was not ok');
-        const data = await response.json();
-        console.log("Data loaded:", data);
-        renderDashboard(data);
-    } catch (e) {
-        console.error("Failed to load data.json", e);
-        document.getElementById('dashboard-status').innerHTML = `<div style="color:#ff3b30; padding:10px; font-size:0.8rem;">數據載入失敗: ${e.message}</div>`;
+const PORTFOLIO_DATA = {
+  "last_updated": "2026-06-01T12:10:00+08:00",
+  "market_prices": {
+    "tqqq_usd": 85.74,
+    "soxl_usd": 224.34,
+    "usd_hkd_rate": 7.8
+  },
+  "portfolio_summary": {
+    "total_value_hkd": 1812950,
+    "total_cost_hkd": 1216014,
+    "total_profit_hkd": 596936
+  },
+  "accounts": [
+    {
+      "account_name": "帳戶 A (滾動首期)",
+      "total_value_hkd": 383622,
+      "total_profit_hkd": 128202,
+      "total_cost_hkd": 255420,
+      "holdings": [
+        { "asset": "TQQQ", "quantity": 544, "avg_price_usd": 57.825, "current_price_usd": 85.74 },
+        { "asset": "SOXL", "quantity": 11, "avg_price_usd": 116.96, "current_price_usd": 224.34 }
+      ]
+    },
+    {
+      "account_name": "帳戶 B (固定基金)",
+      "total_value_hkd": 1429328,
+      "total_profit_hkd": 468734,
+      "total_cost_hkd": 960594,
+      "is_locked": true,
+      "holdings": [
+        { "asset": "TQQQ", "quantity": 2137, "avg_price_usd": 57.63, "current_price_usd": 85.74 }
+      ]
     }
-}
+  ],
+  "milestones": [
+    {
+      "stage": 1,
+      "name": "買樓雜費",
+      "target_amount_hkd": 450000,
+      "cumulative_target_hkd": 450000,
+      "tqqq_target_usd": 78.69,
+      "status": "COMPLETED",
+      "strategy": "觸及即走：沽出約 455 股，套現 $45 萬現金鎖定稅項與佣金。",
+      "notes": "收樓後預期可獲約 $11.9 萬按揭總回贈"
+    },
+    {
+      "stage": 2,
+      "name": "100萬首期",
+      "target_amount_hkd": 1000000,
+      "cumulative_target_hkd": 1450000,
+      "tqqq_target_usd": 126.96,
+      "status": "IN_PROGRESS",
+      "current_allocated_hkd": 122253,
+      "progress_percentage": 14.69,
+      "strategy": "移動止賺：啟動 Trailing Stop。高位任飛，高位回落 10% 即強制套現 $100 萬。"
+    },
+    {
+      "stage": 3,
+      "name": "裝修全包",
+      "target_amount_hkd": 550000,
+      "cumulative_target_hkd": 2000000,
+      "tqqq_target_usd": 153.25,
+      "status": "PENDING",
+      "strategy": "回贈＋餘兵：收樓拿走按揭回贈填補，其餘股份放長線重新滾動。"
+    }
+  ]
+};
 
 function formatHKD(num) {
     return new Intl.NumberFormat('zh-HK', { 
@@ -76,7 +127,6 @@ function renderDashboard(data) {
             </div>
         `).join('');
         
-        // 成功渲染後隱藏錯誤提示
         const statusEl = document.getElementById('dashboard-status');
         if (statusEl) statusEl.style.display = 'none';
 
@@ -85,6 +135,7 @@ function renderDashboard(data) {
     }
 }
 
-// 立即執行並在 window.onload 再次確認
-loadData();
-window.addEventListener('load', loadData);
+// 直接從變量渲染，不依賴外部 fetch
+window.addEventListener('load', () => {
+    renderDashboard(PORTFOLIO_DATA);
+});
