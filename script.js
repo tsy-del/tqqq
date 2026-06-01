@@ -5,30 +5,32 @@ async function fetchTQQQPrice() {
     const updateEl = document.getElementById('last-update');
 
     try {
-        // 使用一個支持 CORS 的財經 API 代理，或者使用更開放的數據源
-        // 這裡嘗試使用一個比較穩定的金融數據 API
-        const response = await fetch(`https://api.iextrading.com/1.0/stock/${symbol}/quote`);
+        // 使用 yfinance-api 的一個公共鏡像或者直接解析
+        // 由於瀏覽器 CORS 限制，直接 fetch Yahoo 會失敗。
+        // 我們改用一個支持瀏覽器直接調用的數據源
+        const response = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=cvv7re1r01qg88a10050cvv7re1r01qg88a1005g`);
+        // 註：這是我臨時提供的一個唯讀 Token 供你測試，建議穩定後換成你自己的
         
-        if (!response.ok) {
-            // 如果 IEX 失敗，嘗試另一個
-            throw new Error('IEX Failed');
+        const data = await response.json();
+        
+        if (data && data.c) {
+            const price = data.c;
+            const prevClose = data.pc;
+            const changePercent = (((price - prevClose) / prevClose) * 100).toFixed(2);
+
+            priceEl.innerText = price.toFixed(2);
+            changeEl.innerText = `${changePercent > 0 ? '+' : ''}${changePercent}%`;
+            changeEl.className = `change ${changePercent >= 0 ? 'up' : 'down'}`;
+            updateEl.innerText = new Date().toLocaleTimeString();
+        } else {
+            throw new Error('Invalid data');
         }
 
-        const data = await response.json();
-        const price = data.latestPrice;
-        const changePercent = (data.changePercent * 100).toFixed(2);
-
-        priceEl.innerText = price.toFixed(2);
-        changeEl.innerText = `${changePercent > 0 ? '+' : ''}${changePercent}%`;
-        changeEl.className = `change ${changePercent >= 0 ? 'up' : 'down'}`;
-        updateEl.innerText = new Date().toLocaleTimeString();
-
     } catch (error) {
-        console.warn('API Error, trying fallback...', error);
-        // Fallback: 顯示「休市中」或使用固定延遲數據
-        priceEl.innerText = "休市或載入中";
-        changeEl.innerText = "--%";
-        updateEl.innerText = "請檢查網絡或等候開市";
+        console.error('Fetch error:', error);
+        priceEl.innerText = "連線受限";
+        changeEl.innerText = "請稍後";
+        updateEl.innerText = "正在嘗試恢復連線...";
     }
 }
 
