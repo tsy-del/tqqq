@@ -22,16 +22,32 @@ def get_latest_prices():
     s_info = soxl.info
     
     def fetch_best_price(info, fast_price):
-        prices = [
-            info.get('postMarketPrice'),
-            info.get('preMarketPrice'),
-            info.get('regularMarketPrice'),
-            info.get('ask'),
-            info.get('bid'),
-            fast_price
-        ]
+        pre = info.get('preMarketPrice')
+        post = info.get('postMarketPrice')
+        reg = info.get('regularMarketPrice')
+        current = info.get('currentPrice')
+        
+        market_state = info.get('marketState', '').upper()
+        
+        if market_state == 'PRE' and pre is not None and pre > 0:
+            return round(pre, 2)
+        if (market_state == 'POST' or market_state == 'CLOSED') and post is not None and post > 0:
+            return round(post, 2)
+            
+        if current is not None and current > 0:
+            return round(current, 2)
+            
+        if pre is not None and pre > 0 and pre != reg:
+            return round(pre, 2)
+        if post is not None and post > 0 and post != reg:
+            return round(post, 2)
+            
+        if reg is not None and reg > 0:
+            return round(reg, 2)
+            
+        prices = [info.get('ask'), info.get('bid'), fast_price]
         valid_prices = [p for p in prices if p is not None and p > 0]
-        return round(info.get('postMarketPrice') or info.get('ask') or info.get('bid') or max(valid_prices), 2)
+        return round(max(valid_prices), 2) if valid_prices else 0
 
     t_price = fetch_best_price(t_info, tqqq.fast_info.last_price)
     s_price = fetch_best_price(s_info, soxl.fast_info.last_price)
