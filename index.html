@@ -29,9 +29,14 @@ h1 { font-size: 26px; font-weight: 800; margin: 0; }
 
 h2 { font-size: 13px; font-weight: 700; margin: 0 0 16px; color: var(--text-dim); letter-spacing: 0.1em; display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
 h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-.milestone-card { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 20px; margin-bottom: 16px; }
-.m-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.milestone-card { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 20px; margin-bottom: 16px; transition: all 0.3s ease; }
+.m-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; cursor: pointer; user-select: none; }
+.m-header:active { opacity: 0.7; }
 .m-title { font-weight: 700; font-size: 17px; }
+.toggle-icon { font-size: 10px; color: var(--text-dim); transition: transform 0.3s ease; }
+.milestone-card.collapsed .m-body { display: none; }
+.milestone-card.collapsed .m-header { margin-bottom: 0; }
+.milestone-card.collapsed .toggle-icon { transform: rotate(-90deg); }
 .m-status { font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 8px; }
 .status-COMPLETED { background: rgba(16,185,129,0.1); color: var(--success); border: 1px solid var(--success); }
 .status-IN_PROGRESS { background: rgba(59,130,246,0.1); color: var(--accent); border: 1px solid var(--accent); }
@@ -58,25 +63,32 @@ h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 .down { color: var(--danger); }
 </style></head>
 <body><div class="container">
-<header><div class="header-top"><h1>📈 TQQQ Plan</h1><span class="v-tag">v4.2</span></div><div class="last-update">Last Update: 2026-06-01 18:56:47</div></header>
+<header><div class="header-top"><h1>📈 TQQQ Plan</h1><span class="v-tag">v4.2</span></div><div class="last-update">Last Update: 2026-06-01 18:59:32</div></header>
 <section class="main-summary">
-    <div class="summary-card"><div class="summary-label">Total Value (HKD)</div><div class="summary-value">$1,805,798</div></div>
+    <div class="summary-card"><div class="summary-label">Total Value (HKD)</div><div class="summary-value">$1,805,800</div></div>
     <div class="summary-card">
         <div class="summary-label">Total Profit</div>
         <div class="profit-display" style="color:#10b981">
-            <div class="summary-value">$589,789</div>
+            <div class="summary-value">$589,790</div>
             <div class="profit-pct">+48.5%</div>
         </div>
     </div>
 </section>
 <section class="ticker-bar">
     <div class="ticker-item"><span class="ticker-symbol">TQQQ</span><span class="ticker-price">$85.43</span><span class="session-tag" style="display:inline-block">EXT</span></div>
-    <div class="ticker-item"><span class="ticker-symbol">SOXL</span><span class="ticker-price">$224.98</span><span class="session-tag" style="display:none">EXT</span></div>
+    <div class="ticker-item"><span class="ticker-symbol">SOXL</span><span class="ticker-price">$225.0</span><span class="session-tag" style="display:none">EXT</span></div>
 </section>
 
-<section><h2>Strategic Targets</h2><div class="milestone-card">
-                <div class="m-header"><span class="m-title">Stage 1: 買樓雜費</span><span class="m-status status-COMPLETED">COMPLETED</span></div>
-                <div style="font-size: 11px; color: var(--success); margin-bottom: 10px;">✅ 盈利已覆蓋 $45 萬雜費</div>
+<section><h2>Strategic Targets</h2><div class="milestone-card collapsed">
+                <div class="m-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span class="m-title">Stage 1: 買樓雜費</span>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <span class="m-status status-COMPLETED">COMPLETED</span>
+                </div>
+                <div class="m-body">
+                    <div style="font-size: 11px; color: var(--success); margin-bottom: 10px;">✅ 盈利已覆蓋 $45 萬雜費</div>
             <div class="progress-details">
                 <div class="price-gap-box">
                     <div class="pg-row"><span>目標價</span><span class="pg-val">$78.69</span></div>
@@ -87,9 +99,18 @@ h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
                 <div class="progress-bg"><div class="progress-fill" style="width: 100.0%"></div></div>
                 <div class="detail-row" style="margin-top: 8px;"><span>可用利潤</span><span class="detail-val">已鎖定 $450,000</span></div>
                 <div class="detail-row" style="margin-top: 4px;"><span>尚欠金額</span><span class="detail-val" style="color:var(--accent);">$0</span></div>
-            </div><div class="m-strategy">觸及即走：沽出約 455 股，套現 $45 萬現金鎖定稅項與佣金。</div></div><div class="milestone-card">
-                <div class="m-header"><span class="m-title">Stage 2: 100萬首期</span><span class="m-status status-IN_PROGRESS">IN_PROGRESS</span></div>
-                
+            </div><div class="m-strategy">觸及即走：沽出約 455 股，套現 $45 萬現金鎖定稅項與佣金。</div>
+                </div>
+            </div><div class="milestone-card ">
+                <div class="m-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span class="m-title">Stage 2: 100萬首期</span>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <span class="m-status status-IN_PROGRESS">IN_PROGRESS</span>
+                </div>
+                <div class="m-body">
+                    
             <div class="progress-details">
                 <div class="price-gap-box">
                     <div class="pg-row"><span>目標價</span><span class="pg-val">$126.96</span></div>
@@ -97,12 +118,21 @@ h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
                     <div class="pg-row main-gap"><span>尚差價格</span><span class="pg-val" style="color:var(--accent);">+41.53 (48.6%)</span></div>
                 </div>
                 <div class="detail-row" style="margin-top: 15px;"><span>首期利潤進度</span><span class="detail-val">14.0%</span></div>
-                <div class="progress-bg"><div class="progress-fill" style="width: 13.978873199999983%"></div></div>
-                <div class="detail-row" style="margin-top: 8px;"><span>可用利潤</span><span class="detail-val">$139,789</span></div>
-                <div class="detail-row" style="margin-top: 4px;"><span>尚欠金額</span><span class="detail-val" style="color:var(--accent);">$860,211</span></div>
-            </div><div class="m-strategy">移動止賺：啟動 Trailing Stop。高位任飛，高位回落 10% 即強制套現 $100 萬。</div></div><div class="milestone-card">
-                <div class="m-header"><span class="m-title">Stage 3: 裝修全包</span><span class="m-status status-PENDING">PENDING</span></div>
-                
+                <div class="progress-bg"><div class="progress-fill" style="width: 13.979044799999985%"></div></div>
+                <div class="detail-row" style="margin-top: 8px;"><span>可用利潤</span><span class="detail-val">$139,790</span></div>
+                <div class="detail-row" style="margin-top: 4px;"><span>尚欠金額</span><span class="detail-val" style="color:var(--accent);">$860,210</span></div>
+            </div><div class="m-strategy">移動止賺：啟動 Trailing Stop。高位任飛，高位回落 10% 即強制套現 $100 萬。</div>
+                </div>
+            </div><div class="milestone-card ">
+                <div class="m-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span class="m-title">Stage 3: 裝修全包</span>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <span class="m-status status-PENDING">PENDING</span>
+                </div>
+                <div class="m-body">
+                    
             <div class="progress-details">
                 <div class="price-gap-box">
                     <div class="pg-row"><span>目標價</span><span class="pg-val">$153.25</span></div>
@@ -112,19 +142,21 @@ h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
                 <div class="detail-row" style="margin-top: 15px;"><span>裝修利潤進度</span><span class="detail-val">0.0%</span></div>
                 <div class="progress-bg"><div class="progress-fill" style="width: 0.0%"></div></div>
                 <div class="detail-row" style="margin-top: 8px;"><span>可用利潤</span><span class="detail-val">$0</span></div>
-                <div class="detail-row" style="margin-top: 4px;"><span>尚欠金額</span><span class="detail-val" style="color:var(--accent);">$1,410,211</span></div>
-            </div><div class="m-strategy">回贈＋餘兵：收樓拿走按揭回贈填補，其餘股份放長線重新滾動。</div></div></section>
+                <div class="detail-row" style="margin-top: 4px;"><span>尚欠金額</span><span class="detail-val" style="color:var(--accent);">$1,410,210</span></div>
+            </div><div class="m-strategy">回贈＋餘兵：收樓拿走按揭回贈填補，其餘股份放長線重新滾動。</div>
+                </div>
+            </div></section>
 <section style="margin-top: 32px; margin-bottom: 32px;"><h2>Holdings</h2><div class="account-block">
-                <div class="account-header"><span>帳戶 A (滾動首期)</span><span class="acc-val">$381,800</span></div>
+                <div class="account-header"><span>帳戶 A (滾動首期)</span><span class="acc-val">$381,802</span></div>
                 <div class="holdings-list"><div class="asset-row"><div class="asset-info">
                     <div class="asset-name">TQQQ <span class="qty">× 544</span></div>
                     <div class="asset-cost">成本 $57.825 | 現價 $85.43</div></div>
                     <div style="text-align: right;"><div class="asset-status up">+47.7%</div>
                     <div style="font-size: 10px; color: var(--text-dim);">$117,134</div></div></div><div class="asset-row"><div class="asset-info">
                     <div class="asset-name">SOXL <span class="qty">× 11</span></div>
-                    <div class="asset-cost">成本 $116.96 | 現價 $224.98</div></div>
+                    <div class="asset-cost">成本 $116.96 | 現價 $225.0</div></div>
                     <div style="text-align: right;"><div class="asset-status up">+92.4%</div>
-                    <div style="font-size: 10px; color: var(--text-dim);">$9,268</div></div></div></div></div><div class="account-block">
+                    <div style="font-size: 10px; color: var(--text-dim);">$9,270</div></div></div></div></div><div class="account-block">
                 <div class="account-header"><span>帳戶 B (固定基金)</span><span class="acc-val">$1,423,998</span></div>
                 <div class="holdings-list"><div class="asset-row"><div class="asset-info">
                     <div class="asset-name">TQQQ <span class="qty">× 2137</span></div>

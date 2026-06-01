@@ -164,9 +164,20 @@ def update_files():
             if m['stage'] == 1:
                 details = '<div style="font-size: 11px; color: var(--success); margin-bottom: 10px;">✅ 盈利已覆蓋 $45 萬雜費</div>' + details
                 
-            milestones_html += f"""<div class="milestone-card">
-                <div class="m-header"><span class="m-title">Stage {m['stage']}: {m['name']}</span><span class="m-status {status_class}">{m['status']}</span></div>
-                {details}<div class="m-strategy">{m['strategy']}</div></div>"""
+            is_collapsed = "collapsed" if m['status'] == 'COMPLETED' else ""
+                
+            milestones_html += f"""<div class="milestone-card {is_collapsed}">
+                <div class="m-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span class="m-title">Stage {m['stage']}: {m['name']}</span>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <span class="m-status {status_class}">{m['status']}</span>
+                </div>
+                <div class="m-body">
+                    {details}<div class="m-strategy">{m['strategy']}</div>
+                </div>
+            </div>"""
 
         accounts_html = ""
         for acc in data['accounts']:
@@ -214,9 +225,14 @@ h1 {{ font-size: 26px; font-weight: 800; margin: 0; }}
 
 h2 {{ font-size: 13px; font-weight: 700; margin: 0 0 16px; color: var(--text-dim); letter-spacing: 0.1em; display: flex; align-items: center; gap: 10px; text-transform: uppercase; }}
 h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
-.milestone-card {{ background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 20px; margin-bottom: 16px; }}
-.m-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }}
+.milestone-card {{ background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 20px; margin-bottom: 16px; transition: all 0.3s ease; }}
+.m-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; cursor: pointer; user-select: none; }}
+.m-header:active {{ opacity: 0.7; }}
 .m-title {{ font-weight: 700; font-size: 17px; }}
+.toggle-icon {{ font-size: 10px; color: var(--text-dim); transition: transform 0.3s ease; }}
+.milestone-card.collapsed .m-body {{ display: none; }}
+.milestone-card.collapsed .m-header {{ margin-bottom: 0; }}
+.milestone-card.collapsed .toggle-icon {{ transform: rotate(-90deg); }}
 .m-status {{ font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 8px; }}
 .status-COMPLETED {{ background: rgba(16,185,129,0.1); color: var(--success); border: 1px solid var(--success); }}
 .status-IN_PROGRESS {{ background: rgba(59,130,246,0.1); color: var(--accent); border: 1px solid var(--accent); }}
