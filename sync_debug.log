@@ -1,0 +1,13 @@
+/Users/tsy/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+[main 5b3c326] v2.1.1: Multi-field price fetch for better accuracy 14:15
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+To github.com:tsy-del/tqqq.git
+   42a3aee..5b3c326  main -> main
+To github.com:tsy-del/tqqq.git
+   42a3aee..5b3c326  main -> gh-pages
+Fetching highest frequency prices (v2.1.1) from yfinance...
+DEBUG: TQQQ Info keys: ['longBusinessSummary', 'companyOfficers', 'executiveTeam', 'maxAge', 'priceHint', 'previousClose', 'open', 'dayLow', 'dayHigh', 'regularMarketPreviousClose']
+DEBUG: TQQQ regularMarketPrice: 84.56
+DEBUG: TQQQ postMarketPrice: 84.39
+DEBUG: Commit and Push sequence starting...
