@@ -1,9 +1,7 @@
-name: Sync Prices (Auto + Manual)
+name: Sync Prices (Manual Only)
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '7,37 * * * *'
 
 permissions:
   contents: write
