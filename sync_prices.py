@@ -134,14 +134,19 @@ def update_files():
                 stage_prog = 100.0
                 avail_profit_str = f"已鎖定 {format_hkd(m['target_amount_hkd'])}"
                 prog_label = "雜費利潤進度"
+                shortfall_str = "$0"
             elif m['stage'] == 2:
                 stage_prog = prog2
                 avail_profit_str = format_hkd(available_profit_for_stage2)
                 prog_label = "首期利潤進度"
+                shortfall = max(0, 1000000 - available_profit_for_stage2)
+                shortfall_str = format_hkd(shortfall)
             elif m['stage'] == 3:
                 stage_prog = prog3 if available_profit_for_stage2 > stage2_reserve else 0.0
                 avail_profit_str = format_hkd(available_profit_for_stage3) if available_profit_for_stage3 > 0 else "$0"
                 prog_label = "裝修利潤進度"
+                shortfall = max(0, 550000 - available_profit_for_stage3)
+                shortfall_str = format_hkd(shortfall)
                 
             details = f"""
             <div class="progress-details">
@@ -153,6 +158,7 @@ def update_files():
                 <div class="detail-row" style="margin-top: 15px;"><span>{prog_label}</span><span class="detail-val">{stage_prog:.1f}%</span></div>
                 <div class="progress-bg"><div class="progress-fill" style="width: {stage_prog}%"></div></div>
                 <div class="detail-row" style="margin-top: 8px;"><span>可用利潤</span><span class="detail-val">{avail_profit_str}</span></div>
+                <div class="detail-row" style="margin-top: 4px;"><span>尚欠金額</span><span class="detail-val" style="color:var(--accent);">{shortfall_str}</span></div>
             </div>"""
             
             if m['stage'] == 1:
