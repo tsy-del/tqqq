@@ -1,20 +1,20 @@
 {
-  "last_updated": "2026-06-01 16:14:04",
+  "last_updated": "2026-06-01 16:16:03",
   "market_prices": {
     "tqqq_usd": 84.85,
-    "soxl_usd": 226.69,
+    "soxl_usd": 227.06,
     "usd_hkd_rate": 7.8
   },
   "portfolio_summary": {
-    "total_value_hkd": 1793816.0,
+    "total_value_hkd": 1793848.0,
     "total_cost_hkd": 1216014,
-    "total_profit_hkd": 577807.0
+    "total_profit_hkd": 577838.0
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 379486.0,
-      "total_profit_hkd": 124066.0,
+      "total_value_hkd": 379517.0,
+      "total_profit_hkd": 124097.0,
       "total_cost_hkd": 255420,
       "holdings": [
         {
@@ -27,7 +27,7 @@
           "asset": "SOXL",
           "quantity": 11,
           "avg_price_usd": 116.96,
-          "current_price_usd": 226.69
+          "current_price_usd": 227.06
         }
       ]
     },
