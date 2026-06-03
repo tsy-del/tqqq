@@ -136,7 +136,7 @@ async function renderDashboard() {
 
     // 3. Update DOM Elements
     const now = new Date();
-    lastUpdateEl.innerText = "Live Sync: " + now.toLocaleTimeString('zh-HK');
+    lastUpdateEl.innerText = "v4.3 | Live Sync: " + now.toLocaleTimeString('zh-HK');
     lastUpdateEl.style.color = "var(--text-dim)";
     
     document.getElementById('total-value').innerText = formatHKD(total_value_hkd);
