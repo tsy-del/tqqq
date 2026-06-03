@@ -178,8 +178,8 @@ async function renderDashboard() {
         let diff = target - tqqq_price;
         let diff_pct = target > tqqq_price ? (diff / tqqq_price) * 100 : 0;
         
-        let gap_label = target > tqqq_price ? "尚差價格" : "超額";
-        let gap_val = target > tqqq_price ? `+${diff.toFixed(2)} (${diff_pct.toFixed(1)}%)` : "已達標";
+        let gap_label = target > tqqq_price ? "剩餘距離" : "超額";
+        let gap_val = target > tqqq_price ? `${diff.toFixed(2)} (${diff_pct.toFixed(1)}%)` : "已達標";
         let gap_color = target > tqqq_price ? "var(--accent)" : "var(--success)";
         
         let prog_pct = 0, avail_str = "", label = "";
