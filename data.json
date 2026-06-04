@@ -1,40 +1,40 @@
 {
-  "last_updated": "2026-06-05 06:15:07",
+  "last_updated": "2026-06-05 06:30:07",
   "market_prices": {
-    "tqqq_usd": 84.31,
-    "soxl_usd": 253.19,
+    "tqqq_usd": 84.07,
+    "soxl_usd": 251.6,
     "usd_hkd_rate": 7.8
   },
   "portfolio_summary": {
-    "total_value_hkd": 1846019.0,
+    "total_value_hkd": 1840479.0,
     "total_cost_hkd": 1216014,
-    "total_profit_hkd": 571574.0
+    "total_profit_hkd": 566034.0
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 379468.0,
-      "total_profit_hkd": 124048.0,
+      "total_value_hkd": 378313.0,
+      "total_profit_hkd": 122893.0,
       "total_cost_hkd": 255420,
       "holdings": [
         {
           "asset": "TQQQ",
           "quantity": 544,
           "avg_price_usd": 57.825,
-          "current_price_usd": 84.31
+          "current_price_usd": 84.07
         },
         {
           "asset": "SOXL",
           "quantity": 11,
           "avg_price_usd": 116.96,
-          "current_price_usd": 253.19
+          "current_price_usd": 251.6
         }
       ]
     },
     {
       "account_name": "帳戶 B (固定基金)",
-      "total_value_hkd": 1405330.0,
-      "total_profit_hkd": 444736.0,
+      "total_value_hkd": 1401329.0,
+      "total_profit_hkd": 440735.0,
       "total_cost_hkd": 960594,
       "is_locked": true,
       "holdings": [
@@ -42,21 +42,21 @@
           "asset": "TQQQ",
           "quantity": 2137,
           "avg_price_usd": 57.63,
-          "current_price_usd": 84.31
+          "current_price_usd": 84.07
         }
       ]
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 61221.0,
-      "total_profit_hkd": 61221.0,
+      "total_value_hkd": 60837.0,
+      "total_profit_hkd": 60837.0,
       "total_cost_hkd": 0,
       "holdings": [
         {
           "asset": "SOXL",
           "quantity": 31,
           "avg_price_usd": 241.669,
-          "current_price_usd": 253.19
+          "current_price_usd": 251.6
         }
       ]
     }
