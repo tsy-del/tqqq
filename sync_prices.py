@@ -65,7 +65,7 @@ def update_files():
         # 在開始任何動作前，先強制與 GitHub 同步 (防止手動更新造成的 Git Push Rejected)
         os.chdir(REPO_DIR)
         subprocess.run(["git", "fetch", "origin", "main"], check=True)
-        # subprocess.run(["git", "reset", "--hard", "origin/main"], check=True)
+        subprocess.run(["git", "reset", "--hard", "origin/main"], check=True)
         
         if not os.path.exists(DATA_FILE): 
             print("data.json not found")
@@ -80,7 +80,7 @@ def update_files():
         old_soxl = data['market_prices'].get('soxl_usd', 0)
         
         # 價格防洗版機制 (如果價格無變，則不 Push)
-        if False: # Force update for new transactions
+        if tqqq_price == old_tqqq and soxl_price == old_soxl:
             print(f"Prices unchanged (TQQQ: {tqqq_price}, SOXL: {soxl_price}). Skipping Git push to save history.")
             return True
             
