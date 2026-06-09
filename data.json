@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-09 10:11:40",
+  "last_updated": "2026-06-09 10:20:02",
   "market_prices": {
     "tqqq_usd": 76.06,
     "soxl_usd": 211.3,
@@ -68,7 +68,7 @@
       "target_amount_hkd": 450000,
       "cumulative_target_hkd": 450000,
       "tqqq_target_usd": 78.69,
-      "status": "COMPLETED",
+      "status": "IN_PROGRESS",
       "strategy": "觸及即走：沽出約 455 股，套現 $45 萬現金鎖定稅項與佣金。",
       "notes": "收樓後預期可獲約 $11.9 萬按揭總回贈"
     },
@@ -78,7 +78,7 @@
       "target_amount_hkd": 1000000,
       "cumulative_target_hkd": 1450000,
       "tqqq_target_usd": 126.96,
-      "status": "IN_PROGRESS",
+      "status": "PENDING",
       "current_allocated_hkd": 122253,
       "progress_percentage": 14.69,
       "strategy": "移動止賺：啟動 Trailing Stop。高位任飛，高位回落 10% 即強制套現 $100 萬。"
