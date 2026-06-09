@@ -48,14 +48,14 @@
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 51092.0,
-      "total_profit_hkd": 51092.0,
-      "total_cost_hkd": 0,
+      "total_value_hkd": 180556.0,
+      "total_profit_hkd": 12051.0,
+      "total_cost_hkd": 180556,
       "holdings": [
         {
           "asset": "SOXL",
-          "quantity": 31,
-          "avg_price_usd": 241.669,
+          "quantity": 110,
+          "avg_price_usd": 215.383,
           "current_price_usd": 211.3
         }
       ]
