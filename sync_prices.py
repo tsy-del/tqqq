@@ -115,18 +115,23 @@ def update_files():
         total_profit_color = '#10b981' if total_profit_hkd >= 0 else '#ef4444'
         total_profit_sign = '+' if total_profit_hkd >= 0 else ''
 
-        stage1_reserve = 450000
-        available_profit_for_stage2 = total_profit_hkd - stage1_reserve
-        prog2 = min(100, max(0, (available_profit_for_stage2 / 1000000) * 100))
+        stage1_target = 450000
+        stage2_target = 1000000
+        stage3_target = 550000
+
+        profit_for_stage1 = max(0, min(total_profit_hkd, stage1_target))
+        prog1 = (profit_for_stage1 / stage1_target) * 100
         
-        stage2_reserve = 1000000
-        available_profit_for_stage3 = available_profit_for_stage2 - stage2_reserve
-        prog3 = min(100, max(0, (available_profit_for_stage3 / 550000) * 100))
+        available_for_stage2 = total_profit_hkd - stage1_target
+        profit_for_stage2 = max(0, min(available_for_stage2, stage2_target)) if available_for_stage2 > 0 else 0
+        prog2 = (profit_for_stage2 / stage2_target) * 100
+        
+        available_for_stage3 = available_for_stage2 - stage2_target
+        profit_for_stage3 = max(0, min(available_for_stage3, stage3_target)) if available_for_stage3 > 0 else 0
+        prog3 = (profit_for_stage3 / stage3_target) * 100
 
         milestones_html = ""
         for m in data['milestones']:
-            status_class = f"status-{m['status']}"
-            
             target_price = m['tqqq_target_usd']
             price_diff = target_price - tqqq_price
             price_diff_pct = (price_diff / tqqq_price) * 100 if target_price > tqqq_price else 0
@@ -137,23 +142,33 @@ def update_files():
             gap_color = "var(--accent)" if target_price > tqqq_price else "var(--success)"
             
             if m['stage'] == 1:
-                stage_prog = 100.0
-                avail_profit_str = f"已鎖定 {format_hkd(m['target_amount_hkd'])}"
+                stage_prog = prog1
+                avail_profit_str = format_hkd(profit_for_stage1)
                 prog_label = "雜費利潤進度"
-                shortfall_str = "$0"
+                shortfall = max(0, stage1_target - profit_for_stage1)
+                shortfall_str = format_hkd(shortfall)
+                m['status'] = "COMPLETED" if prog1 >= 100 else "IN_PROGRESS"
             elif m['stage'] == 2:
                 stage_prog = prog2
-                avail_profit_str = format_hkd(available_profit_for_stage2)
+                avail_profit_str = format_hkd(profit_for_stage2) if available_for_stage2 > 0 else "$0"
                 prog_label = "首期利潤進度"
-                shortfall = max(0, 1000000 - available_profit_for_stage2)
+                shortfall = max(0, stage2_target - profit_for_stage2)
                 shortfall_str = format_hkd(shortfall)
+                if prog2 >= 100: m['status'] = "COMPLETED"
+                elif available_for_stage2 > 0: m['status'] = "IN_PROGRESS"
+                else: m['status'] = "PENDING"
             elif m['stage'] == 3:
-                stage_prog = prog3 if available_profit_for_stage2 > stage2_reserve else 0.0
-                avail_profit_str = format_hkd(available_profit_for_stage3) if available_profit_for_stage3 > 0 else "$0"
+                stage_prog = prog3
+                avail_profit_str = format_hkd(profit_for_stage3) if available_for_stage3 > 0 else "$0"
                 prog_label = "裝修利潤進度"
-                shortfall = max(0, 550000 - available_profit_for_stage3)
+                shortfall = max(0, stage3_target - profit_for_stage3)
                 shortfall_str = format_hkd(shortfall)
+                if prog3 >= 100: m['status'] = "COMPLETED"
+                elif available_for_stage3 > 0: m['status'] = "IN_PROGRESS"
+                else: m['status'] = "PENDING"
                 
+            status_class = f"status-{m['status']}"
+            
             details = f"""
             <div class="progress-details">
                 <div class="price-gap-box">
@@ -167,7 +182,7 @@ def update_files():
                 <div class="detail-row" style="margin-top: 4px;"><span>尚欠金額</span><span class="detail-val" style="color:var(--accent);">{shortfall_str}</span></div>
             </div>"""
             
-            if m['stage'] == 1:
+            if m['stage'] == 1 and prog1 >= 100:
                 details = '<div style="font-size: 11px; color: var(--success); margin-bottom: 10px;">✅ 盈利已覆蓋 $45 萬雜費</div>' + details
                 
             is_collapsed = "collapsed" if m['status'] == 'COMPLETED' else ""
@@ -236,7 +251,7 @@ def update_files():
                 <div class="holdings-list">{rows}</div></div>"""
 
         new_html = f"""<!DOCTYPE html>
-<html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>TQQQ Plan | v4.8 (Auto Cloud Sync)</title>
+<html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>TQQQ Plan | v4.9 (Auto Cloud Sync)</title>
 <style>
 :root {{ --bg: #09090b; --card: #18181b; --glass: rgba(255, 255, 255, 0.03); --border: rgba(255, 255, 255, 0.08); --accent: #3b82f6; --success: #10b981; --danger: #ef4444; --text-main: #fafafa; --text-dim: #71717a; }}
 * {{ box-sizing: border-box; }}
@@ -300,7 +315,7 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
 .down {{ color: var(--danger); }}
 </style></head>
 <body><div class="container">
-<header><div class="header-top"><h1>📈 TQQQ Plan</h1><span class="v-tag">v4.8</span></div><div class="last-update">Last Update: {current_time_str}</div></header>
+<header><div class="header-top"><h1>📈 TQQQ Plan</h1><span class="v-tag">v4.9</span></div><div class="last-update">Last Update: {current_time_str}</div></header>
 <section class="main-summary">
     <div class="summary-card"><div class="summary-label">Total Value (HKD)</div><div class="summary-value">{format_hkd(total_value_hkd)}</div></div>
     <div class="summary-card">
@@ -333,7 +348,7 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
         subprocess.run(["git", "add", "data.json", "index.html", "sync_prices.py", ".github/workflows/sync.yml"], check=True)
         status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
         if status.stdout.strip():
-            subprocess.run(["git", "commit", "-m", f"v4.8: Fix total cost calculation using exact HKD cost at {current_time_str}"], check=True)
+            subprocess.run(["git", "commit", "-m", f"v4.9: Dynamic Milestone Stage Progress based on Total Profit at {current_time_str}"], check=True)
             subprocess.run(["git", "push", "origin", "main"], check=True)
             subprocess.run(["git", "push", "origin", "main:gh-pages", "--force"], check=True)
             print("Update and push completed successfully.")
