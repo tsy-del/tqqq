@@ -80,7 +80,7 @@ def update_files():
         old_soxl = data['market_prices'].get('soxl_usd', 0)
         
         # 價格防洗版機制 (如果價格無變，則不 Push)
-        if tqqq_price == old_tqqq and soxl_price == old_soxl:
+        if False: # bypass
             print(f"Prices unchanged (TQQQ: {tqqq_price}, SOXL: {soxl_price}). Skipping Git push to save history.")
             return True
             
@@ -102,10 +102,10 @@ def update_files():
                 if h['asset'] == 'SOXL': h['current_price_usd'] = soxl_price
                 asset_val = h['quantity'] * h['current_price_usd'] * rate
                 acc_val += asset_val
-                total_cost_hkd += h['quantity'] * h['avg_price_usd'] * rate
             acc['total_value_hkd'] = round(acc_val, 0)
             acc['total_profit_hkd'] = round(acc_val - acc['total_cost_hkd'], 0)
             total_value_hkd += acc_val
+            total_cost_hkd += acc.get('total_cost_hkd', 0)
             
         total_profit_hkd = total_value_hkd - total_cost_hkd
         data['portfolio_summary']['total_value_hkd'] = round(total_value_hkd, 0)
@@ -236,7 +236,7 @@ def update_files():
                 <div class="holdings-list">{rows}</div></div>"""
 
         new_html = f"""<!DOCTYPE html>
-<html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>TQQQ Plan | v4.6 (Auto Cloud Sync)</title>
+<html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>TQQQ Plan | v4.8 (Auto Cloud Sync)</title>
 <style>
 :root {{ --bg: #09090b; --card: #18181b; --glass: rgba(255, 255, 255, 0.03); --border: rgba(255, 255, 255, 0.08); --accent: #3b82f6; --success: #10b981; --danger: #ef4444; --text-main: #fafafa; --text-dim: #71717a; }}
 * {{ box-sizing: border-box; }}
@@ -300,7 +300,7 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
 .down {{ color: var(--danger); }}
 </style></head>
 <body><div class="container">
-<header><div class="header-top"><h1>📈 TQQQ Plan</h1><span class="v-tag">v4.6</span></div><div class="last-update">Last Update: {current_time_str}</div></header>
+<header><div class="header-top"><h1>📈 TQQQ Plan</h1><span class="v-tag">v4.8</span></div><div class="last-update">Last Update: {current_time_str}</div></header>
 <section class="main-summary">
     <div class="summary-card"><div class="summary-label">Total Value (HKD)</div><div class="summary-value">{format_hkd(total_value_hkd)}</div></div>
     <div class="summary-card">
@@ -333,7 +333,7 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
         subprocess.run(["git", "add", "data.json", "index.html", "sync_prices.py", ".github/workflows/sync.yml"], check=True)
         status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
         if status.stdout.strip():
-            subprocess.run(["git", "commit", "-m", f"v4.6: Update Account A adding 19 shares TQQQ via HSBC at {current_time_str}"], check=True)
+            subprocess.run(["git", "commit", "-m", f"v4.8: Fix total cost calculation using exact HKD cost at {current_time_str}"], check=True)
             subprocess.run(["git", "push", "origin", "main"], check=True)
             subprocess.run(["git", "push", "origin", "main:gh-pages", "--force"], check=True)
             print("Update and push completed successfully.")
