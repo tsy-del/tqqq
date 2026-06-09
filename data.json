@@ -1,40 +1,40 @@
 {
-  "last_updated": "2026-06-09 17:45:06",
+  "last_updated": "2026-06-09 17:47:07",
   "market_prices": {
-    "tqqq_usd": 78.06,
-    "soxl_usd": 226.97,
+    "tqqq_usd": 78.09,
+    "soxl_usd": 226.96,
     "usd_hkd_rate": 7.8
   },
   "portfolio_summary": {
-    "total_value_hkd": 1858158.0,
+    "total_value_hkd": 1858780.0,
     "total_cost_hkd": 1216014,
-    "total_profit_hkd": 461588.0
+    "total_profit_hkd": 462210.0
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 362267.0,
-      "total_profit_hkd": 106847.0,
+      "total_value_hkd": 362398.0,
+      "total_profit_hkd": 106978.0,
       "total_cost_hkd": 255420,
       "holdings": [
         {
           "asset": "TQQQ",
           "quantity": 563,
           "avg_price_usd": 58.465,
-          "current_price_usd": 78.06
+          "current_price_usd": 78.09
         },
         {
           "asset": "SOXL",
           "quantity": 11,
           "avg_price_usd": 116.96,
-          "current_price_usd": 226.97
+          "current_price_usd": 226.96
         }
       ]
     },
     {
       "account_name": "帳戶 B (固定基金)",
-      "total_value_hkd": 1301151.0,
-      "total_profit_hkd": 340557.0,
+      "total_value_hkd": 1301651.0,
+      "total_profit_hkd": 341057.0,
       "total_cost_hkd": 960594,
       "is_locked": true,
       "holdings": [
@@ -42,21 +42,21 @@
           "asset": "TQQQ",
           "quantity": 2137,
           "avg_price_usd": 57.63,
-          "current_price_usd": 78.06
+          "current_price_usd": 78.09
         }
       ]
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 194740.0,
-      "total_profit_hkd": 14184.0,
+      "total_value_hkd": 194732.0,
+      "total_profit_hkd": 14176.0,
       "total_cost_hkd": 180556,
       "holdings": [
         {
           "asset": "SOXL",
           "quantity": 110,
           "avg_price_usd": 215.383,
-          "current_price_usd": 226.97
+          "current_price_usd": 226.96
         }
       ]
     }
@@ -68,7 +68,7 @@
       "target_amount_hkd": 450000,
       "cumulative_target_hkd": 450000,
       "tqqq_target_usd": 78.69,
-      "status": "IN_PROGRESS",
+      "status": "COMPLETED",
       "strategy": "觸及即走：沽出約 455 股，套現 $45 萬現金鎖定稅項與佣金。",
       "notes": "收樓後預期可獲約 $11.9 萬按揭總回贈"
     },
@@ -78,7 +78,7 @@
       "target_amount_hkd": 1000000,
       "cumulative_target_hkd": 1450000,
       "tqqq_target_usd": 126.96,
-      "status": "PENDING",
+      "status": "IN_PROGRESS",
       "current_allocated_hkd": 122253,
       "progress_percentage": 14.69,
       "strategy": "移動止賺：啟動 Trailing Stop。高位任飛，高位回落 10% 即強制套現 $100 萬。"
