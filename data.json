@@ -1,40 +1,40 @@
 {
-  "last_updated": "2026-06-11 06:30:07",
+  "last_updated": "2026-06-11 06:45:07",
   "market_prices": {
-    "tqqq_usd": 68.39,
-    "soxl_usd": 174.33,
+    "tqqq_usd": 68.48,
+    "soxl_usd": 175.1,
     "usd_hkd_rate": 7.8
   },
   "portfolio_summary": {
-    "total_value_hkd": 1632022.0,
+    "total_value_hkd": 1634764.0,
     "total_cost_hkd": 1216014,
-    "total_profit_hkd": 205239.0
+    "total_profit_hkd": 207981.0
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 315285.0,
-      "total_profit_hkd": 59865.0,
+      "total_value_hkd": 315747.0,
+      "total_profit_hkd": 60327.0,
       "total_cost_hkd": 255420,
       "holdings": [
         {
           "asset": "TQQQ",
           "quantity": 563,
           "avg_price_usd": 58.465,
-          "current_price_usd": 68.39
+          "current_price_usd": 68.48
         },
         {
           "asset": "SOXL",
           "quantity": 11,
           "avg_price_usd": 116.96,
-          "current_price_usd": 174.33
+          "current_price_usd": 175.1
         }
       ]
     },
     {
       "account_name": "帳戶 B (固定基金)",
-      "total_value_hkd": 1139966.0,
-      "total_profit_hkd": 179372.0,
+      "total_value_hkd": 1141466.0,
+      "total_profit_hkd": 180872.0,
       "total_cost_hkd": 960594,
       "is_locked": true,
       "holdings": [
@@ -42,21 +42,21 @@
           "asset": "TQQQ",
           "quantity": 2137,
           "avg_price_usd": 57.63,
-          "current_price_usd": 68.39
+          "current_price_usd": 68.48
         }
       ]
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 176771.0,
-      "total_profit_hkd": -33998.0,
+      "total_value_hkd": 177551.0,
+      "total_profit_hkd": -33218.0,
       "total_cost_hkd": 210769,
       "holdings": [
         {
           "asset": "SOXL",
           "quantity": 130,
           "avg_price_usd": 207.859,
-          "current_price_usd": 174.33
+          "current_price_usd": 175.1
         }
       ]
     }
