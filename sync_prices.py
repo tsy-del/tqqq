@@ -80,9 +80,9 @@ def update_files():
         old_soxl = data['market_prices'].get('soxl_usd', 0)
         
         # 價格防洗版機制 (如果價格無變，則不 Push)
-        if tqqq_price == old_tqqq and soxl_price == old_soxl:
-            print(f"Prices unchanged (TQQQ: {tqqq_price}, SOXL: {soxl_price}). Skipping Git push to save history.")
-            return True
+        # if tqqq_price == old_tqqq and soxl_price == old_soxl:
+        #     print(f"Prices unchanged (TQQQ: {tqqq_price}, SOXL: {soxl_price}). Skipping Git push to save history.")
+        #     return True
             
         rate = data['market_prices']['usd_hkd_rate']
         
