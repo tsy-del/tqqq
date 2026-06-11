@@ -1,14 +1,14 @@
 {
-  "last_updated": "2026-06-11 10:20:16",
+  "last_updated": "2026-06-11 10:22:27",
   "market_prices": {
     "tqqq_usd": 68.11,
     "soxl_usd": 172.92,
     "usd_hkd_rate": 7.8
   },
   "portfolio_summary": {
-    "total_value_hkd": 1624574.0,
+    "total_value_hkd": 1665037.0,
     "total_cost_hkd": 1258602,
-    "total_profit_hkd": 197791.0
+    "total_profit_hkd": 195666.0
   },
   "accounts": [
     {
@@ -48,8 +48,8 @@
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 175341.0,
-      "total_profit_hkd": -35428.0,
+      "total_value_hkd": 215804.0,
+      "total_profit_hkd": -37553.0,
       "total_cost_hkd": 253357,
       "holdings": [
         {
