@@ -2,6 +2,7 @@ import yfinance as yf
 import os
 import json
 import time
+import traceback
 from datetime import datetime, timezone, timedelta
 import subprocess
 
@@ -10,89 +11,115 @@ REPO_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 
+SCRIPT_VERSION = "v4.14"
+
 def format_hkd(num):
     return f"${num:,.0f}"
 
-def get_latest_prices():
-    print("Fetching highest frequency prices (v4.1) from yfinance...")
-    tqqq = yf.Ticker("TQQQ")
-    soxl = yf.Ticker("SOXL")
-    
-    t_info = tqqq.info
-    s_info = soxl.info
-    
-    def fetch_best_price(info, fast_price):
-        pre = info.get('preMarketPrice')
-        post = info.get('postMarketPrice')
-        reg = info.get('regularMarketPrice')
-        current = info.get('currentPrice')
-        
-        market_state = info.get('marketState', '').upper()
-        
-        if market_state == 'PRE' and pre is not None and pre > 0:
-            return round(pre, 2)
-        if (market_state == 'POST' or market_state == 'CLOSED') and post is not None and post > 0:
-            return round(post, 2)
-            
-        if current is not None and current > 0:
-            return round(current, 2)
-            
-        if pre is not None and pre > 0 and pre != reg:
-            return round(pre, 2)
-        if post is not None and post > 0 and post != reg:
-            return round(post, 2)
-            
-        if reg is not None and reg > 0:
-            return round(reg, 2)
-            
-        prices = [info.get('ask'), info.get('bid'), fast_price]
-        valid_prices = [p for p in prices if p is not None and p > 0]
-        return round(max(valid_prices), 2) if valid_prices else 0
+def run_git(args, **kwargs):
+    return subprocess.run(["git"] + args, check=True, cwd=REPO_DIR, **kwargs)
 
-    t_price = fetch_best_price(t_info, tqqq.fast_info.last_price)
-    s_price = fetch_best_price(s_info, soxl.fast_info.last_price)
-    
+def fetch_best_price(info, fast_price):
+    pre = info.get('preMarketPrice')
+    post = info.get('postMarketPrice')
+    reg = info.get('regularMarketPrice')
+    current = info.get('currentPrice')
+
+    market_state = info.get('marketState', '').upper()
+
+    if market_state in ('PRE', 'PREPRE') and pre is not None and pre > 0:
+        return round(pre, 2)
+    if market_state in ('POST', 'POSTPOST', 'CLOSED') and post is not None and post > 0:
+        return round(post, 2)
+
+    if current is not None and current > 0:
+        return round(current, 2)
+
+    if pre is not None and pre > 0 and pre != reg:
+        return round(pre, 2)
+    if post is not None and post > 0 and post != reg:
+        return round(post, 2)
+
+    if reg is not None and reg > 0:
+        return round(reg, 2)
+
+    # Last resort: prefer last traded price, then ask/bid
+    for p in [fast_price, info.get('ask'), info.get('bid')]:
+        if p is not None and p > 0:
+            return round(p, 2)
+    return 0
+
+def get_ticker_data(symbol, retries=3, delay=5):
+    """Fetch ticker info with retry, since yfinance occasionally fails or returns empty data."""
+    last_err = None
+    for attempt in range(retries):
+        try:
+            t = yf.Ticker(symbol)
+            info = t.info
+            try:
+                fast_price = t.fast_info.last_price
+            except Exception:
+                fast_price = None
+            if info and (info.get('regularMarketPrice') or info.get('currentPrice') or fast_price):
+                return info, fast_price
+        except Exception as e:
+            last_err = e
+        print(f"Retry {attempt + 1}/{retries} for {symbol}...")
+        time.sleep(delay)
+    raise RuntimeError(f"Failed to fetch valid data for {symbol}: {last_err}")
+
+def get_latest_prices():
+    print(f"Fetching highest frequency prices ({SCRIPT_VERSION}) from yfinance...")
+    t_info, t_fast = get_ticker_data("TQQQ")
+    s_info, s_fast = get_ticker_data("SOXL")
+
+    t_price = fetch_best_price(t_info, t_fast)
+    s_price = fetch_best_price(s_info, s_fast)
+
+    # Abort if any price is invalid, so we never write zeros into data.json / HTML
+    if t_price <= 0 or s_price <= 0:
+        raise RuntimeError(f"Invalid price fetched (TQQQ: {t_price}, SOXL: {s_price}). Aborting update.")
+
     t_reg = t_info.get('regularMarketPrice') or t_price
     t_label = "EXT" if abs(t_price - t_reg) > 0.01 else "REG"
-    
+
     s_reg = s_info.get('regularMarketPrice') or s_price
     s_label = "EXT" if abs(s_price - s_reg) > 0.01 else "REG"
-    
+
     return t_price, t_label, s_price, s_label
 
 def update_files():
     try:
         # 在開始任何動作前，先強制與 GitHub 同步 (防止手動更新造成的 Git Push Rejected)
-        os.chdir(REPO_DIR)
-        subprocess.run(["git", "fetch", "origin", "main"], check=True)
-        subprocess.run(["git", "reset", "--hard", "origin/main"], check=True)
-        
-        if not os.path.exists(DATA_FILE): 
+        run_git(["fetch", "origin", "main"])
+        run_git(["reset", "--hard", "origin/main"])
+
+        if not os.path.exists(DATA_FILE):
             print("data.json not found")
             return False
-            
-        with open(DATA_FILE, 'r') as f:
+
+        with open(DATA_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
-        
+
         tqqq_price, t_label, soxl_price, s_label = get_latest_prices()
-        
+
         old_tqqq = data['market_prices'].get('tqqq_usd', 0)
         old_soxl = data['market_prices'].get('soxl_usd', 0)
-        
+
         # 價格防洗版機制 (如果價格無變，則不 Push)
         # if tqqq_price == old_tqqq and soxl_price == old_soxl:
         #     print(f"Prices unchanged (TQQQ: {tqqq_price}, SOXL: {soxl_price}). Skipping Git push to save history.")
         #     return True
-            
+
         rate = data['market_prices']['usd_hkd_rate']
-        
+
         data['market_prices']['tqqq_usd'] = tqqq_price
         data['market_prices']['soxl_usd'] = soxl_price
         # 確保使用香港時間 (GitHub Server 預設是 UTC)
         hk_tz = timezone(timedelta(hours=8))
         current_time_str = datetime.now(hk_tz).strftime('%Y-%m-%d %H:%M:%S')
         data['last_updated'] = current_time_str
-        
+
         total_value_hkd = 0
         total_cost_hkd = 0
         for acc in data['accounts']:
@@ -102,14 +129,15 @@ def update_files():
                 if h['asset'] == 'SOXL': h['current_price_usd'] = soxl_price
                 asset_val = h['quantity'] * h['current_price_usd'] * rate
                 acc_val += asset_val
-            acc['total_value_hkd'] = round(acc_val, 0)
-            acc['total_profit_hkd'] = round(acc_val - acc['total_cost_hkd'], 0)
+            acc_cost = acc.get('total_cost_hkd', 0)
+            acc['total_value_hkd'] = int(round(acc_val))
+            acc['total_profit_hkd'] = int(round(acc_val - acc_cost))
             total_value_hkd += acc_val
-            total_cost_hkd += acc.get('total_cost_hkd', 0)
-            
+            total_cost_hkd += acc_cost
+
         total_profit_hkd = total_value_hkd - total_cost_hkd
-        data['portfolio_summary']['total_value_hkd'] = round(total_value_hkd, 0)
-        data['portfolio_summary']['total_profit_hkd'] = round(total_profit_hkd, 0)
+        data['portfolio_summary']['total_value_hkd'] = int(round(total_value_hkd))
+        data['portfolio_summary']['total_profit_hkd'] = int(round(total_profit_hkd))
 
         total_profit_pct = (total_profit_hkd / total_cost_hkd) * 100 if total_cost_hkd > 0 else 0
         total_profit_color = '#10b981' if total_profit_hkd >= 0 else '#ef4444'
@@ -121,11 +149,11 @@ def update_files():
 
         profit_for_stage1 = max(0, min(total_profit_hkd, stage1_target))
         prog1 = (profit_for_stage1 / stage1_target) * 100
-        
+
         available_for_stage2 = total_profit_hkd - stage1_target
         profit_for_stage2 = max(0, min(available_for_stage2, stage2_target)) if available_for_stage2 > 0 else 0
         prog2 = (profit_for_stage2 / stage2_target) * 100
-        
+
         available_for_stage3 = available_for_stage2 - stage2_target
         profit_for_stage3 = max(0, min(available_for_stage3, stage3_target)) if available_for_stage3 > 0 else 0
         prog3 = (profit_for_stage3 / stage3_target) * 100
@@ -135,12 +163,11 @@ def update_files():
             target_price = m['tqqq_target_usd']
             price_diff = target_price - tqqq_price
             price_diff_pct = (price_diff / tqqq_price) * 100 if target_price > tqqq_price else 0
-            
+
             gap_label = "剩餘距離" if target_price > tqqq_price else "超額"
-            gap_sign = "+" if target_price > tqqq_price else ""
             gap_val = f"{price_diff:.2f} ({price_diff_pct:.1f}%)" if target_price > tqqq_price else "已達標"
             gap_color = "var(--accent)" if target_price > tqqq_price else "var(--success)"
-            
+
             if m['stage'] == 1:
                 stage_prog = prog1
                 avail_profit_str = format_hkd(profit_for_stage1)
@@ -166,9 +193,9 @@ def update_files():
                 if prog3 >= 100: m['status'] = "COMPLETED"
                 elif available_for_stage3 > 0: m['status'] = "IN_PROGRESS"
                 else: m['status'] = "PENDING"
-                
+
             status_class = f"status-{m['status']}"
-            
+
             details = f"""
             <div class="progress-details">
                 <div class="price-gap-box">
@@ -181,12 +208,12 @@ def update_files():
                 <div class="detail-row" style="margin-top: 8px;"><span>可用利潤</span><span class="detail-val">{avail_profit_str}</span></div>
                 <div class="detail-row" style="margin-top: 4px;"><span>尚欠金額</span><span class="detail-val" style="color:var(--accent);">{shortfall_str}</span></div>
             </div>"""
-            
+
             if m['stage'] == 1 and prog1 >= 100:
                 details = '<div style="font-size: 11px; color: var(--success); margin-bottom: 10px;">✅ 盈利已覆蓋 $45 萬雜費</div>' + details
-                
+
             is_collapsed = "collapsed" if m['status'] == 'COMPLETED' else ""
-                
+
             milestones_html += f"""<div class="milestone-card {is_collapsed}">
                 <div class="m-header" onclick="this.parentElement.classList.toggle('collapsed')">
                     <div style="display: flex; align-items: center; gap: 6px;">
@@ -239,11 +266,12 @@ def update_files():
         for acc in data['accounts']:
             rows = ""
             for h in acc['holdings']:
-                gain = ((h['current_price_usd'] - h['avg_price_usd']) / h['avg_price_usd'] * 100)
-                pl = (h['current_price_usd'] - h['avg_price_usd']) * h['quantity'] * rate
+                avg = h['avg_price_usd']
+                gain = ((h['current_price_usd'] - avg) / avg * 100) if avg else 0
+                pl = (h['current_price_usd'] - avg) * h['quantity'] * rate
                 rows += f"""<div class="asset-row"><div class="asset-info">
                     <div class="asset-name">{h['asset']} <span class="qty">× {h['quantity']}</span></div>
-                    <div class="asset-cost">成本 ${h['avg_price_usd']} | 現價 ${h['current_price_usd']}</div></div>
+                    <div class="asset-cost">成本 ${avg} | 現價 ${h['current_price_usd']}</div></div>
                     <div style="text-align: right;"><div class="asset-status {'up' if gain >= 0 else 'down'}">{'+' if gain >= 0 else ''}{gain:.1f}%</div>
                     <div style="font-size: 10px; color: var(--text-dim);">{format_hkd(pl)}</div></div></div>"""
             accounts_html += f"""<div class="account-block">
@@ -251,7 +279,7 @@ def update_files():
                 <div class="holdings-list">{rows}</div></div>"""
 
         new_html = f"""<!DOCTYPE html>
-<html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>TQQQ Plan | v4.13 (Auto Cloud Sync)</title>
+<html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>TQQQ Plan | {SCRIPT_VERSION} (Auto Cloud Sync)</title>
 <style>
 :root {{ --bg: #09090b; --card: #18181b; --glass: rgba(255, 255, 255, 0.03); --border: rgba(255, 255, 255, 0.08); --accent: #3b82f6; --success: #10b981; --danger: #ef4444; --text-main: #fafafa; --text-dim: #71717a; }}
 * {{ box-sizing: border-box; }}
@@ -315,7 +343,7 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
 .down {{ color: var(--danger); }}
 </style></head>
 <body><div class="container">
-<header><div class="header-top"><h1>📈 TQQQ Plan</h1><span class="v-tag">v4.13</span></div><div class="last-update">Last Update: {current_time_str}</div></header>
+<header><div class="header-top"><h1>📈 TQQQ Plan</h1><span class="v-tag">{SCRIPT_VERSION}</span></div><div class="last-update">Last Update: {current_time_str}</div></header>
 <section class="main-summary">
     <div class="summary-card">
         <div class="summary-label">Total Value (HKD)</div>
@@ -342,26 +370,27 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
     🔄 手動觸發雲端更新 (GitHub Actions)
 </a>
 </div></body></html>"""
-        
-        with open(DATA_FILE, 'w') as f:
+
+        with open(DATA_FILE, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
-            
-        with open(INDEX_FILE, 'w') as f: f.write(new_html)
-        
-        os.chdir(REPO_DIR)
-        subprocess.run(["git", "add", "data.json", "index.html", "sync_prices.py", ".github/workflows/sync.yml"], check=True)
-        status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
+
+        with open(INDEX_FILE, 'w', encoding='utf-8') as f:
+            f.write(new_html)
+
+        run_git(["add", "data.json", "index.html", "sync_prices.py"])
+        status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True, cwd=REPO_DIR)
         if status.stdout.strip():
-            subprocess.run(["git", "commit", "-m", f"v4.13: Update Account C SOXL +20 shares at {current_time_str}"], check=True)
-            subprocess.run(["git", "push", "origin", "main"], check=True)
-            subprocess.run(["git", "push", "origin", "main:gh-pages", "--force"], check=True)
+            run_git(["commit", "-m", f"{SCRIPT_VERSION}: Auto price sync at {current_time_str}"])
+            run_git(["push", "origin", "main"])
+            run_git(["push", "origin", "main:gh-pages", "--force"])
             print("Update and push completed successfully.")
         else:
             print("No changes to commit. Stopping script early.")
-            
+
         return True
     except Exception as e:
         print(f"Error: {e}")
+        traceback.print_exc()
         return False
 
 if __name__ == "__main__":
