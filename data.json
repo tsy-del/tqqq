@@ -70,9 +70,15 @@
       "holdings": [
         {
           "asset": "USD 現金",
-          "quantity": 13113.75,
+          "quantity": 11385.75,
           "avg_price_usd": 1.0,
           "current_price_usd": 1.0
+        },
+        {
+          "asset": "SPCH",
+          "quantity": 100,
+          "avg_price_usd": 17.28,
+          "current_price_usd": 17.28
         }
       ]
     }

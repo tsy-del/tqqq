@@ -11,7 +11,7 @@ REPO_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 
-SCRIPT_VERSION = "v4.18"
+SCRIPT_VERSION = "v4.19"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -73,14 +73,16 @@ def get_latest_prices():
     t_info, t_fast = get_ticker_data("TQQQ")
     s_info, s_fast = get_ticker_data("SOXL")
     spcx_info, spcx_fast = get_ticker_data("SPCX")
+    spch_info, spch_fast = get_ticker_data("SPCH")
 
     t_price = fetch_best_price(t_info, t_fast)
     s_price = fetch_best_price(s_info, s_fast)
     spcx_price = fetch_best_price(spcx_info, spcx_fast)
+    spch_price = fetch_best_price(spch_info, spch_fast)
 
     # Abort if any price is invalid, so we never write zeros into data.json / HTML
-    if t_price <= 0 or s_price <= 0 or spcx_price <= 0:
-        raise RuntimeError(f"Invalid price fetched (TQQQ: {t_price}, SOXL: {s_price}, SPCX: {spcx_price}). Aborting update.")
+    if t_price <= 0 or s_price <= 0 or spcx_price <= 0 or spch_price <= 0:
+        raise RuntimeError(f"Invalid price fetched (TQQQ: {t_price}, SOXL: {s_price}, SPCX: {spcx_price}, SPCH: {spch_price}). Aborting update.")
 
     t_reg = t_info.get('regularMarketPrice') or t_price
     t_label = "EXT" if abs(t_price - t_reg) > 0.01 else "REG"
@@ -91,7 +93,10 @@ def get_latest_prices():
     spcx_reg = spcx_info.get('regularMarketPrice') or spcx_price
     spcx_label = "EXT" if abs(spcx_price - spcx_reg) > 0.01 else "REG"
 
-    return t_price, t_label, s_price, s_label, spcx_price, spcx_label
+    spch_reg = spch_info.get('regularMarketPrice') or spch_price
+    spch_label = "EXT" if abs(spch_price - spch_reg) > 0.01 else "REG"
+
+    return t_price, t_label, s_price, s_label, spcx_price, spcx_label, spch_price, spch_label
 
 def update_files():
     try:
@@ -106,7 +111,7 @@ def update_files():
         with open(DATA_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
 
-        tqqq_price, t_label, soxl_price, s_label, spcx_price, spcx_label = get_latest_prices()
+        tqqq_price, t_label, soxl_price, s_label, spcx_price, spcx_label, spch_price, spch_label = get_latest_prices()
 
         old_tqqq = data['market_prices'].get('tqqq_usd', 0)
         old_soxl = data['market_prices'].get('soxl_usd', 0)
@@ -121,6 +126,7 @@ def update_files():
         data['market_prices']['tqqq_usd'] = tqqq_price
         data['market_prices']['soxl_usd'] = soxl_price
         data['market_prices']['spcx_usd'] = spcx_price
+        data['market_prices']['spch_usd'] = spch_price
         # 確保使用香港時間 (GitHub Server 預設是 UTC)
         hk_tz = timezone(timedelta(hours=8))
         current_time_str = datetime.now(hk_tz).strftime('%Y-%m-%d %H:%M:%S')
@@ -134,6 +140,7 @@ def update_files():
                 if h['asset'] == 'TQQQ': h['current_price_usd'] = tqqq_price
                 if h['asset'] == 'SOXL': h['current_price_usd'] = soxl_price
                 if h['asset'] == 'SPCX': h['current_price_usd'] = spcx_price
+                if h['asset'] == 'SPCH': h['current_price_usd'] = spch_price
                 asset_val = h['quantity'] * h['current_price_usd'] * rate
                 acc_val += asset_val
             acc_cost = acc.get('total_cost_hkd', 0)
@@ -375,6 +382,7 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
     <div class="ticker-item"><span class="ticker-symbol">TQQQ</span><span class="ticker-price">${tqqq_price}</span><span class="session-tag" style="display:{'inline-block' if t_label == 'EXT' else 'none'}">{t_label}</span></div>
     <div class="ticker-item"><span class="ticker-symbol">SOXL</span><span class="ticker-price">${soxl_price}</span><span class="session-tag" style="display:{'inline-block' if s_label == 'EXT' else 'none'}">{s_label}</span></div>
     <div class="ticker-item"><span class="ticker-symbol">SPCX</span><span class="ticker-price">${spcx_price}</span><span class="session-tag" style="display:{'inline-block' if spcx_label == 'EXT' else 'none'}">{spcx_label}</span></div>
+    <div class="ticker-item"><span class="ticker-symbol">SPCH</span><span class="ticker-price">${spch_price}</span><span class="session-tag" style="display:{'inline-block' if spch_label == 'EXT' else 'none'}">{spch_label}</span></div>
 </section>
 
 <section><h2>Strategic Targets</h2>{milestones_html}</section>
