@@ -72,13 +72,15 @@ def get_latest_prices():
     print(f"Fetching highest frequency prices ({SCRIPT_VERSION}) from yfinance...")
     t_info, t_fast = get_ticker_data("TQQQ")
     s_info, s_fast = get_ticker_data("SOXL")
+    spcx_info, spcx_fast = get_ticker_data("SPCX")
 
     t_price = fetch_best_price(t_info, t_fast)
     s_price = fetch_best_price(s_info, s_fast)
+    spcx_price = fetch_best_price(spcx_info, spcx_fast)
 
     # Abort if any price is invalid, so we never write zeros into data.json / HTML
-    if t_price <= 0 or s_price <= 0:
-        raise RuntimeError(f"Invalid price fetched (TQQQ: {t_price}, SOXL: {s_price}). Aborting update.")
+    if t_price <= 0 or s_price <= 0 or spcx_price <= 0:
+        raise RuntimeError(f"Invalid price fetched (TQQQ: {t_price}, SOXL: {s_price}, SPCX: {spcx_price}). Aborting update.")
 
     t_reg = t_info.get('regularMarketPrice') or t_price
     t_label = "EXT" if abs(t_price - t_reg) > 0.01 else "REG"
@@ -86,7 +88,10 @@ def get_latest_prices():
     s_reg = s_info.get('regularMarketPrice') or s_price
     s_label = "EXT" if abs(s_price - s_reg) > 0.01 else "REG"
 
-    return t_price, t_label, s_price, s_label
+    spcx_reg = spcx_info.get('regularMarketPrice') or spcx_price
+    spcx_label = "EXT" if abs(spcx_price - spcx_reg) > 0.01 else "REG"
+
+    return t_price, t_label, s_price, s_label, spcx_price, spcx_label
 
 def update_files():
     try:
@@ -101,7 +106,7 @@ def update_files():
         with open(DATA_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
 
-        tqqq_price, t_label, soxl_price, s_label = get_latest_prices()
+        tqqq_price, t_label, soxl_price, s_label, spcx_price, spcx_label = get_latest_prices()
 
         old_tqqq = data['market_prices'].get('tqqq_usd', 0)
         old_soxl = data['market_prices'].get('soxl_usd', 0)
@@ -115,6 +120,7 @@ def update_files():
 
         data['market_prices']['tqqq_usd'] = tqqq_price
         data['market_prices']['soxl_usd'] = soxl_price
+        data['market_prices']['spcx_usd'] = spcx_price
         # 確保使用香港時間 (GitHub Server 預設是 UTC)
         hk_tz = timezone(timedelta(hours=8))
         current_time_str = datetime.now(hk_tz).strftime('%Y-%m-%d %H:%M:%S')
@@ -127,6 +133,7 @@ def update_files():
             for h in acc['holdings']:
                 if h['asset'] == 'TQQQ': h['current_price_usd'] = tqqq_price
                 if h['asset'] == 'SOXL': h['current_price_usd'] = soxl_price
+                if h['asset'] == 'SPCX': h['current_price_usd'] = spcx_price
                 asset_val = h['quantity'] * h['current_price_usd'] * rate
                 acc_val += asset_val
             acc_cost = acc.get('total_cost_hkd', 0)
@@ -361,6 +368,7 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
 <section class="ticker-bar">
     <div class="ticker-item"><span class="ticker-symbol">TQQQ</span><span class="ticker-price">${tqqq_price}</span><span class="session-tag" style="display:{'inline-block' if t_label == 'EXT' else 'none'}">{t_label}</span></div>
     <div class="ticker-item"><span class="ticker-symbol">SOXL</span><span class="ticker-price">${soxl_price}</span><span class="session-tag" style="display:{'inline-block' if s_label == 'EXT' else 'none'}">{s_label}</span></div>
+    <div class="ticker-item"><span class="ticker-symbol">SPCX</span><span class="ticker-price">${spcx_price}</span><span class="session-tag" style="display:{'inline-block' if spcx_label == 'EXT' else 'none'}">{spcx_label}</span></div>
 </section>
 
 <section><h2>Strategic Targets</h2>{milestones_html}</section>

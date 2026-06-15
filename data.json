@@ -59,6 +59,20 @@
           "current_price_usd": 266.77
         }
       ]
+    },
+    {
+      "account_name": "帳戶 D (滙豐 - P683880)",
+      "total_value_hkd": 87750,
+      "total_profit_hkd": 0,
+      "total_cost_hkd": 87750,
+      "holdings": [
+        {
+          "asset": "SPCX",
+          "quantity": 75,
+          "avg_price_usd": 150.0,
+          "current_price_usd": 150.0
+        }
+      ]
     }
   ],
   "milestones": [
