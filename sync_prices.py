@@ -11,7 +11,7 @@ REPO_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 
-SCRIPT_VERSION = "v4.15"
+SCRIPT_VERSION = "v4.16"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -305,8 +305,8 @@ h1 {{ font-size: 26px; font-weight: 800; margin: 0; }}
 .profit-display {{ display: flex; align-items: baseline; gap: 8px; }}
 .profit-pct {{ font-size: 14px; font-weight: 700; padding-bottom: 1px; }}
 
-.ticker-bar {{ display: flex; gap: 10px; margin-bottom: 24px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }}
-.ticker-item {{ background: var(--glass); border: 1px solid var(--border); padding: 10px 14px; border-radius: 14px; display: flex; align-items: center; gap: 10px; }}
+.ticker-bar {{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 24px; }}
+.ticker-item {{ background: var(--glass); border: 1px solid var(--border); padding: 10px 14px; border-radius: 14px; display: flex; align-items: center; gap: 8px; }}
 .ticker-symbol {{ font-weight: 700; font-size: 13px; color: var(--text-dim); }}
 .ticker-price {{ font-family: monospace; font-size: 13px; color: #fff; }}
 .session-tag {{ font-size: 9px; padding: 1px 4px; border-radius: 3px; background: rgba(59,130,246,0.2); color: var(--accent); margin-left: 4px; border: 0.5px solid var(--accent); }}
