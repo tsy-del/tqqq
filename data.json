@@ -9,7 +9,8 @@
   "portfolio_summary": {
     "total_value_hkd": 2210217,
     "total_cost_hkd": 1258602,
-    "total_profit_hkd": 653096
+    "total_profit_hkd": 653096,
+    "total_realized_profit_hkd": 14537
   },
   "accounts": [
     {
