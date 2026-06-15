@@ -67,19 +67,27 @@
       "account_name": "帳戶 D (滙豐 - P683880)",
       "total_value_hkd": 102467,
       "total_profit_hkd": 14717,
-      "total_cost_hkd": 87750,
+      "total_cost_hkd": 13478,
+      "holdings": [
+        {
+          "asset": "SPCH",
+          "quantity": 100,
+          "avg_price_usd": 17.28,
+          "current_price_usd": 17.51
+        }
+      ]
+    },
+    {
+      "account_name": "現金 (Cash)",
+      "total_value_hkd": 0,
+      "total_profit_hkd": 0,
+      "total_cost_hkd": 74272,
       "holdings": [
         {
           "asset": "USD 現金",
           "quantity": 11385.75,
           "avg_price_usd": 1.0,
           "current_price_usd": 1.0
-        },
-        {
-          "asset": "SPCH",
-          "quantity": 100,
-          "avg_price_usd": 17.28,
-          "current_price_usd": 17.51
         }
       ]
     }
