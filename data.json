@@ -68,10 +68,10 @@
       "total_cost_hkd": 87750,
       "holdings": [
         {
-          "asset": "SPCX",
-          "quantity": 75,
-          "avg_price_usd": 150.0,
-          "current_price_usd": 174.36
+          "asset": "USD 現金",
+          "quantity": 13113.75,
+          "avg_price_usd": 1.0,
+          "current_price_usd": 1.0
         }
       ]
     }
