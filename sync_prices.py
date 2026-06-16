@@ -11,7 +11,7 @@ REPO_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 
-SCRIPT_VERSION = "v4.23"
+SCRIPT_VERSION = "v4.24"
 
 def format_hkd(num):
     return f"${num:,.0f}"
