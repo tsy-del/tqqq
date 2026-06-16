@@ -10,8 +10,7 @@
   "portfolio_summary": {
     "total_value_hkd": 2244366,
     "total_cost_hkd": 1258602,
-    "total_profit_hkd": 687245,
-    "total_realized_profit_hkd": 14537
+    "total_profit_hkd": 687245
   },
   "accounts": [
     {
@@ -74,20 +73,6 @@
           "quantity": 100,
           "avg_price_usd": 17.28,
           "current_price_usd": 20.88
-        }
-      ]
-    },
-    {
-      "account_name": "現金 (Cash)",
-      "total_value_hkd": 88809,
-      "total_profit_hkd": 14537,
-      "total_cost_hkd": 74272,
-      "holdings": [
-        {
-          "asset": "USD 現金",
-          "quantity": 11385.75,
-          "avg_price_usd": 1.0,
-          "current_price_usd": 1.0
         }
       ]
     }

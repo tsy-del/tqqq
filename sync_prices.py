@@ -11,7 +11,7 @@ REPO_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 
-SCRIPT_VERSION = "v4.22"
+SCRIPT_VERSION = "v4.23"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -131,14 +131,18 @@ def update_files():
         total_cost_hkd = 0
         for acc in data['accounts']:
             acc_val = 0
+            acc_cost = 0
             for h in acc['holdings']:
                 sym = h['asset']
                 if sym in prices_data:
                     h['current_price_usd'] = prices_data[sym]['price']
                 
                 asset_val = h['quantity'] * h['current_price_usd'] * rate
+                asset_cost = h['quantity'] * h.get('avg_price_usd', 0) * rate
                 acc_val += asset_val
-            acc_cost = acc.get('total_cost_hkd', 0)
+                acc_cost += asset_cost
+
+            acc['total_cost_hkd'] = int(round(acc_cost))
             acc['total_value_hkd'] = int(round(acc_val))
             acc['total_profit_hkd'] = int(round(acc_val - acc_cost))
             total_value_hkd += acc_val
@@ -146,9 +150,8 @@ def update_files():
 
         total_profit_hkd = total_value_hkd - total_cost_hkd
         data['portfolio_summary']['total_value_hkd'] = int(round(total_value_hkd))
+        data['portfolio_summary']['total_cost_hkd'] = int(round(total_cost_hkd))
         data['portfolio_summary']['total_profit_hkd'] = int(round(total_profit_hkd))
-        realized_profit_hkd = data['portfolio_summary'].get('total_realized_profit_hkd', 0)
-        unrealized_profit_hkd = total_profit_hkd - realized_profit_hkd
 
         total_profit_pct = (total_profit_hkd / total_cost_hkd) * 100 if total_cost_hkd > 0 else 0
         total_profit_color = '#10b981' if total_profit_hkd >= 0 else '#ef4444'
@@ -374,10 +377,6 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
         <div class="profit-display" style="color:{total_profit_color}">
             <div class="summary-value">{format_hkd(total_profit_hkd)}</div>
             <div class="profit-pct">{total_profit_sign}{total_profit_pct:.1f}%</div>
-        </div>
-        <div style="font-size: 11px; color: var(--text-dim); margin-top: 6px;">
-            已實現: <span style="color:var(--success)">{format_hkd(realized_profit_hkd)}</span> | 
-            未實現: <span style="color:{'var(--success)' if unrealized_profit_hkd >= 0 else 'var(--danger)'}">{format_hkd(unrealized_profit_hkd)}</span>
         </div>
     </div>
 </section>
