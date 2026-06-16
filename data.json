@@ -70,9 +70,15 @@
       "holdings": [
         {
           "asset": "SPCH",
-          "quantity": 100,
-          "avg_price_usd": 17.28,
+          "quantity": 150,
+          "avg_price_usd": 19.52,
           "current_price_usd": 24.76
+        },
+        {
+          "asset": "SOXL",
+          "quantity": 42,
+          "avg_price_usd": 243.0,
+          "current_price_usd": 245.88
         }
       ]
     }
