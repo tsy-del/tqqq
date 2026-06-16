@@ -1,22 +1,22 @@
 {
-  "last_updated": "2026-06-17 04:41:55",
+  "last_updated": "2026-06-17 04:45:08",
   "market_prices": {
     "tqqq_usd": 79.93,
-    "soxl_usd": 227.37,
+    "soxl_usd": 227.29,
     "usd_hkd_rate": 7.8,
     "spcx_usd": 192.5,
-    "spch_usd": 22.81
+    "spch_usd": 22.76
   },
   "portfolio_summary": {
-    "total_value_hkd": 2087766,
+    "total_value_hkd": 2087575,
     "total_cost_hkd": 1583191,
-    "total_profit_hkd": 504575
+    "total_profit_hkd": 504383
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 370513,
-      "total_profit_hkd": 103735,
+      "total_value_hkd": 370506,
+      "total_profit_hkd": 103728,
       "total_cost_hkd": 266778,
       "holdings": [
         {
@@ -29,7 +29,7 @@
           "asset": "SOXL",
           "quantity": 11,
           "avg_price_usd": 116.96,
-          "current_price_usd": 227.37
+          "current_price_usd": 227.29
         }
       ]
     },
@@ -50,35 +50,35 @@
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 283758,
-      "total_profit_hkd": 30401,
+      "total_value_hkd": 283658,
+      "total_profit_hkd": 30301,
       "total_cost_hkd": 253356,
       "holdings": [
         {
           "asset": "SOXL",
           "quantity": 160,
           "avg_price_usd": 203.01,
-          "current_price_usd": 227.37
+          "current_price_usd": 227.29
         }
       ]
     },
     {
       "account_name": "帳戶 D (滙豐 - P683880)",
-      "total_value_hkd": 101174,
-      "total_profit_hkd": -1271,
+      "total_value_hkd": 101089,
+      "total_profit_hkd": -1356,
       "total_cost_hkd": 102445,
       "holdings": [
         {
           "asset": "SPCH",
           "quantity": 150,
           "avg_price_usd": 19.52,
-          "current_price_usd": 22.81
+          "current_price_usd": 22.76
         },
         {
           "asset": "SOXL",
           "quantity": 42,
           "avg_price_usd": 243.0,
-          "current_price_usd": 227.37
+          "current_price_usd": 227.29
         }
       ]
     }
