@@ -23,10 +23,14 @@
             
             <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-500">
                 <h2 class="text-xl font-bold mb-4 flex items-center">🌍 市場設定</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-600 mb-1">USD/HKD 匯率</label>
-                        <input type="number" step="0.01" v-model.number="data.market_prices.usd_hkd_rate" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="number" step="0.01" v-model.number="data.market_prices.usd_hkd_rate" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-yellow-50">
+                    </div>
+                    <div v-for="[key, price] in Object.entries(data.market_prices).filter(e => e[0] !== 'usd_hkd_rate')" :key="key">
+                        <label class="block text-sm font-semibold text-gray-600 mb-1 uppercase">{{ key.replace('_usd', '') }} 最新股價 (USD)</label>
+                        <div class="w-full border border-transparent rounded px-3 py-2 bg-gray-100 text-gray-700 font-bold">${{ price }}</div>
                     </div>
                 </div>
             </div>
@@ -66,6 +70,17 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                
+                <!-- 新增股票 -->
+                <div class="mt-4 p-4 bg-gray-50 rounded border border-dashed border-gray-300">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-sm font-bold text-gray-700">➕ 新增持倉股票：</span>
+                        <input type="text" v-model="acc._new_asset" placeholder="代號 (例: AAPL)" class="w-32 border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase">
+                        <input type="number" step="1" v-model.number="acc._new_qty" placeholder="數量" class="w-24 border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right">
+                        <input type="number" step="0.01" v-model.number="acc._new_price" placeholder="平均成本(USD)" class="w-32 border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right">
+                        <button @click="addNewHolding(acc)" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded shadow text-sm font-bold transition">加入</button>
+                    </div>
                 </div>
             </div>
 
@@ -179,10 +194,42 @@
                         this.showToast('↩️ 已復原', 'success');
                     }
                 },
+                addNewHolding(acc) {
+                    if (!acc._new_asset || !acc._new_qty || !acc._new_price) {
+                        alert("請輸入完整的股票代號、數量及平均成本！");
+                        return;
+                    }
+                    const assetName = acc._new_asset.toUpperCase().trim();
+                    const exists = acc.holdings.find(h => h.asset === assetName);
+                    if (exists) {
+                        alert(assetName + " 已經存在於此帳戶，請直接使用上方「新增交易紀錄」！");
+                        return;
+                    }
+                    
+                    acc.holdings.push({
+                        asset: assetName,
+                        quantity: parseFloat(acc._new_qty),
+                        avg_price_usd: parseFloat(acc._new_price),
+                        current_price_usd: parseFloat(acc._new_price)
+                    });
+                    
+                    const priceKey = assetName.toLowerCase() + '_usd';
+                    if (!this.data.market_prices[priceKey]) {
+                        this.data.market_prices[priceKey] = parseFloat(acc._new_price);
+                    }
+                    
+                    acc._new_asset = '';
+                    acc._new_qty = null;
+                    acc._new_price = null;
+                    this.showToast('✅ 已加入新股票：' + assetName, 'success');
+                },
                 async saveData() {
                     // 清理暫存變數
                     const dataToSave = JSON.parse(JSON.stringify(this.data));
                     dataToSave.accounts.forEach(acc => {
+                        delete acc._new_asset;
+                        delete acc._new_qty;
+                        delete acc._new_price;
                         acc.holdings.forEach(h => {
                             delete h._trade_qty;
                             delete h._trade_price;
