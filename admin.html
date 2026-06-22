@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TQQQ Plan - 數據管理後台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans">
+    <div id="app" class="max-w-4xl mx-auto p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-blue-900">📊 TQQQ Plan 數據管理</h1>
+            <div class="space-x-2">
+                <button @click="fetchData" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded shadow transition">重新載入</button>
+                <button @click="saveData" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded shadow transition font-bold">💾 儲存並同步到 GitHub</button>
+            </div>
+        </div>
+
+        <div v-if="loading" class="text-center py-10 text-gray-500">載入中...</div>
+        
+        <div v-if="!loading && data" class="space-y-6">
+            
+            <!-- 市場設定 -->
+            <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-500">
+                <h2 class="text-xl font-bold mb-4 flex items-center">🌍 市場設定</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-600 mb-1">USD/HKD 匯率</label>
+                        <input type="number" step="0.01" v-model.number="data.market_prices.usd_hkd_rate" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 帳戶持倉 -->
+            <h2 class="text-2xl font-bold text-gray-800 mt-8 mb-4 border-b pb-2">💼 帳戶持倉</h2>
+            
+            <div v-for="(acc, aIndex) in data.accounts" :key="aIndex" class="bg-white p-6 rounded-lg shadow-md mb-6 border border-gray-200">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-gray-800">{{ acc.account_name }}</h3>
+                    <span v-if="acc.is_locked" class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded font-bold">已鎖定 / 固定</span>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50 text-gray-600 text-sm border-b">
+                                <th class="p-3">資產 (Asset)</th>
+                                <th class="p-3">持股數量 (股)</th>
+                                <th class="p-3">平均成本 (USD)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(holding, hIndex) in acc.holdings" :key="hIndex" class="border-b last:border-0 hover:bg-gray-50">
+                                <td class="p-3 font-semibold">{{ holding.asset }}</td>
+                                <td class="p-3">
+                                    <input type="number" step="1" v-model.number="holding.quantity" class="w-24 border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right">
+                                </td>
+                                <td class="p-3">
+                                    <input type="number" step="0.001" v-model.number="holding.avg_price_usd" class="w-28 border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 里程碑目標 -->
+            <h2 class="text-2xl font-bold text-gray-800 mt-8 mb-4 border-b pb-2">🎯 里程碑目標</h2>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50 text-gray-600 text-sm border-b">
+                            <th class="p-3">階段</th>
+                            <th class="p-3">目標名稱</th>
+                            <th class="p-3">目標金額 (HKD)</th>
+                            <th class="p-3">狀態</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(ms, mIndex) in data.milestones" :key="mIndex" class="border-b last:border-0 hover:bg-gray-50">
+                            <td class="p-3 text-center w-16">
+                                <span class="bg-gray-200 text-gray-700 px-2 py-1 rounded text-xs font-bold">Stage {{ ms.stage }}</span>
+                            </td>
+                            <td class="p-3 font-semibold">{{ ms.name }}</td>
+                            <td class="p-3">
+                                <input type="number" step="1000" v-model.number="ms.target_amount_hkd" class="w-32 border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right">
+                            </td>
+                            <td class="p-3">
+                                <select v-model="ms.status" class="border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                                    <option value="PENDING">未開始 (PENDING)</option>
+                                    <option value="IN_PROGRESS">進行中 (IN_PROGRESS)</option>
+                                    <option value="COMPLETED">已完成 (COMPLETED)</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <!-- 狀態提示框 -->
+        <div v-if="toast.show" :class="`fixed bottom-5 right-5 px-6 py-3 rounded shadow-lg text-white font-bold transition-opacity ${toast.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`">
+            {{ toast.message }}
+        </div>
+    </div>
+
+    <script>
+        const { createApp } = Vue
+
+        createApp({
+            data() {
+                return {
+                    data: null,
+                    loading: true,
+                    toast: { show: false, message: '', type: 'success' }
+                }
+            },
+            mounted() {
+                this.fetchData();
+            },
+            methods: {
+                async fetchData() {
+                    this.loading = true;
+                    try {
+                        const res = await fetch('/api/data');
+                        const json = await res.json();
+                        this.data = json;
+                    } catch (e) {
+                        this.showToast('讀取失敗，請確認伺服器已啟動', 'error');
+                    }
+                    this.loading = false;
+                },
+                async saveData() {
+                    try {
+                        this.showToast('儲存中並更新價格...', 'success');
+                        const res = await fetch('/api/save_data', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(this.data)
+                        });
+                        const result = await res.json();
+                        if (result.status === 'success') {
+                            this.showToast('✅ 儲存成功！已推送到 GitHub', 'success');
+                            this.fetchData(); // 重新載入最新計算好的數據
+                        } else {
+                            this.showToast('❌ 儲存失敗: ' + result.message, 'error');
+                        }
+                    } catch (e) {
+                        this.showToast('❌ 儲存失敗: 網絡錯誤', 'error');
+                    }
+                },
+                showToast(msg, type) {
+                    this.toast = { show: true, message: msg, type: type };
+                    setTimeout(() => { this.toast.show = false; }, 3000);
+                }
+            }
+        }).mount('#app')
+    </script>
+</body>
+</html>

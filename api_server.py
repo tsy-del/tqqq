@@ -1,15 +1,41 @@
 import yfinance as yf
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 import os
 import json
 import time
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)
 
 # 你的靜態數據路徑
 DATA_FILE = os.path.join(os.path.dirname(__file__), 'data.json')
+
+
+@app.route('/')
+def admin_page():
+    return app.send_static_file('admin.html')
+
+@app.route('/api/data')
+def get_data():
+    with open(DATA_FILE, 'r') as f:
+        return jsonify(json.load(f))
+
+@app.route('/api/save_data', methods=['POST'])
+def save_data():
+    try:
+        new_data = request.json
+        with open(DATA_FILE, 'w') as f:
+            json.dump(new_data, f, indent=2, ensure_ascii=False)
+            
+        # 儲存後觸發 update_prices 和 git push
+        import subprocess
+        # 1. 執行更新腳本
+        subprocess.run(["python3", "sync_prices.py"], cwd=os.path.dirname(__file__))
+        
+        return jsonify({"status": "success"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route('/api/update_prices')
 def update_prices():
