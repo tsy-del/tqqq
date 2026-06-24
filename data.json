@@ -1,22 +1,22 @@
 {
-  "last_updated": "2026-06-25 04:45:08",
+  "last_updated": "2026-06-25 05:00:08",
   "market_prices": {
     "tqqq_usd": 77.47,
-    "soxl_usd": 260.51,
+    "soxl_usd": 260.22,
     "usd_hkd_rate": 7.8,
     "spcx_usd": 192.5,
-    "spch_usd": 12.63
+    "spch_usd": 12.62
   },
   "portfolio_summary": {
-    "total_value_hkd": 2084032,
+    "total_value_hkd": 2083535,
     "total_cost_hkd": 1589814,
-    "total_profit_hkd": 494219
+    "total_profit_hkd": 493721
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 362554,
-      "total_profit_hkd": 95775,
+      "total_value_hkd": 362529,
+      "total_profit_hkd": 95750,
       "total_cost_hkd": 266778,
       "holdings": [
         {
@@ -29,7 +29,7 @@
           "asset": "SOXL",
           "quantity": 11,
           "avg_price_usd": 116.96,
-          "current_price_usd": 260.51
+          "current_price_usd": 260.22
         }
       ]
     },
@@ -50,35 +50,35 @@
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 325116,
-      "total_profit_hkd": 71760,
+      "total_value_hkd": 324755,
+      "total_profit_hkd": 71398,
       "total_cost_hkd": 253356,
       "holdings": [
         {
           "asset": "SOXL",
           "quantity": 160,
           "avg_price_usd": 203.01,
-          "current_price_usd": 260.51
+          "current_price_usd": 260.22
         }
       ]
     },
     {
       "account_name": "帳戶 D (滙豐 - P683880)",
-      "total_value_hkd": 105046,
-      "total_profit_hkd": -4022,
+      "total_value_hkd": 104935,
+      "total_profit_hkd": -4132,
       "total_cost_hkd": 109067,
       "holdings": [
         {
           "asset": "SPCH",
           "quantity": 200,
           "avg_price_usd": 18.885,
-          "current_price_usd": 12.63
+          "current_price_usd": 12.62
         },
         {
           "asset": "SOXL",
           "quantity": 42,
           "avg_price_usd": 243.0,
-          "current_price_usd": 260.51
+          "current_price_usd": 260.22
         }
       ]
     }
