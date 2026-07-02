@@ -1,22 +1,22 @@
 {
-  "last_updated": "2026-07-03 05:15:07",
+  "last_updated": "2026-07-03 05:30:08",
   "market_prices": {
     "tqqq_usd": 73.49,
-    "soxl_usd": 181.59,
+    "soxl_usd": 182.43,
     "usd_hkd_rate": 7.8,
     "spcx_usd": 192.5,
-    "spch_usd": 13.37
+    "spch_usd": 13.4
   },
   "portfolio_summary": {
-    "total_value_hkd": 1898578,
+    "total_value_hkd": 1900152,
     "total_cost_hkd": 1619512,
-    "total_profit_hkd": 279066
+    "total_profit_hkd": 280639
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 338304,
-      "total_profit_hkd": 71526,
+      "total_value_hkd": 338376,
+      "total_profit_hkd": 71598,
       "total_cost_hkd": 266778,
       "holdings": [
         {
@@ -29,7 +29,7 @@
           "asset": "SOXL",
           "quantity": 11,
           "avg_price_usd": 116.96,
-          "current_price_usd": 181.59
+          "current_price_usd": 182.43
         }
       ]
     },
@@ -50,35 +50,35 @@
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 226624,
-      "total_profit_hkd": -26732,
+      "total_value_hkd": 227673,
+      "total_profit_hkd": -25684,
       "total_cost_hkd": 253356,
       "holdings": [
         {
           "asset": "SOXL",
           "quantity": 160,
           "avg_price_usd": 203.01,
-          "current_price_usd": 181.59
+          "current_price_usd": 182.43
         }
       ]
     },
     {
       "account_name": "帳戶 D (滙豐 - P683880)",
-      "total_value_hkd": 108674,
-      "total_profit_hkd": -30092,
+      "total_value_hkd": 109127,
+      "total_profit_hkd": -29639,
       "total_cost_hkd": 138766,
       "holdings": [
         {
           "asset": "SPCH",
           "quantity": 200,
           "avg_price_usd": 18.885,
-          "current_price_usd": 13.37
+          "current_price_usd": 13.4
         },
         {
           "asset": "SOXL",
           "quantity": 62,
           "avg_price_usd": 226.0244,
-          "current_price_usd": 181.59
+          "current_price_usd": 182.43
         }
       ]
     }
