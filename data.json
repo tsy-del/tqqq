@@ -1,22 +1,22 @@
 {
-  "last_updated": "2026-07-14 04:30:09",
+  "last_updated": "2026-07-14 04:45:08",
   "market_prices": {
     "tqqq_usd": 72.41,
-    "soxl_usd": 164.2,
+    "soxl_usd": 163.97,
     "usd_hkd_rate": 7.8,
     "spcx_usd": 192.5,
-    "spch_usd": 9.85
+    "spch_usd": 9.84
   },
   "portfolio_summary": {
-    "total_value_hkd": 1840018,
+    "total_value_hkd": 1839583,
     "total_cost_hkd": 1620877,
-    "total_profit_hkd": 219141
+    "total_profit_hkd": 218706
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 332070,
-      "total_profit_hkd": 65291,
+      "total_value_hkd": 332050,
+      "total_profit_hkd": 65272,
       "total_cost_hkd": 266778,
       "holdings": [
         {
@@ -29,7 +29,7 @@
           "asset": "SOXL",
           "quantity": 11,
           "avg_price_usd": 116.96,
-          "current_price_usd": 164.2
+          "current_price_usd": 163.97
         }
       ]
     },
@@ -50,35 +50,35 @@
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 204922,
-      "total_profit_hkd": -48435,
+      "total_value_hkd": 204635,
+      "total_profit_hkd": -48722,
       "total_cost_hkd": 253356,
       "holdings": [
         {
           "asset": "SOXL",
           "quantity": 160,
           "avg_price_usd": 203.01,
-          "current_price_usd": 164.2
+          "current_price_usd": 163.97
         }
       ]
     },
     {
       "account_name": "帳戶 D (滙豐 - P683880)",
-      "total_value_hkd": 96054,
-      "total_profit_hkd": -44077,
+      "total_value_hkd": 95925,
+      "total_profit_hkd": -44206,
       "total_cost_hkd": 140131,
       "holdings": [
         {
           "asset": "SPCH",
           "quantity": 200,
           "avg_price_usd": 18.885,
-          "current_price_usd": 9.85
+          "current_price_usd": 9.84
         },
         {
           "asset": "SOXL",
           "quantity": 63,
           "avg_price_usd": 225.2145,
-          "current_price_usd": 164.2
+          "current_price_usd": 163.97
         }
       ]
     }
