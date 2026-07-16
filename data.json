@@ -1,22 +1,22 @@
 {
-  "last_updated": "2026-07-16 18:45:07",
+  "last_updated": "2026-07-16 19:00:07",
   "market_prices": {
     "tqqq_usd": 73.05,
-    "soxl_usd": 152.11,
+    "soxl_usd": 152.25,
     "usd_hkd_rate": 7.8,
     "spcx_usd": 192.5,
-    "spch_usd": 9.44
+    "spch_usd": 9.42
   },
   "portfolio_summary": {
-    "total_value_hkd": 1830791,
+    "total_value_hkd": 1831015,
     "total_cost_hkd": 1620877,
-    "total_profit_hkd": 209913
+    "total_profit_hkd": 210138
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 333843,
-      "total_profit_hkd": 67064,
+      "total_value_hkd": 333855,
+      "total_profit_hkd": 67076,
       "total_cost_hkd": 266778,
       "holdings": [
         {
@@ -29,7 +29,7 @@
           "asset": "SOXL",
           "quantity": 11,
           "avg_price_usd": 116.96,
-          "current_price_usd": 152.11
+          "current_price_usd": 152.25
         }
       ]
     },
@@ -50,35 +50,35 @@
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 189833,
-      "total_profit_hkd": -63523,
+      "total_value_hkd": 190008,
+      "total_profit_hkd": -63348,
       "total_cost_hkd": 253356,
       "holdings": [
         {
           "asset": "SOXL",
           "quantity": 160,
           "avg_price_usd": 203.01,
-          "current_price_usd": 152.11
+          "current_price_usd": 152.25
         }
       ]
     },
     {
       "account_name": "帳戶 D (滙豐 - P683880)",
-      "total_value_hkd": 89473,
-      "total_profit_hkd": -50658,
+      "total_value_hkd": 89511,
+      "total_profit_hkd": -50620,
       "total_cost_hkd": 140131,
       "holdings": [
         {
           "asset": "SPCH",
           "quantity": 200,
           "avg_price_usd": 18.885,
-          "current_price_usd": 9.44
+          "current_price_usd": 9.42
         },
         {
           "asset": "SOXL",
           "quantity": 63,
           "avg_price_usd": 225.2145,
-          "current_price_usd": 152.11
+          "current_price_usd": 152.25
         }
       ]
     }
