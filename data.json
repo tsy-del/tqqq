@@ -1,42 +1,42 @@
 {
-  "last_updated": "2026-07-17 23:00:07",
+  "last_updated": "2026-07-17 23:15:07",
   "market_prices": {
-    "tqqq_usd": 67.26,
-    "soxl_usd": 130.64,
+    "tqqq_usd": 66.97,
+    "soxl_usd": 128.93,
     "usd_hkd_rate": 7.8,
     "spcx_usd": 192.5,
-    "spch_usd": 7.86
+    "spch_usd": 7.78
   },
   "portfolio_summary": {
-    "total_value_hkd": 1667201,
+    "total_value_hkd": 1657848,
     "total_cost_hkd": 1620877,
-    "total_profit_hkd": 46324
+    "total_profit_hkd": 36971
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 306574,
-      "total_profit_hkd": 39796,
+      "total_value_hkd": 305154,
+      "total_profit_hkd": 38376,
       "total_cost_hkd": 266778,
       "holdings": [
         {
           "asset": "TQQQ",
           "quantity": 563,
           "avg_price_usd": 58.465,
-          "current_price_usd": 67.26
+          "current_price_usd": 66.97
         },
         {
           "asset": "SOXL",
           "quantity": 11,
           "avg_price_usd": 116.96,
-          "current_price_usd": 130.64
+          "current_price_usd": 128.93
         }
       ]
     },
     {
       "account_name": "帳戶 B (固定基金)",
-      "total_value_hkd": 1121130,
-      "total_profit_hkd": 160519,
+      "total_value_hkd": 1116296,
+      "total_profit_hkd": 155685,
       "total_cost_hkd": 960611,
       "is_locked": true,
       "holdings": [
@@ -44,41 +44,41 @@
           "asset": "TQQQ",
           "quantity": 2137,
           "avg_price_usd": 57.63,
-          "current_price_usd": 67.26
+          "current_price_usd": 66.97
         }
       ]
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 163039,
-      "total_profit_hkd": -90318,
+      "total_value_hkd": 160905,
+      "total_profit_hkd": -92452,
       "total_cost_hkd": 253356,
       "holdings": [
         {
           "asset": "SOXL",
           "quantity": 160,
           "avg_price_usd": 203.01,
-          "current_price_usd": 130.64
+          "current_price_usd": 128.93
         }
       ]
     },
     {
       "account_name": "帳戶 D (滙豐 - P683880)",
-      "total_value_hkd": 76458,
-      "total_profit_hkd": -63673,
+      "total_value_hkd": 75493,
+      "total_profit_hkd": -64638,
       "total_cost_hkd": 140131,
       "holdings": [
         {
           "asset": "SPCH",
           "quantity": 200,
           "avg_price_usd": 18.885,
-          "current_price_usd": 7.86
+          "current_price_usd": 7.78
         },
         {
           "asset": "SOXL",
           "quantity": 63,
           "avg_price_usd": 225.2145,
-          "current_price_usd": 130.64
+          "current_price_usd": 128.93
         }
       ]
     }
