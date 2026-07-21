@@ -1,22 +1,22 @@
 {
-  "last_updated": "2026-07-22 04:30:07",
+  "last_updated": "2026-07-22 04:45:07",
   "market_prices": {
     "tqqq_usd": 71.24,
-    "soxl_usd": 158.37,
+    "soxl_usd": 158.8,
     "usd_hkd_rate": 7.8,
     "spcx_usd": 192.5,
-    "spch_usd": 7.81
+    "spch_usd": 7.84
   },
   "portfolio_summary": {
-    "total_value_hkd": 1801555,
+    "total_value_hkd": 1802387,
     "total_cost_hkd": 1620877,
-    "total_profit_hkd": 180678
+    "total_profit_hkd": 181509
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 326431,
-      "total_profit_hkd": 59653,
+      "total_value_hkd": 326468,
+      "total_profit_hkd": 59690,
       "total_cost_hkd": 266778,
       "holdings": [
         {
@@ -29,7 +29,7 @@
           "asset": "SOXL",
           "quantity": 11,
           "avg_price_usd": 116.96,
-          "current_price_usd": 158.37
+          "current_price_usd": 158.8
         }
       ]
     },
@@ -50,35 +50,35 @@
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 197646,
-      "total_profit_hkd": -55711,
+      "total_value_hkd": 198182,
+      "total_profit_hkd": -55174,
       "total_cost_hkd": 253356,
       "holdings": [
         {
           "asset": "SOXL",
           "quantity": 160,
           "avg_price_usd": 203.01,
-          "current_price_usd": 158.37
+          "current_price_usd": 158.8
         }
       ]
     },
     {
       "account_name": "帳戶 D (滙豐 - P683880)",
-      "total_value_hkd": 90007,
-      "total_profit_hkd": -50124,
+      "total_value_hkd": 90265,
+      "total_profit_hkd": -49866,
       "total_cost_hkd": 140131,
       "holdings": [
         {
           "asset": "SPCH",
           "quantity": 200,
           "avg_price_usd": 18.885,
-          "current_price_usd": 7.81
+          "current_price_usd": 7.84
         },
         {
           "asset": "SOXL",
           "quantity": 63,
           "avg_price_usd": 225.2145,
-          "current_price_usd": 158.37
+          "current_price_usd": 158.8
         }
       ]
     }
