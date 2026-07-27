@@ -1,22 +1,22 @@
 {
-  "last_updated": "2026-07-28 07:00:08",
+  "last_updated": "2026-07-28 07:15:07",
   "market_prices": {
     "tqqq_usd": 62.95,
-    "soxl_usd": 125.01,
+    "soxl_usd": 124.43,
     "usd_hkd_rate": 7.8,
     "spcx_usd": 192.5,
-    "spch_usd": 6.3
+    "spch_usd": 6.27
   },
   "portfolio_summary": {
-    "total_value_hkd": 1563723,
+    "total_value_hkd": 1562618,
     "total_cost_hkd": 1620877,
-    "total_profit_hkd": -57154
+    "total_profit_hkd": -58259
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 287164,
-      "total_profit_hkd": 20386,
+      "total_value_hkd": 287115,
+      "total_profit_hkd": 20336,
       "total_cost_hkd": 266778,
       "holdings": [
         {
@@ -29,7 +29,7 @@
           "asset": "SOXL",
           "quantity": 11,
           "avg_price_usd": 116.96,
-          "current_price_usd": 125.01
+          "current_price_usd": 124.43
         }
       ]
     },
@@ -50,35 +50,35 @@
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 156012,
-      "total_profit_hkd": -97344,
+      "total_value_hkd": 155289,
+      "total_profit_hkd": -98068,
       "total_cost_hkd": 253356,
       "holdings": [
         {
           "asset": "SOXL",
           "quantity": 160,
           "avg_price_usd": 203.01,
-          "current_price_usd": 125.01
+          "current_price_usd": 124.43
         }
       ]
     },
     {
       "account_name": "帳戶 D (滙豐 - P683880)",
-      "total_value_hkd": 71258,
-      "total_profit_hkd": -68873,
+      "total_value_hkd": 70926,
+      "total_profit_hkd": -69205,
       "total_cost_hkd": 140131,
       "holdings": [
         {
           "asset": "SPCH",
           "quantity": 200,
           "avg_price_usd": 18.885,
-          "current_price_usd": 6.3
+          "current_price_usd": 6.27
         },
         {
           "asset": "SOXL",
           "quantity": 63,
           "avg_price_usd": 225.2145,
-          "current_price_usd": 125.01
+          "current_price_usd": 124.43
         }
       ]
     }
