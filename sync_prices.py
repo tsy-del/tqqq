@@ -214,19 +214,20 @@ def update_files():
                 else: m['status'] = "PENDING"
                 target_amount = stage3_target
 
-            # 動態計算目標價 (按比例推算)
-            cum_target = m.get('cumulative_target_hkd', 0)
-            cum_shortfall = max(0, cum_target - total_profit_hkd)
-            if cum_shortfall > 0 and total_value_hkd > 0:
-                required_growth_pct = cum_shortfall / total_value_hkd
-                tqqq_target = tqqq_price * (1 + required_growth_pct)
-                soxl_target = soxl_price * (1 + required_growth_pct)
-                price_diff_pct = required_growth_pct * 100
+            # 串聯計算目標價 (因為每個階段達成後會套現，本金減少，後續階段需要更大升幅)
+            if shortfall > 0 and sim_v > 0:
+                required_growth_pct = shortfall / sim_v
+                sim_tqqq = sim_tqqq * (1 + required_growth_pct)
+                sim_soxl = sim_soxl * (1 + required_growth_pct)
+                sim_v = sim_v * (1 + required_growth_pct)
+                
+                # 計算與「目前股價」嘅距離
+                price_diff_pct = ((sim_tqqq / tqqq_price) - 1) * 100 if tqqq_price > 0 else 0
                 gap_label = "剩餘距離"
                 gap_val = f"+{price_diff_pct:.1f}%"
                 gap_color = "var(--accent)"
-                t_target_str = f"${tqqq_target:.2f}"
-                s_target_str = f"${soxl_target:.2f}"
+                t_target_str = f"${sim_tqqq:.2f}"
+                s_target_str = f"${sim_soxl:.2f}"
             else:
                 gap_label = "目標狀態"
                 gap_val = "已達標"
