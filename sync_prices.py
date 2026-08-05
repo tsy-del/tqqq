@@ -179,6 +179,11 @@ def update_files():
         soxl_price = prices_data.get('SOXL', {}).get('price', data['market_prices'].get('soxl_usd', 0))
         s_label = prices_data.get('SOXL', {}).get('label', 'REG')
         
+        # 初始化模擬變數，用於跨階段目標價計算 (因為每個階段達成後會套現，本金減少)
+        sim_v = total_value_hkd
+        sim_tqqq = tqqq_price
+        sim_soxl = soxl_price
+
         for m in data['milestones']:
             if m['stage'] == 1:
                 stage_prog = prog1
