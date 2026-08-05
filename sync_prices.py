@@ -11,7 +11,7 @@ REPO_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 
-SCRIPT_VERSION = "v4.24"
+SCRIPT_VERSION = "v5.0"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -232,25 +232,24 @@ def update_files():
             details = f"""
             <div class="progress-details">
                 <div class="price-gap-box">
-                    <div class="pg-row">
-                        <span>TQQQ 目標價</span>
-                        <span>SOXL 目標價</span>
+                    <div style="display: grid; grid-template-columns: 45px 1fr 1fr 1fr; gap: 4px; font-size: 12px; color: var(--text-dim); margin-bottom: 8px; text-align: right;">
+                        <div style="text-align: left;"></div>
+                        <div>目標價</div>
+                        <div>現價</div>
+                        <div>{gap_label}</div>
                     </div>
-                    <div class="pg-row" style="margin-bottom: 10px;">
-                        <span class="pg-val">{t_target_str}</span>
-                        <span class="pg-val">{s_target_str}</span>
+                    <div style="display: grid; grid-template-columns: 45px 1fr 1fr 1fr; gap: 4px; font-size: 14px; margin-bottom: 8px; text-align: right; align-items: center;">
+                        <div style="text-align: left; color: var(--text-dim); font-size: 13px;">TQQQ</div>
+                        <div class="pg-val">{t_target_str}</div>
+                        <div class="pg-val" style="color:var(--accent);">${tqqq_price:.2f}</div>
+                        <div class="pg-val" style="color:{gap_color}; font-size: 14px;">{gap_val}</div>
                     </div>
-                    
-                    <div class="pg-row">
-                        <span>TQQQ 現價 ({t_label})</span>
-                        <span>SOXL 現價 ({s_label})</span>
+                    <div style="display: grid; grid-template-columns: 45px 1fr 1fr 1fr; gap: 4px; font-size: 14px; text-align: right; align-items: center; padding-bottom: 4px; border-bottom: 1px dashed var(--border);">
+                        <div style="text-align: left; color: var(--text-dim); font-size: 13px;">SOXL</div>
+                        <div class="pg-val">{s_target_str}</div>
+                        <div class="pg-val" style="color:var(--accent);">${soxl_price:.2f}</div>
+                        <div class="pg-val" style="color:{gap_color}; font-size: 14px;">{gap_val}</div>
                     </div>
-                    <div class="pg-row" style="color:var(--accent);">
-                        <span class="pg-val">${tqqq_price:.2f}</span>
-                        <span class="pg-val">${soxl_price:.2f}</span>
-                    </div>
-                    
-                    <div class="pg-row main-gap"><span>{gap_label}</span><span class="pg-val" style="color:{gap_color};">{gap_val}</span></div>
                 </div>
                 <div class="detail-row" style="margin-top: 15px;"><span>{prog_label}</span><span class="detail-val">{stage_prog:.1f}%</span></div>
                 <div class="progress-bg"><div class="progress-fill" style="width: {stage_prog}%"></div></div>
