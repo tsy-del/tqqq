@@ -179,10 +179,8 @@ def update_files():
         soxl_price = prices_data.get('SOXL', {}).get('price', data['market_prices'].get('soxl_usd', 0))
         s_label = prices_data.get('SOXL', {}).get('label', 'REG')
         
-        # 初始化模擬變數，用於跨階段目標價計算 (因為每個階段達成後會套現，本金減少)
-        sim_v = total_value_hkd
-        sim_tqqq = tqqq_price
-        sim_soxl = soxl_price
+        # 初始化累積目標利潤
+        cumulative_target_profit = 0
 
         for m in data['milestones']:
             if m['stage'] == 1:
@@ -214,20 +212,21 @@ def update_files():
                 else: m['status'] = "PENDING"
                 target_amount = stage3_target
 
-            # 串聯計算目標價 (因為每個階段達成後會套現，本金減少，後續階段需要更大升幅)
-            if shortfall > 0 and sim_v > 0:
-                required_growth_pct = shortfall / sim_v
-                sim_tqqq = sim_tqqq * (1 + required_growth_pct)
-                sim_soxl = sim_soxl * (1 + required_growth_pct)
-                sim_v = sim_v * (1 + required_growth_pct)
+            # 累積目標利潤計算 (直接與目前總資產對比，不再模擬套現扣減)
+            cumulative_target_profit += target_amount
+            required_portfolio_value = total_cost_hkd + cumulative_target_profit
+
+            if total_value_hkd < required_portfolio_value and total_value_hkd > 0:
+                required_growth_pct = (required_portfolio_value / total_value_hkd) - 1
+                stage_target_tqqq = tqqq_price * (1 + required_growth_pct)
+                stage_target_soxl = soxl_price * (1 + required_growth_pct)
                 
-                # 計算與「目前股價」嘅距離
-                price_diff_pct = ((sim_tqqq / tqqq_price) - 1) * 100 if tqqq_price > 0 else 0
+                price_diff_pct = required_growth_pct * 100
                 gap_label = "剩餘距離"
                 gap_val = f"+{price_diff_pct:.1f}%"
                 gap_color = "var(--accent)"
-                t_target_str = f"${sim_tqqq:.2f}"
-                s_target_str = f"${sim_soxl:.2f}"
+                t_target_str = f"${stage_target_tqqq:.2f}"
+                s_target_str = f"${stage_target_soxl:.2f}"
             else:
                 gap_label = "目標狀態"
                 gap_val = "已達標"
