@@ -210,8 +210,10 @@ def update_files():
                 target_amount = stage3_target
 
             # 動態計算目標價 (按比例推算)
-            if shortfall > 0 and total_value_hkd > 0:
-                required_growth_pct = shortfall / total_value_hkd
+            cum_target = m.get('cumulative_target_hkd', 0)
+            cum_shortfall = max(0, cum_target - total_profit_hkd)
+            if cum_shortfall > 0 and total_value_hkd > 0:
+                required_growth_pct = cum_shortfall / total_value_hkd
                 tqqq_target = tqqq_price * (1 + required_growth_pct)
                 soxl_target = soxl_price * (1 + required_growth_pct)
                 price_diff_pct = required_growth_pct * 100
