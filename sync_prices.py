@@ -173,18 +173,13 @@ def update_files():
         prog3 = (profit_for_stage3 / stage3_target) * 100
 
         milestones_html = ""
-        # 取得 TQQQ 現價以計算里程碑
+        # 取得現價以計算里程碑
         tqqq_price = prices_data.get('TQQQ', {}).get('price', data['market_prices'].get('tqqq_usd', 0))
         t_label = prices_data.get('TQQQ', {}).get('label', 'REG')
+        soxl_price = prices_data.get('SOXL', {}).get('price', data['market_prices'].get('soxl_usd', 0))
+        s_label = prices_data.get('SOXL', {}).get('label', 'REG')
+        
         for m in data['milestones']:
-            target_price = m['tqqq_target_usd']
-            price_diff = target_price - tqqq_price
-            price_diff_pct = (price_diff / tqqq_price) * 100 if target_price > tqqq_price else 0
-
-            gap_label = "剩餘距離" if target_price > tqqq_price else "超額"
-            gap_val = f"{price_diff:.2f} ({price_diff_pct:.1f}%)" if target_price > tqqq_price else "已達標"
-            gap_color = "var(--accent)" if target_price > tqqq_price else "var(--success)"
-
             if m['stage'] == 1:
                 stage_prog = prog1
                 avail_profit_str = format_hkd(profit_for_stage1)
@@ -192,6 +187,7 @@ def update_files():
                 shortfall = max(0, stage1_target - profit_for_stage1)
                 shortfall_str = format_hkd(shortfall)
                 m['status'] = "COMPLETED" if prog1 >= 100 else "IN_PROGRESS"
+                target_amount = stage1_target
             elif m['stage'] == 2:
                 stage_prog = prog2
                 avail_profit_str = format_hkd(profit_for_stage2) if available_for_stage2 > 0 else "$0"
@@ -201,6 +197,7 @@ def update_files():
                 if prog2 >= 100: m['status'] = "COMPLETED"
                 elif available_for_stage2 > 0: m['status'] = "IN_PROGRESS"
                 else: m['status'] = "PENDING"
+                target_amount = stage2_target
             elif m['stage'] == 3:
                 stage_prog = prog3
                 avail_profit_str = format_hkd(profit_for_stage3) if available_for_stage3 > 0 else "$0"
@@ -210,14 +207,49 @@ def update_files():
                 if prog3 >= 100: m['status'] = "COMPLETED"
                 elif available_for_stage3 > 0: m['status'] = "IN_PROGRESS"
                 else: m['status'] = "PENDING"
+                target_amount = stage3_target
+
+            # 動態計算目標價 (按比例推算)
+            if shortfall > 0 and total_value_hkd > 0:
+                required_growth_pct = shortfall / total_value_hkd
+                tqqq_target = tqqq_price * (1 + required_growth_pct)
+                soxl_target = soxl_price * (1 + required_growth_pct)
+                price_diff_pct = required_growth_pct * 100
+                gap_label = "剩餘距離"
+                gap_val = f"+{price_diff_pct:.1f}%"
+                gap_color = "var(--accent)"
+                t_target_str = f"${tqqq_target:.2f}"
+                s_target_str = f"${soxl_target:.2f}"
+            else:
+                gap_label = "目標狀態"
+                gap_val = "已達標"
+                gap_color = "var(--success)"
+                t_target_str = "達標"
+                s_target_str = "達標"
 
             status_class = f"status-{m['status']}"
 
             details = f"""
             <div class="progress-details">
                 <div class="price-gap-box">
-                    <div class="pg-row"><span>目標價</span><span class="pg-val">${target_price}</span></div>
-                    <div class="pg-row"><span>目前現價 ({t_label})</span><span class="pg-val" style="color:var(--accent);">${tqqq_price}</span></div>
+                    <div class="pg-row">
+                        <span>TQQQ 目標價</span>
+                        <span>SOXL 目標價</span>
+                    </div>
+                    <div class="pg-row" style="margin-bottom: 10px;">
+                        <span class="pg-val">{t_target_str}</span>
+                        <span class="pg-val">{s_target_str}</span>
+                    </div>
+                    
+                    <div class="pg-row">
+                        <span>TQQQ 現價 ({t_label})</span>
+                        <span>SOXL 現價 ({s_label})</span>
+                    </div>
+                    <div class="pg-row" style="color:var(--accent);">
+                        <span class="pg-val">${tqqq_price:.2f}</span>
+                        <span class="pg-val">${soxl_price:.2f}</span>
+                    </div>
+                    
                     <div class="pg-row main-gap"><span>{gap_label}</span><span class="pg-val" style="color:{gap_color};">{gap_val}</span></div>
                 </div>
                 <div class="detail-row" style="margin-top: 15px;"><span>{prog_label}</span><span class="detail-val">{stage_prog:.1f}%</span></div>
