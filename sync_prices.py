@@ -78,11 +78,24 @@ def get_latest_prices(symbols):
             raise RuntimeError(f"Invalid price fetched for {sym}. Aborting update.")
         
         reg = info.get('regularMarketPrice') or price
-        prev_close = info.get('previousClose') or reg
-        change_pct = ((price - prev_close) / prev_close * 100) if prev_close > 0 else 0
+        
+        # Calculate change percentage based on market state
+        market_state = info.get('marketState', '').upper()
+        # Reference price logic:
+        # In PRE/POST, we want to see the change relative to the last regular close (regularMarketPrice)
+        # In REG/CLOSED, we want to see the change relative to the previous day's close (previousClose)
+        if market_state in ('PRE', 'PREPRE', 'POST', 'POSTPOST'):
+            ref_price = info.get('regularMarketPrice')
+        else:
+            ref_price = info.get('previousClose')
+            
+        if not ref_price or ref_price <= 0:
+            ref_price = info.get('previousClose') or info.get('regularMarketPrice') or price
+            
+        chg_pct = ((price - ref_price) / ref_price * 100) if ref_price > 0 else 0
         
         label = "EXT" if abs(price - reg) > 0.01 else "REG"
-        prices[sym] = {'price': price, 'label': label, 'change_pct': change_pct}
+        prices[sym] = {'price': price, 'label': label, 'change_pct': chg_pct}
     return prices
 
 def update_files():
