@@ -78,8 +78,11 @@ def get_latest_prices(symbols):
             raise RuntimeError(f"Invalid price fetched for {sym}. Aborting update.")
         
         reg = info.get('regularMarketPrice') or price
+        prev_close = info.get('previousClose') or reg
+        change_pct = ((price - prev_close) / prev_close * 100) if prev_close > 0 else 0
+        
         label = "EXT" if abs(price - reg) > 0.01 else "REG"
-        prices[sym] = {'price': price, 'label': label}
+        prices[sym] = {'price': price, 'label': label, 'change_pct': change_pct}
     return prices
 
 def update_files():
@@ -336,7 +339,19 @@ def update_files():
         ticker_bar_html = ""
         for sym in active_tickers_sorted:
             p_data = prices_data[sym]
-            ticker_bar_html += f"""<div class="ticker-item"><span class="ticker-symbol">{sym}</span><span class="ticker-price">${p_data['price']}</span><span class="session-tag" style="display:{'inline-block' if p_data['label'] == 'EXT' else 'none'}">{p_data['label']}</span></div>\n"""
+            chg = p_data['change_pct']
+            chg_color = "var(--success)" if chg >= 0 else "var(--danger)"
+            chg_sign = "+" if chg >= 0 else ""
+            ticker_bar_html += f"""<div class="ticker-item">
+                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="ticker-symbol">{sym}</span>
+                        <span class="ticker-price">${p_data['price']}</span>
+                        <span class="session-tag" style="display:{'inline-block' if p_data['label'] == 'EXT' else 'none'}">{p_data['label']}</span>
+                    </div>
+                    <span style="font-size: 11px; font-weight: 700; color: {chg_color};">{chg_sign}{chg:.1f}%</span>
+                </div>
+            </div>\n"""
 
         new_html = f"""<!DOCTYPE html>
 <html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>TQQQ Plan | {SCRIPT_VERSION} (Auto Cloud Sync)</title>
@@ -358,8 +373,8 @@ h1 {{ font-size: 26px; font-weight: 800; margin: 0; }}
 .profit-display {{ display: flex; align-items: baseline; gap: 8px; }}
 .profit-pct {{ font-size: 14px; font-weight: 700; padding-bottom: 1px; }}
 
-.ticker-bar {{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 24px; }}
-.ticker-item {{ background: var(--glass); border: 1px solid var(--border); padding: 10px 14px; border-radius: 14px; display: flex; align-items: center; gap: 8px; }}
+.ticker-bar {{ display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }}
+.ticker-item {{ background: var(--glass); border: 1px solid var(--border); padding: 12px 16px; border-radius: 16px; display: flex; align-items: center; }}
 .ticker-symbol {{ font-weight: 700; font-size: 13px; color: var(--text-dim); }}
 .ticker-price {{ font-family: monospace; font-size: 13px; color: #fff; }}
 .session-tag {{ font-size: 9px; padding: 1px 4px; border-radius: 3px; background: rgba(59,130,246,0.2); color: var(--accent); margin-left: 4px; border: 0.5px solid var(--accent); }}
