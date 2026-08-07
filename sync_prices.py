@@ -343,14 +343,12 @@ def update_files():
             chg_color = "var(--success)" if chg >= 0 else "var(--danger)"
             chg_sign = "+" if chg >= 0 else ""
             ticker_bar_html += f"""<div class="ticker-item">
-                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <span class="ticker-symbol">{sym}</span>
-                        <span class="ticker-price">${p_data['price']}</span>
-                        <span class="session-tag" style="display:{'inline-block' if p_data['label'] == 'EXT' else 'none'}">{p_data['label']}</span>
-                    </div>
-                    <span style="font-size: 11px; font-weight: 700; color: {chg_color};">{chg_sign}{chg:.1f}%</span>
+                <div style="display: flex; align-items: center; gap: 6px; overflow: hidden;">
+                    <span class="ticker-symbol" style="flex-shrink: 0;">{sym}</span>
+                    <span class="ticker-price" style="flex-shrink: 0;">${p_data['price']}</span>
+                    <span class="session-tag" style="display:{'inline-block' if p_data['label'] == 'EXT' else 'none'}; flex-shrink: 0; font-size: 8px; padding: 0 2px;">{p_data['label']}</span>
                 </div>
+                <span style="font-size: 11px; font-weight: 700; color: {chg_color}; flex-shrink: 0;">{chg_sign}{chg:.1f}%</span>
             </div>\n"""
 
         new_html = f"""<!DOCTYPE html>
@@ -373,8 +371,8 @@ h1 {{ font-size: 26px; font-weight: 800; margin: 0; }}
 .profit-display {{ display: flex; align-items: baseline; gap: 8px; }}
 .profit-pct {{ font-size: 14px; font-weight: 700; padding-bottom: 1px; }}
 
-.ticker-bar {{ display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }}
-.ticker-item {{ background: var(--glass); border: 1px solid var(--border); padding: 12px 16px; border-radius: 16px; display: flex; align-items: center; }}
+.ticker-bar {{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 24px; }}
+.ticker-item {{ background: var(--glass); border: 1px solid var(--border); padding: 10px 14px; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; gap: 4px; }}
 .ticker-symbol {{ font-weight: 700; font-size: 13px; color: var(--text-dim); }}
 .ticker-price {{ font-family: monospace; font-size: 13px; color: #fff; }}
 .session-tag {{ font-size: 9px; padding: 1px 4px; border-radius: 3px; background: rgba(59,130,246,0.2); color: var(--accent); margin-left: 4px; border: 0.5px solid var(--accent); }}
