@@ -70,8 +70,8 @@
       "holdings": [
         {
           "asset": "SPCH",
-          "quantity": 200,
-          "avg_price_usd": 18.885,
+          "quantity": 300,
+          "avg_price_usd": 15.2567,
           "current_price_usd": 8.66
         },
         {
