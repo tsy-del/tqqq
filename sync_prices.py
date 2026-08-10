@@ -11,7 +11,7 @@ REPO_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 
-SCRIPT_VERSION = "v5.0"
+SCRIPT_VERSION = "v5.1"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -364,6 +364,44 @@ def update_files():
                 <span style="font-size: 11px; font-weight: 700; color: {chg_color}; flex-shrink: 0;">{chg_sign}{chg:.1f}%</span>
             </div>\n"""
 
+        # 合併持倉 (Combined Positions) 計算
+        combined_data = {}
+        for acc in data['accounts']:
+            for h in acc['holdings']:
+                sym = h['asset']
+                if sym == 'USD 現金': continue
+                qty = h['quantity']
+                avg = h.get('avg_price_usd', 0)
+                if sym not in combined_data:
+                    combined_data[sym] = {'qty': 0, 'cost_sum': 0}
+                combined_data[sym]['qty'] += qty
+                combined_data[sym]['cost_sum'] += qty * avg
+
+        combined_html = ""
+        for sym in active_tickers_sorted:
+            if sym in combined_data:
+                c = combined_data[sym]
+                total_qty = c['qty']
+                if total_qty <= 0: continue
+                avg_cost = c['cost_sum'] / total_qty
+                curr_p = prices_data[sym]['price']
+                gain_pct = ((curr_p - avg_cost) / avg_cost * 100) if avg_cost else 0
+                pl_hkd = (curr_p - avg_cost) * total_qty * rate
+                
+                combined_html += f"""<div class="asset-row" style="border-left: 4px solid var(--accent);">
+                    <div class="asset-info">
+                        <div class="asset-name">{sym} <span class="qty">總共: {total_qty}</span></div>
+                        <div class="asset-cost">平均成本 ${avg_cost:.3f} | 現價 ${curr_p}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="asset-status {'up' if gain_pct >= 0 else 'down'}">{'+' if gain_pct >= 0 else ''}{gain_pct:.1f}%</div>
+                        <div style="font-size: 10px; color: var(--text-dim);">{format_hkd(pl_hkd)}</div>
+                    </div>
+                </div>"""
+
+        if combined_html:
+            combined_html = f'<section style="margin-top: 32px; margin-bottom: 32px;"><h2>Combined Positions</h2>{combined_html}</section>'
+
         new_html = f"""<!DOCTYPE html>
 <html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>TQQQ Plan | {SCRIPT_VERSION} (Auto Cloud Sync)</title>
 <style>
@@ -449,6 +487,7 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
 </section>
 
 <section><h2>Strategic Targets</h2>{milestones_html}</section>
+{combined_html}
 <section style="margin-top: 32px; margin-bottom: 32px;"><h2>Holdings</h2>{accounts_html}</section>
 
 <a href="https://github.com/tsy-del/tqqq/actions/workflows/sync.yml" target="_blank" class="sync-btn">
