@@ -355,14 +355,14 @@ def update_files():
             chg = p_data['change_pct']
             chg_color = "var(--success)" if chg >= 0 else "var(--danger)"
             chg_sign = "+" if chg >= 0 else ""
-            ticker_bar_html += f"""<div class="ticker-item">
+            ticker_bar_html += f"""<a href="https://finance.yahoo.com/quote/{sym}" target="_blank" class="ticker-item" style="text-decoration: none;">
                 <div style="display: flex; align-items: center; gap: 6px; overflow: hidden;">
                     <span class="ticker-symbol" style="flex-shrink: 0;">{sym}</span>
                     <span class="ticker-price" style="flex-shrink: 0;">${p_data['price']}</span>
                     <span class="session-tag" style="display:{'inline-block' if p_data['label'] == 'EXT' else 'none'}; flex-shrink: 0; font-size: 8px; padding: 0 2px;">{p_data['label']}</span>
                 </div>
                 <span style="font-size: 11px; font-weight: 700; color: {chg_color}; flex-shrink: 0;">{chg_sign}{chg:.1f}%</span>
-            </div>\n"""
+            </a>\n"""
 
         # 合併持倉 (Combined Positions) 計算
         combined_data = {}
