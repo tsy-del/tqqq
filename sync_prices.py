@@ -355,7 +355,7 @@ def update_files():
             chg = p_data['change_pct']
             chg_color = "var(--success)" if chg >= 0 else "var(--danger)"
             chg_sign = "+" if chg >= 0 else ""
-            ticker_bar_html += f"""<a href="https://finance.yahoo.com/quote/{sym}" target="_blank" class="ticker-item" style="text-decoration: none;">
+            ticker_bar_html += f"""<a href="https://hk.finance.yahoo.com/quote/{sym}" target="_blank" class="ticker-item" style="text-decoration: none;">
                 <div style="display: flex; align-items: center; gap: 6px; overflow: hidden;">
                     <span class="ticker-symbol" style="flex-shrink: 0;">{sym}</span>
                     <span class="ticker-price" style="flex-shrink: 0;">${p_data['price']}</span>
