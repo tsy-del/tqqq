@@ -1,22 +1,22 @@
 {
-  "last_updated": "2026-08-15 06:15:08",
+  "last_updated": "2026-08-15 06:30:09",
   "market_prices": {
     "tqqq_usd": 76.77,
-    "soxl_usd": 144.98,
+    "soxl_usd": 144.86,
     "usd_hkd_rate": 7.8,
     "spcx_usd": 192.5,
-    "spch_usd": 9.07
+    "spch_usd": 9.1
   },
   "portfolio_summary": {
-    "total_value_hkd": 1915057,
+    "total_value_hkd": 1914898,
     "total_cost_hkd": 1637413,
-    "total_profit_hkd": 277643
+    "total_profit_hkd": 277484
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 362006,
-      "total_profit_hkd": 84932,
+      "total_value_hkd": 361986,
+      "total_profit_hkd": 84911,
       "total_cost_hkd": 277074,
       "holdings": [
         {
@@ -29,7 +29,7 @@
           "asset": "SOXL",
           "quantity": 22,
           "avg_price_usd": 118.48,
-          "current_price_usd": 144.98
+          "current_price_usd": 144.86
         }
       ]
     },
@@ -50,35 +50,35 @@
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 180935,
-      "total_profit_hkd": -72421,
+      "total_value_hkd": 180785,
+      "total_profit_hkd": -72571,
       "total_cost_hkd": 253356,
       "holdings": [
         {
           "asset": "SOXL",
           "quantity": 160,
           "avg_price_usd": 203.01,
-          "current_price_usd": 144.98
+          "current_price_usd": 144.86
         }
       ]
     },
     {
       "account_name": "帳戶 D (滙豐 - P683880)",
-      "total_value_hkd": 92467,
-      "total_profit_hkd": -53904,
+      "total_value_hkd": 92478,
+      "total_profit_hkd": -53893,
       "total_cost_hkd": 146371,
       "holdings": [
         {
           "asset": "SPCH",
           "quantity": 300,
           "avg_price_usd": 15.2567,
-          "current_price_usd": 9.07
+          "current_price_usd": 9.1
         },
         {
           "asset": "SOXL",
           "quantity": 63,
           "avg_price_usd": 225.2145,
-          "current_price_usd": 144.98
+          "current_price_usd": 144.86
         }
       ]
     }
