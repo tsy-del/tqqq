@@ -101,8 +101,9 @@ def get_latest_prices(symbols):
 def update_files():
     try:
         # 在開始任何動作前，先強制與 GitHub 同步 (防止手動更新造成的 Git Push Rejected)
-        run_git(["fetch", "origin", "main"])
-        run_git(["reset", "--hard", "origin/main"])
+        if not os.environ.get('GITHUB_ACTIONS'):
+            run_git(["fetch", "origin", "main"])
+            run_git(["reset", "--hard", "origin/main"])
 
         if not os.path.exists(DATA_FILE):
             print("data.json not found")
