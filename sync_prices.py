@@ -567,4 +567,7 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
         return False
 
 if __name__ == "__main__":
-    update_files()
+    success = update_files()
+    if not success:
+        import sys
+        sys.exit(1)
