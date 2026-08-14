@@ -169,6 +169,22 @@ def update_files():
         data['portfolio_summary']['total_cost_hkd'] = int(round(total_cost_hkd))
         data['portfolio_summary']['total_profit_hkd'] = int(round(total_profit_hkd))
 
+        # History Stats Tracking
+        if 'history_stats' not in data:
+            data['history_stats'] = {
+                "highest_profit_hkd": total_profit_hkd,
+                "highest_profit_date": current_time_str,
+                "lowest_profit_hkd": total_profit_hkd,
+                "lowest_profit_date": current_time_str
+            }
+        else:
+            if total_profit_hkd > data['history_stats'].get('highest_profit_hkd', -float('inf')):
+                data['history_stats']['highest_profit_hkd'] = total_profit_hkd
+                data['history_stats']['highest_profit_date'] = current_time_str
+            if total_profit_hkd < data['history_stats'].get('lowest_profit_hkd', float('inf')):
+                data['history_stats']['lowest_profit_hkd'] = total_profit_hkd
+                data['history_stats']['lowest_profit_date'] = current_time_str
+
         total_profit_pct = (total_profit_hkd / total_cost_hkd) * 100 if total_cost_hkd > 0 else 0
         total_profit_color = '#10b981' if total_profit_hkd >= 0 else '#ef4444'
         total_profit_sign = '+' if total_profit_hkd >= 0 else ''
@@ -402,6 +418,38 @@ def update_files():
         if combined_html:
             combined_html = f'<section style="margin-top: 32px; margin-bottom: 32px;"><h2>Combined Positions</h2>{combined_html}</section>'
 
+        # History Stats HTML
+        history_stats = data.get('history_stats', {})
+        highest_hkd = history_stats.get('highest_profit_hkd', 0)
+        highest_date = history_stats.get('highest_profit_date', 'N/A')
+        lowest_hkd = history_stats.get('lowest_profit_hkd', 0)
+        lowest_date = history_stats.get('lowest_profit_date', 'N/A')
+        
+        highest_color = '#10b981' if highest_hkd >= 0 else '#ef4444'
+        lowest_color = '#10b981' if lowest_hkd >= 0 else '#ef4444'
+
+        history_html = f"""<section style="margin-top: 32px; margin-bottom: 32px;">
+            <h2>Historical Stats</h2>
+            <div class="milestone-card" style="border: 1px dashed var(--border); box-shadow: none;">
+                <div class="m-body" style="display: block;">
+                    <div class="detail-row" style="margin-bottom: 12px;">
+                        <span style="font-size: 13px;">歷史最高利潤</span>
+                        <div style="text-align: right;">
+                            <div style="font-size: 15px; font-weight: 800; color: {highest_color};">{'+' if highest_hkd >= 0 else ''}{format_hkd(highest_hkd)}</div>
+                            <div style="font-size: 10px; color: var(--text-dim); margin-top: 2px;">{highest_date}</div>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <span style="font-size: 13px;">歷史最低利潤</span>
+                        <div style="text-align: right;">
+                            <div style="font-size: 15px; font-weight: 800; color: {lowest_color};">{'+' if lowest_hkd >= 0 else ''}{format_hkd(lowest_hkd)}</div>
+                            <div style="font-size: 10px; color: var(--text-dim); margin-top: 2px;">{lowest_date}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>"""
+
         new_html = f"""<!DOCTYPE html>
 <html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>TQQQ Plan | {SCRIPT_VERSION} (Auto Cloud Sync)</title>
 <style>
@@ -489,6 +537,7 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
 <section><h2>Strategic Targets</h2>{milestones_html}</section>
 {combined_html}
 <section style="margin-top: 32px; margin-bottom: 32px;"><h2>Holdings</h2>{accounts_html}</section>
+{history_html}
 
 <a href="https://github.com/tsy-del/tqqq/actions/workflows/sync.yml" target="_blank" class="sync-btn">
     🔄 手動觸發雲端更新 (GitHub Actions)
