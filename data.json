@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-14 10:45:08",
+  "last_updated": "2026-08-14 10:54:45",
   "market_prices": {
     "tqqq_usd": 77.47,
     "soxl_usd": 146.4,
@@ -114,5 +114,11 @@
       "status": "PENDING",
       "strategy": "回贈＋餘兵：收樓拿走按揭回贈填補，其餘股份放長線重新滾動。"
     }
-  ]
+  ],
+  "history_stats": {
+    "highest_profit_hkd": 295637.2496999996,
+    "highest_profit_date": "2026-08-14 10:54:45",
+    "lowest_profit_hkd": 295637.2496999996,
+    "lowest_profit_date": "2026-08-14 10:54:45"
+  }
 }
