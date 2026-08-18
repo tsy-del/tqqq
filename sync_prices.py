@@ -11,7 +11,7 @@ REPO_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 
-SCRIPT_VERSION = "v5.2"
+SCRIPT_VERSION = "v5.3"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -185,6 +185,24 @@ def update_files():
             if total_profit_hkd < data['history_stats'].get('lowest_profit_hkd', float('inf')):
                 data['history_stats']['lowest_profit_hkd'] = total_profit_hkd
                 data['history_stats']['lowest_profit_date'] = current_time_str
+
+        # Daily Stats Tracking
+        current_date_str = datetime.now(hk_tz).strftime('%Y-%m-%d')
+        if 'daily_stats' not in data or data['daily_stats'].get('date') != current_date_str:
+            data['daily_stats'] = {
+                "date": current_date_str,
+                "highest_profit_hkd": total_profit_hkd,
+                "lowest_profit_hkd": total_profit_hkd,
+                "highest_time": current_time_str.split(' ')[1],
+                "lowest_time": current_time_str.split(' ')[1]
+            }
+        else:
+            if total_profit_hkd > data['daily_stats'].get('highest_profit_hkd', -float('inf')):
+                data['daily_stats']['highest_profit_hkd'] = total_profit_hkd
+                data['daily_stats']['highest_time'] = current_time_str.split(' ')[1]
+            if total_profit_hkd < data['daily_stats'].get('lowest_profit_hkd', float('inf')):
+                data['daily_stats']['lowest_profit_hkd'] = total_profit_hkd
+                data['daily_stats']['lowest_time'] = current_time_str.split(' ')[1]
 
         total_profit_pct = (total_profit_hkd / total_cost_hkd) * 100 if total_cost_hkd > 0 else 0
         total_profit_color = '#10b981' if total_profit_hkd >= 0 else '#ef4444'
@@ -426,7 +444,8 @@ def update_files():
         if combined_html:
             combined_html = f'<section style="margin-top: 32px; margin-bottom: 32px;"><h2>Combined Positions</h2>{combined_html}</section>'
 
-        # History Stats HTML
+        # Stats HTML
+        current_date_str = datetime.now(hk_tz).strftime('%Y-%m-%d')
         history_stats = data.get('history_stats', {})
         highest_hkd = history_stats.get('highest_profit_hkd', 0)
         highest_date = history_stats.get('highest_profit_date', 'N/A')
@@ -436,10 +455,36 @@ def update_files():
         highest_color = '#10b981' if highest_hkd >= 0 else '#ef4444'
         lowest_color = '#10b981' if lowest_hkd >= 0 else '#ef4444'
 
+        daily_stats = data.get('daily_stats', {})
+        d_highest_hkd = daily_stats.get('highest_profit_hkd', 0)
+        d_highest_time = daily_stats.get('highest_time', 'N/A')
+        d_lowest_hkd = daily_stats.get('lowest_profit_hkd', 0)
+        d_lowest_time = daily_stats.get('lowest_time', 'N/A')
+        
+        d_highest_color = '#10b981' if d_highest_hkd >= 0 else '#ef4444'
+        d_lowest_color = '#10b981' if d_lowest_hkd >= 0 else '#ef4444'
+
         history_html = f"""<section style="margin-top: 32px; margin-bottom: 32px;">
-            <h2>Historical Stats</h2>
+            <h2>Profit Stats (Today & History)</h2>
             <div class="milestone-card" style="border: 1px dashed var(--border); box-shadow: none;">
                 <div class="m-body" style="display: block;">
+                    <div style="font-size: 11px; font-weight: 700; color: var(--text-dim); margin-bottom: 8px;">今日 ({current_date_str})</div>
+                    <div class="detail-row" style="margin-bottom: 12px;">
+                        <span style="font-size: 13px;">今日最高利潤</span>
+                        <div style="text-align: right;">
+                            <div style="font-size: 15px; font-weight: 800; color: {d_highest_color};">{'+' if d_highest_hkd >= 0 else ''}{format_hkd(d_highest_hkd)}</div>
+                            <div style="font-size: 10px; color: var(--text-dim); margin-top: 2px;">{d_highest_time}</div>
+                        </div>
+                    </div>
+                    <div class="detail-row" style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
+                        <span style="font-size: 13px;">今日最低利潤</span>
+                        <div style="text-align: right;">
+                            <div style="font-size: 15px; font-weight: 800; color: {d_lowest_color};">{'+' if d_lowest_hkd >= 0 else ''}{format_hkd(d_lowest_hkd)}</div>
+                            <div style="font-size: 10px; color: var(--text-dim); margin-top: 2px;">{d_lowest_time}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="font-size: 11px; font-weight: 700; color: var(--text-dim); margin-bottom: 8px;">歷史紀錄</div>
                     <div class="detail-row" style="margin-bottom: 12px;">
                         <span style="font-size: 13px;">歷史最高利潤</span>
                         <div style="text-align: right;">
