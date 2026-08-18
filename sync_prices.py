@@ -362,9 +362,16 @@ def update_files():
                     <div class="asset-cost">成本 ${avg} | 現價 ${h['current_price_usd']}</div></div>
                     <div style="text-align: right;"><div class="asset-status {'up' if gain >= 0 else 'down'}">{'+' if gain >= 0 else ''}{gain:.1f}%</div>
                     <div style="font-size: 10px; color: var(--text-dim);">{format_hkd(pl)}</div></div></div>"""
-            accounts_html += f"""<div class="account-block">
-                <div class="account-header"><span>{acc['account_name']}</span><span class="acc-val">{format_hkd(acc['total_value_hkd'])}</span></div>
-                <div class="holdings-list">{rows}</div></div>"""
+            accounts_html += f"""<div class="account-block collapsed">
+                <div class="account-header" onclick="this.parentElement.classList.toggle('collapsed')" style="cursor: pointer; user-select: none;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span>{acc['account_name']}</span>
+                        <span class="toggle-icon" style="font-size: 10px; color: var(--text-dim); transition: transform 0.3s ease;">▼</span>
+                    </div>
+                    <span class="acc-val">{format_hkd(acc['total_value_hkd'])}</span>
+                </div>
+                <div class="holdings-list">{rows}</div>
+            </div>"""
 
         ticker_bar_html = ""
         for sym in active_tickers_sorted:
@@ -506,7 +513,11 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
 .progress-bg {{ background: rgba(255,255,255,0.03); height: 8px; border-radius: 10px; overflow: hidden; }}
 .progress-fill {{ background: linear-gradient(90deg, var(--accent), #60a5fa); height: 100%; border-radius: 10px; transition: width 0.5s ease; }}
 .account-block {{ margin-bottom: 28px; }}
-.account-header {{ display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; margin-bottom: 12px; padding: 0 4px; }}
+.account-header {{ display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; margin-bottom: 12px; padding: 0 4px; transition: opacity 0.2s; }}
+.account-header:active {{ opacity: 0.7; }}
+.account-block.collapsed .holdings-list {{ display: none; }}
+.account-block.collapsed .toggle-icon {{ transform: rotate(-90deg); }}
+.account-block.collapsed .account-header {{ margin-bottom: 0; }}
 .asset-row {{ background: var(--card); border: 1px solid var(--border); padding: 14px 18px; border-radius: 18px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }}
 .asset-name {{ font-weight: 700; font-size: 15px; }}
 .qty {{ font-size: 11px; color: var(--text-dim); margin-left: 6px; }}
