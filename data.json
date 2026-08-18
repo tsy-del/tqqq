@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-18 09:52:02",
+  "last_updated": "2026-08-18 10:00:08",
   "market_prices": {
     "tqqq_usd": 76.42,
     "soxl_usd": 152.69,
@@ -120,5 +120,12 @@
     "highest_profit_date": "2026-08-17 23:20:08",
     "lowest_profit_hkd": 249921.4497,
     "lowest_profit_date": "2026-08-14 23:50:08"
+  },
+  "daily_stats": {
+    "date": "2026-08-18",
+    "highest_profit_hkd": 286691.0397000001,
+    "lowest_profit_hkd": 286691.0397000001,
+    "highest_time": "10:00:08",
+    "lowest_time": "10:00:08"
   }
 }
