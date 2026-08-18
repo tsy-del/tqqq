@@ -19,7 +19,7 @@ h1 { font-size: 26px; font-weight: 800; margin: 0; }
 .profit-pct { font-size: 14px; font-weight: 700; padding-bottom: 1px; }
 
 .ticker-bar { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 24px; }
-.ticker-item { background: var(--glass); border: 1px solid var(--border); padding: 10px 14px; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+.ticker-item { background: var(--glass); border: 1px solid var(--border); padding: 10px 14px; border-radius: 14px; display: flex; flex-direction: column; justify-content: center; }
 .ticker-symbol { font-weight: 700; font-size: 13px; color: var(--text-dim); }
 .ticker-price { font-family: monospace; font-size: 13px; color: #fff; }
 .session-tag { font-size: 9px; padding: 1px 4px; border-radius: 3px; background: rgba(59,130,246,0.2); color: var(--accent); margin-left: 4px; border: 0.5px solid var(--accent); }
@@ -67,7 +67,7 @@ h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 .down { color: var(--danger); }
 </style></head>
 <body><div class="container">
-<header><div class="header-top"><h1>📈 TQQQ Plan</h1><span class="v-tag">v5.1</span></div><div class="last-update">Last Update: 2026-08-18 09:15:10</div></header>
+<header><div class="header-top"><h1>📈 TQQQ Plan</h1><span class="v-tag">v5.1</span></div><div class="last-update">Last Update: 2026-08-18 09:22:38</div></header>
 <section class="main-summary">
     <div class="summary-card">
         <div class="summary-label">Total Value (HKD)</div>
@@ -84,28 +84,46 @@ h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 </section>
 <section class="ticker-bar">
     <a href="https://hk.finance.yahoo.com/quote/TQQQ" target="_blank" class="ticker-item" style="text-decoration: none;">
-                <div style="display: flex; align-items: center; gap: 6px; overflow: hidden;">
-                    <span class="ticker-symbol" style="flex-shrink: 0;">TQQQ</span>
-                    <span class="ticker-price" style="flex-shrink: 0;">$76.42</span>
-                    <span class="session-tag" style="display:inline-block; flex-shrink: 0; font-size: 8px; padding: 0 2px;">EXT</span>
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                    <div style="display: flex; align-items: center; gap: 6px; overflow: hidden;">
+                        <span class="ticker-symbol" style="flex-shrink: 0;">TQQQ</span>
+                        <span class="ticker-price" style="flex-shrink: 0;">$76.42</span>
+                        <span class="session-tag" style="display:inline-block; flex-shrink: 0; font-size: 8px; padding: 0 2px;">EXT</span>
+                    </div>
+                    <span style="font-size: 11px; font-weight: 700; color: var(--success); flex-shrink: 0;">+0.0%</span>
                 </div>
-                <span style="font-size: 11px; font-weight: 700; color: var(--success); flex-shrink: 0;">+0.0%</span>
+                <div style="display: flex; justify-content: space-between; width: 100%; font-size: 10px; color: var(--text-dim); margin-top: 4px;">
+                    <span>H: $77.90</span>
+                    <span>L: $76.21</span>
+                </div>
             </a>
 <a href="https://hk.finance.yahoo.com/quote/SOXL" target="_blank" class="ticker-item" style="text-decoration: none;">
-                <div style="display: flex; align-items: center; gap: 6px; overflow: hidden;">
-                    <span class="ticker-symbol" style="flex-shrink: 0;">SOXL</span>
-                    <span class="ticker-price" style="flex-shrink: 0;">$152.69</span>
-                    <span class="session-tag" style="display:inline-block; flex-shrink: 0; font-size: 8px; padding: 0 2px;">EXT</span>
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                    <div style="display: flex; align-items: center; gap: 6px; overflow: hidden;">
+                        <span class="ticker-symbol" style="flex-shrink: 0;">SOXL</span>
+                        <span class="ticker-price" style="flex-shrink: 0;">$152.69</span>
+                        <span class="session-tag" style="display:inline-block; flex-shrink: 0; font-size: 8px; padding: 0 2px;">EXT</span>
+                    </div>
+                    <span style="font-size: 11px; font-weight: 700; color: var(--success); flex-shrink: 0;">+0.8%</span>
                 </div>
-                <span style="font-size: 11px; font-weight: 700; color: var(--success); flex-shrink: 0;">+0.8%</span>
+                <div style="display: flex; justify-content: space-between; width: 100%; font-size: 10px; color: var(--text-dim); margin-top: 4px;">
+                    <span>H: $156.92</span>
+                    <span>L: $148.90</span>
+                </div>
             </a>
 <a href="https://hk.finance.yahoo.com/quote/SPCH" target="_blank" class="ticker-item" style="text-decoration: none;">
-                <div style="display: flex; align-items: center; gap: 6px; overflow: hidden;">
-                    <span class="ticker-symbol" style="flex-shrink: 0;">SPCH</span>
-                    <span class="ticker-price" style="flex-shrink: 0;">$9.79</span>
-                    <span class="session-tag" style="display:inline-block; flex-shrink: 0; font-size: 8px; padding: 0 2px;">EXT</span>
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                    <div style="display: flex; align-items: center; gap: 6px; overflow: hidden;">
+                        <span class="ticker-symbol" style="flex-shrink: 0;">SPCH</span>
+                        <span class="ticker-price" style="flex-shrink: 0;">$9.79</span>
+                        <span class="session-tag" style="display:inline-block; flex-shrink: 0; font-size: 8px; padding: 0 2px;">EXT</span>
+                    </div>
+                    <span style="font-size: 11px; font-weight: 700; color: var(--danger); flex-shrink: 0;">-0.4%</span>
                 </div>
-                <span style="font-size: 11px; font-weight: 700; color: var(--danger); flex-shrink: 0;">-0.4%</span>
+                <div style="display: flex; justify-content: space-between; width: 100%; font-size: 10px; color: var(--text-dim); margin-top: 4px;">
+                    <span>H: $10.29</span>
+                    <span>L: $8.97</span>
+                </div>
             </a>
 
 </section>
