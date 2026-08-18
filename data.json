@@ -27,9 +27,15 @@
         },
         {
           "asset": "SOXL",
-          "quantity": 22,
-          "avg_price_usd": 118.48,
+          "quantity": 85,
+          "avg_price_usd": 197.5891,
           "current_price_usd": 152.69
+        },
+        {
+          "asset": "SPCH",
+          "quantity": 300,
+          "avg_price_usd": 15.2567,
+          "current_price_usd": 9.79
         }
       ]
     },
@@ -58,26 +64,6 @@
           "asset": "SOXL",
           "quantity": 160,
           "avg_price_usd": 203.01,
-          "current_price_usd": 152.69
-        }
-      ]
-    },
-    {
-      "account_name": "帳戶 D (滙豐 - P683880)",
-      "total_value_hkd": 97940,
-      "total_profit_hkd": -48431,
-      "total_cost_hkd": 146371,
-      "holdings": [
-        {
-          "asset": "SPCH",
-          "quantity": 300,
-          "avg_price_usd": 15.2567,
-          "current_price_usd": 9.79
-        },
-        {
-          "asset": "SOXL",
-          "quantity": 63,
-          "avg_price_usd": 225.2145,
           "current_price_usd": 152.69
         }
       ]
