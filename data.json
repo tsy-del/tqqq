@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-18 13:00:10",
+  "last_updated": "2026-08-18 13:04:51",
   "market_prices": {
     "tqqq_usd": 76.42,
     "soxl_usd": 152.69,
@@ -15,9 +15,9 @@
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 361792,
-      "total_profit_hkd": 84718,
-      "total_cost_hkd": 277074,
+      "total_value_hkd": 459733,
+      "total_profit_hkd": 36287,
+      "total_cost_hkd": 423445,
       "holdings": [
         {
           "asset": "TQQQ",
