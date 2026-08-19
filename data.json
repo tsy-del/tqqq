@@ -1,22 +1,22 @@
 {
-  "last_updated": "2026-08-19 08:00:09",
+  "last_updated": "2026-08-19 08:15:09",
   "market_prices": {
     "tqqq_usd": 72.11,
     "soxl_usd": 126.1,
     "usd_hkd_rate": 7.8,
     "spcx_usd": 192.5,
-    "spch_usd": 9.28
+    "spch_usd": 9.29
   },
   "portfolio_summary": {
-    "total_value_hkd": 1781329,
+    "total_value_hkd": 1781352,
     "total_cost_hkd": 1637413,
-    "total_profit_hkd": 143916
+    "total_profit_hkd": 143939
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 421983,
-      "total_profit_hkd": -1462,
+      "total_value_hkd": 422007,
+      "total_profit_hkd": -1439,
       "total_cost_hkd": 423445,
       "holdings": [
         {
@@ -35,7 +35,7 @@
           "asset": "SPCH",
           "quantity": 300,
           "avg_price_usd": 15.2567,
-          "current_price_usd": 9.28
+          "current_price_usd": 9.29
         }
       ]
     },
