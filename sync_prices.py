@@ -10,8 +10,9 @@ import subprocess
 REPO_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
+PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v5.3"
+SCRIPT_VERSION = "v5.4"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -169,6 +170,30 @@ def update_files():
         data['portfolio_summary']['total_value_hkd'] = int(round(total_value_hkd))
         data['portfolio_summary']['total_cost_hkd'] = int(round(total_cost_hkd))
         data['portfolio_summary']['total_profit_hkd'] = int(round(total_profit_hkd))
+
+        # Profit History Logging for Chart
+        if os.path.exists(PROFIT_HISTORY_FILE):
+            with open(PROFIT_HISTORY_FILE, 'r', encoding='utf-8') as f:
+                try:
+                    profit_history = json.load(f)
+                except:
+                    profit_history = []
+        else:
+            profit_history = []
+            
+        current_unix_time = int(datetime.now(hk_tz).timestamp())
+        
+        if not profit_history or profit_history[-1]['time'] < current_unix_time:
+            profit_history.append({
+                "time": current_unix_time,
+                "value": int(round(total_profit_hkd))
+            })
+            
+        if len(profit_history) > 5000:
+            profit_history = profit_history[-5000:]
+            
+        with open(PROFIT_HISTORY_FILE, 'w', encoding='utf-8') as f:
+            json.dump(profit_history, f, ensure_ascii=False)
 
         # History Stats Tracking
         if 'history_stats' not in data:
@@ -464,6 +489,57 @@ def update_files():
         d_highest_color = '#10b981' if d_highest_hkd >= 0 else '#ef4444'
         d_lowest_color = '#10b981' if d_lowest_hkd >= 0 else '#ef4444'
 
+        profit_history_json_str = json.dumps(profit_history)
+        
+        chart_html = f'''<section style="margin-top: 32px; margin-bottom: 32px;">
+            <h2>Profit Trend</h2>
+            <div id="chart-container" style="width: 100%; height: 220px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; position: relative;"></div>
+            <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+            <script>
+                const chartOptions = {{ 
+                    layout: {{ textColor: '#71717a', background: {{ type: 'solid', color: 'transparent' }} }},
+                    grid: {{ vertLines: {{ visible: false }}, horzLines: {{ color: 'rgba(255, 255, 255, 0.05)' }} }},
+                    timeScale: {{ timeVisible: true, secondsVisible: false, borderVisible: false }},
+                    rightPriceScale: {{ borderVisible: false }}
+                }};
+                const chartContainer = document.getElementById('chart-container');
+                const chart = LightweightCharts.createChart(chartContainer, chartOptions);
+                const baselineSeries = chart.addBaselineSeries({{
+                    baseValue: {{ type: 'price', price: 0 }},
+                    topFillColor1: 'rgba(16, 185, 129, 0.28)',
+                    topFillColor2: 'rgba(16, 185, 129, 0.05)',
+                    topLineColor: 'rgba(16, 185, 129, 1)',
+                    bottomFillColor1: 'rgba(239, 68, 68, 0.05)',
+                    bottomFillColor2: 'rgba(239, 68, 68, 0.28)',
+                    bottomLineColor: 'rgba(239, 68, 68, 1)',
+                    lineWidth: 2,
+                }});
+                
+                const profitData = {profit_history_json_str};
+                const uniqueData = [];
+                const seenTimes = new Set();
+                for (const point of profitData) {{
+                    if (!seenTimes.has(point.time)) {{
+                        seenTimes.add(point.time);
+                        uniqueData.push(point);
+                    }}
+                }}
+                
+                if (uniqueData.length === 1) {{
+                    uniqueData.unshift({{ time: uniqueData[0].time - 3600, value: uniqueData[0].value }});
+                }}
+                
+                baselineSeries.setData(uniqueData);
+                chart.timeScale().fitContent();
+                
+                new ResizeObserver(entries => {{
+                    if (entries.length === 0 || entries[0].target !== chartContainer) {{ return; }}
+                    const newRect = entries[0].contentRect;
+                    chart.applyOptions({{ width: newRect.width, height: newRect.height }});
+                }}).observe(chartContainer);
+            </script>
+        </section>'''
+
         history_html = f"""<section style="margin-top: 32px; margin-bottom: 32px;">
             <h2>Profit Stats (Today & History)</h2>
             <div class="milestone-card" style="border: 1px dashed var(--border); box-shadow: none;">
@@ -607,7 +683,7 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
         with open(INDEX_FILE, 'w', encoding='utf-8') as f:
             f.write(new_html)
 
-        run_git(["add", "data.json", "index.html", "sync_prices.py"])
+        run_git(["add", "data.json", "index.html", "sync_prices.py", "profit_history.json"])
         status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True, cwd=REPO_DIR)
         if status.stdout.strip():
             run_git(["commit", "-m", f"{SCRIPT_VERSION}: Auto price sync at {current_time_str}"])
