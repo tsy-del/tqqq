@@ -1,35 +1,35 @@
 {
-  "last_updated": "2026-08-21 06:15:09",
+  "last_updated": "2026-08-21 06:30:09",
   "market_prices": {
-    "tqqq_usd": 70.28,
-    "soxl_usd": 121.19,
+    "tqqq_usd": 70.34,
+    "soxl_usd": 121.38,
     "usd_hkd_rate": 7.8,
     "spcx_usd": 192.5,
     "spch_usd": 8.13
   },
   "portfolio_summary": {
-    "total_value_hkd": 1730715,
+    "total_value_hkd": 1732342,
     "total_cost_hkd": 1637413,
-    "total_profit_hkd": 93302
+    "total_profit_hkd": 94928
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 408001,
-      "total_profit_hkd": -15445,
+      "total_value_hkd": 408390,
+      "total_profit_hkd": -15055,
       "total_cost_hkd": 423445,
       "holdings": [
         {
           "asset": "TQQQ",
           "quantity": 563,
           "avg_price_usd": 58.465,
-          "current_price_usd": 70.28
+          "current_price_usd": 70.34
         },
         {
           "asset": "SOXL",
           "quantity": 85,
           "avg_price_usd": 197.5891,
-          "current_price_usd": 121.19
+          "current_price_usd": 121.38
         },
         {
           "asset": "SPCH",
@@ -41,8 +41,8 @@
     },
     {
       "account_name": "帳戶 B (固定基金)",
-      "total_value_hkd": 1171469,
-      "total_profit_hkd": 210858,
+      "total_value_hkd": 1172469,
+      "total_profit_hkd": 211858,
       "total_cost_hkd": 960611,
       "is_locked": true,
       "holdings": [
@@ -50,21 +50,21 @@
           "asset": "TQQQ",
           "quantity": 2137,
           "avg_price_usd": 57.63,
-          "current_price_usd": 70.28
+          "current_price_usd": 70.34
         }
       ]
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 151245,
-      "total_profit_hkd": -102111,
+      "total_value_hkd": 151482,
+      "total_profit_hkd": -101874,
       "total_cost_hkd": 253356,
       "holdings": [
         {
           "asset": "SOXL",
           "quantity": 160,
           "avg_price_usd": 203.01,
-          "current_price_usd": 121.19
+          "current_price_usd": 121.38
         }
       ]
     }
