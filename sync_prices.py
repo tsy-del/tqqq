@@ -4,6 +4,7 @@ import json
 import time
 import traceback
 from datetime import datetime, timezone, timedelta
+from zoneinfo import ZoneInfo
 import subprocess
 
 # Path configurations
@@ -212,10 +213,11 @@ def update_files():
                 data['history_stats']['lowest_profit_date'] = current_time_str
 
         # Daily Stats Tracking
-        current_date_str = datetime.now(hk_tz).strftime('%Y-%m-%d')
-        if 'daily_stats' not in data or data['daily_stats'].get('date') != current_date_str:
+        ny_tz = ZoneInfo("America/New_York")
+        current_ny_date_str = datetime.now(ny_tz).strftime('%Y-%m-%d')
+        if 'daily_stats' not in data or data['daily_stats'].get('date') != current_ny_date_str:
             data['daily_stats'] = {
-                "date": current_date_str,
+                "date": current_ny_date_str,
                 "highest_profit_hkd": total_profit_hkd,
                 "lowest_profit_hkd": total_profit_hkd,
                 "highest_time": current_time_str.split(' ')[1],
@@ -470,7 +472,8 @@ def update_files():
             combined_html = f'<section style="margin-top: 32px; margin-bottom: 32px;"><h2>Combined Positions</h2>{combined_html}</section>'
 
         # Stats HTML
-        current_date_str = datetime.now(hk_tz).strftime('%Y-%m-%d')
+        ny_tz = ZoneInfo("America/New_York")
+        current_ny_date_str = datetime.now(ny_tz).strftime('%Y-%m-%d')
         history_stats = data.get('history_stats', {})
         highest_hkd = history_stats.get('highest_profit_hkd', 0)
         highest_date = history_stats.get('highest_profit_date', 'N/A')
@@ -544,7 +547,7 @@ def update_files():
             <h2>Profit Stats (Today & History)</h2>
             <div class="milestone-card" style="border: 1px dashed var(--border); box-shadow: none;">
                 <div class="m-body" style="display: block;">
-                    <div style="font-size: 11px; font-weight: 700; color: var(--text-dim); margin-bottom: 8px;">今日 ({current_date_str})</div>
+                    <div style="font-size: 11px; font-weight: 700; color: var(--text-dim); margin-bottom: 8px;">今日 ({current_ny_date_str} US)</div>
                     <div class="detail-row" style="margin-bottom: 12px;">
                         <span style="font-size: 13px;">今日最高利潤</span>
                         <div style="text-align: right;">
