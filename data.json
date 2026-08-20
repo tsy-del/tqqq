@@ -1,48 +1,48 @@
 {
-  "last_updated": "2026-08-20 22:45:09",
+  "last_updated": "2026-08-20 22:50:10",
   "market_prices": {
-    "tqqq_usd": 71.36,
-    "soxl_usd": 123.85,
+    "tqqq_usd": 71.03,
+    "soxl_usd": 122.76,
     "usd_hkd_rate": 7.8,
     "spcx_usd": 192.5,
-    "spch_usd": 8.16
+    "spch_usd": 8.07
   },
   "portfolio_summary": {
-    "total_value_hkd": 1758613,
+    "total_value_hkd": 1749370,
     "total_cost_hkd": 1637413,
-    "total_profit_hkd": 121200
+    "total_profit_hkd": 111957
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 414577,
-      "total_profit_hkd": -8868,
+      "total_value_hkd": 412195,
+      "total_profit_hkd": -11251,
       "total_cost_hkd": 423445,
       "holdings": [
         {
           "asset": "TQQQ",
           "quantity": 563,
           "avg_price_usd": 58.465,
-          "current_price_usd": 71.36
+          "current_price_usd": 71.03
         },
         {
           "asset": "SOXL",
           "quantity": 85,
           "avg_price_usd": 197.5891,
-          "current_price_usd": 123.85
+          "current_price_usd": 122.76
         },
         {
           "asset": "SPCH",
           "quantity": 300,
           "avg_price_usd": 15.2567,
-          "current_price_usd": 8.16
+          "current_price_usd": 8.07
         }
       ]
     },
     {
       "account_name": "帳戶 B (固定基金)",
-      "total_value_hkd": 1189471,
-      "total_profit_hkd": 228860,
+      "total_value_hkd": 1183971,
+      "total_profit_hkd": 223359,
       "total_cost_hkd": 960611,
       "is_locked": true,
       "holdings": [
@@ -50,21 +50,21 @@
           "asset": "TQQQ",
           "quantity": 2137,
           "avg_price_usd": 57.63,
-          "current_price_usd": 71.36
+          "current_price_usd": 71.03
         }
       ]
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 154565,
-      "total_profit_hkd": -98792,
+      "total_value_hkd": 153204,
+      "total_profit_hkd": -100152,
       "total_cost_hkd": 253356,
       "holdings": [
         {
           "asset": "SOXL",
           "quantity": 160,
           "avg_price_usd": 203.01,
-          "current_price_usd": 123.85
+          "current_price_usd": 122.76
         }
       ]
     }
