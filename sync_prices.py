@@ -691,45 +691,31 @@ const TOTAL_COST_HKD = {total_cost_hkd};
 async function fetchLivePrices() {{
     try {{
         const symbols = ACTIVE_TICKERS.join(',');
-        const yfUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${{symbols}}`;
-        const proxyUrl = `https://api.allorigins.win/raw?url=${{encodeURIComponent(yfUrl)}}`;
-        const res = await fetch(proxyUrl);
-        const json = await res.json();
-        const results = json.quoteResponse.result;
+        const fhKey = 'cug1edpr01qv23mgbbt0cug1edpr01qv23mgbbtg'; // Updated to valid API key
+        
+        const promises = ACTIVE_TICKERS.map(sym => 
+            fetch(`https://finnhub.io/api/v1/quote?symbol=${{sym}}&token=${{fhKey}}`).then(res => res.json())
+        );
+        const results = await Promise.all(promises);
         
         let newTotalValueHkd = 0;
         const prices = {{}};
 
-        results.forEach(q => {{
-            let price = q.postMarketPrice || q.preMarketPrice || q.regularMarketPrice;
-            if (!price) return;
-            prices[q.symbol] = price;
+        ACTIVE_TICKERS.forEach((sym, index) => {{
+            const q = results[index];
+            if (!q || !q.c) return;
+            // q.c: Current price, q.pc: Previous close
+            const price = q.c;
+            prices[sym] = price;
             
-            const priceEl = document.getElementById(`ticker-price-${{q.symbol}}`);
+            const priceEl = document.getElementById(`ticker-price-${{sym}}`);
             if(priceEl) priceEl.innerText = `$${{price.toFixed(2)}}`;
             
-            const chgEl = document.getElementById(`ticker-chg-${{q.symbol}}`);
-            if(chgEl) {{
-                let chgPct = q.regularMarketChangePercent;
-                let marketState = (q.marketState || '').toUpperCase();
-                if ((marketState === 'PRE' || marketState === 'PREPRE' || marketState === 'POST' || marketState === 'POSTPOST' || marketState === 'CLOSED') && q.postMarketChangePercent) {{
-                    chgPct = q.postMarketChangePercent;
-                }} else if ((marketState === 'PRE' || marketState === 'PREPRE') && q.preMarketChangePercent) {{
-                    chgPct = q.preMarketChangePercent;
-                }}
-                if (chgPct !== undefined && chgPct !== null) {{
-                    chgEl.innerText = (chgPct >= 0 ? '+' : '') + chgPct.toFixed(1) + '%';
-                    chgEl.style.color = chgPct >= 0 ? 'var(--success)' : 'var(--danger)';
-                }}
-            }}
-            
-            const sessionEl = document.getElementById(`ticker-session-${{q.symbol}}`);
-            if(sessionEl) {{
-                let label = "REG";
-                let diff = Math.abs(price - q.regularMarketPrice);
-                if (diff > 0.01 && q.marketState !== 'REGULAR') label = "EXT";
-                sessionEl.innerText = label;
-                sessionEl.style.display = (label === 'EXT') ? 'inline-block' : 'none';
+            const chgEl = document.getElementById(`ticker-chg-${{sym}}`);
+            if(chgEl && q.pc) {{
+                const chgPct = ((price - q.pc) / q.pc) * 100;
+                chgEl.innerText = (chgPct >= 0 ? '+' : '') + chgPct.toFixed(1) + '%';
+                chgEl.style.color = chgPct >= 0 ? 'var(--success)' : 'var(--danger)';
             }}
         }});
 
