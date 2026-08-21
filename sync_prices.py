@@ -691,7 +691,7 @@ const TOTAL_COST_HKD = {total_cost_hkd};
 async function fetchLivePrices() {{
     try {{
         const symbols = ACTIVE_TICKERS.join(',');
-        const fhKey = 'cug1edpr01qv23mgbbt0cug1edpr01qv23mgbbtg'; // Updated to valid API key
+        const fhKey = 'da47k3hr01qo2j879nc0da47k3hr01qo2j879ncg'; // Updated to valid API key
         
         const promises = ACTIVE_TICKERS.map(sym => 
             fetch(`https://finnhub.io/api/v1/quote?symbol=${{sym}}&token=${{fhKey}}`).then(res => res.json())
