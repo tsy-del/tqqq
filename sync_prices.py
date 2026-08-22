@@ -689,6 +689,24 @@ const USD_HKD_RATE = {rate};
 const TOTAL_COST_HKD = {total_cost_hkd};
 
 async function fetchLivePrices() {{
+    // 檢查美股開市時間 (紐約時間)
+    const nyTime = new Date(new Date().toLocaleString("en-US", {{timeZone: "America/New_York"}}));
+    const day = nyTime.getDay();
+    const time = nyTime.getHours() * 100 + nyTime.getMinutes();
+    const isMarketOpen = (day >= 1 && day <= 5) && (time >= 930 && time < 1600);
+    
+    const ind = document.getElementById('live-indicator');
+    if (!isMarketOpen) {{
+        if(ind) {{
+            ind.innerHTML = 'CLOSED';
+            ind.style.background = 'rgba(161,161,170,0.2)';
+            ind.style.color = 'var(--text-dim)';
+            ind.style.borderColor = 'var(--border)';
+            ind.style.display = 'inline-flex';
+        }}
+        return; // 盤前/盤後停用 Finnhub (因其免費版無盤後數據)，保留後台 yfinance 的盤後價
+    }}
+
     try {{
         const symbols = ACTIVE_TICKERS.join(',');
         const fhKey = 'da47k3hr01qo2j879nc0da47k3hr01qo2j879ncg'; // Updated to valid API key
@@ -748,8 +766,13 @@ async function fetchLivePrices() {{
             }}
         }}
 
-        const ind = document.getElementById('live-indicator');
-        if(ind) ind.style.display = 'inline-flex';
+        if(ind) {{
+            ind.innerHTML = 'LIVE<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--success); animation: pulse 1.5s infinite;"></span>';
+            ind.style.background = 'rgba(16,185,129,0.2)';
+            ind.style.color = 'var(--success)';
+            ind.style.borderColor = 'var(--success)';
+            ind.style.display = 'inline-flex';
+        }}
         
     }} catch(e) {{
         console.error("Live update failed:", e);
