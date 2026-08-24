@@ -68,18 +68,18 @@ h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 .down { color: var(--danger); }
 </style></head>
 <body><div class="container">
-<header><div class="header-top"><h1>📈 TQQQ Plan</h1><div><span class="v-tag" id="live-indicator" style="background: rgba(16,185,129,0.2); color: var(--success); margin-right: 4px; border: 1px solid var(--success); display: none; align-items: center; gap: 4px;">LIVE<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--success); animation: pulse 1.5s infinite;"></span></span><span class="v-tag">v5.6</span></div></div><div class="last-update">Last Update: 2026-08-25 07:30:09</div></header>
+<header><div class="header-top"><h1>📈 TQQQ Plan</h1><div><span class="v-tag" id="live-indicator" style="background: rgba(16,185,129,0.2); color: var(--success); margin-right: 4px; border: 1px solid var(--success); display: none; align-items: center; gap: 4px;">LIVE<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--success); animation: pulse 1.5s infinite;"></span></span><span class="v-tag">v5.6</span></div></div><div class="last-update">Last Update: 2026-08-25 07:45:09</div></header>
 <section class="main-summary">
     <div class="summary-card">
         <div class="summary-label">Total Value (HKD)</div>
-        <div class="summary-value" id="summary-total-value">$1,773,634</div>
+        <div class="summary-value" id="summary-total-value">$1,769,456</div>
         <div style="font-size: 11px; color: var(--text-dim); margin-top: 6px;">總成本: <span id="summary-total-cost">$1,727,191</span></div>
     </div>
     <div class="summary-card">
         <div class="summary-label">Total Profit</div>
         <div class="profit-display" id="summary-profit-display" style="color:#10b981">
-            <div class="summary-value" id="summary-total-profit">$46,443</div>
-            <div class="profit-pct" id="summary-profit-pct">+2.7%</div>
+            <div class="summary-value" id="summary-total-profit">$42,265</div>
+            <div class="profit-pct" id="summary-profit-pct">+2.4%</div>
         </div>
     </div>
 </section>
@@ -87,26 +87,26 @@ h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
     <a href="https://hk.finance.yahoo.com/quote/TQQQ" target="_blank" class="ticker-item" style="text-decoration: none;">
                 <div style="display: flex; align-items: center; gap: 6px; overflow: hidden;">
                     <span class="ticker-symbol" style="flex-shrink: 0;">TQQQ</span>
-                    <span class="ticker-price" id="ticker-price-TQQQ" style="flex-shrink: 0;">$69.09</span>
+                    <span class="ticker-price" id="ticker-price-TQQQ" style="flex-shrink: 0;">$68.93</span>
                     <span class="session-tag" id="ticker-session-TQQQ" style="display:inline-block; flex-shrink: 0; font-size: 8px; padding: 0 2px;">EXT</span>
                 </div>
-                <span id="ticker-chg-TQQQ" style="font-size: 11px; font-weight: 700; color: var(--success); flex-shrink: 0;">+0.1%</span>
+                <span id="ticker-chg-TQQQ" style="font-size: 11px; font-weight: 700; color: var(--danger); flex-shrink: 0;">-0.1%</span>
             </a>
 <a href="https://hk.finance.yahoo.com/quote/SOXL" target="_blank" class="ticker-item" style="text-decoration: none;">
                 <div style="display: flex; align-items: center; gap: 6px; overflow: hidden;">
                     <span class="ticker-symbol" style="flex-shrink: 0;">SOXL</span>
-                    <span class="ticker-price" id="ticker-price-SOXL" style="flex-shrink: 0;">$110.51</span>
+                    <span class="ticker-price" id="ticker-price-SOXL" style="flex-shrink: 0;">$110.22</span>
                     <span class="session-tag" id="ticker-session-SOXL" style="display:inline-block; flex-shrink: 0; font-size: 8px; padding: 0 2px;">EXT</span>
                 </div>
-                <span id="ticker-chg-SOXL" style="font-size: 11px; font-weight: 700; color: var(--danger); flex-shrink: 0;">-0.6%</span>
+                <span id="ticker-chg-SOXL" style="font-size: 11px; font-weight: 700; color: var(--danger); flex-shrink: 0;">-0.8%</span>
             </a>
 <a href="https://hk.finance.yahoo.com/quote/SPCH" target="_blank" class="ticker-item" style="text-decoration: none;">
                 <div style="display: flex; align-items: center; gap: 6px; overflow: hidden;">
                     <span class="ticker-symbol" style="flex-shrink: 0;">SPCH</span>
-                    <span class="ticker-price" id="ticker-price-SPCH" style="flex-shrink: 0;">$8.33</span>
+                    <span class="ticker-price" id="ticker-price-SPCH" style="flex-shrink: 0;">$8.32</span>
                     <span class="session-tag" id="ticker-session-SPCH" style="display:none; flex-shrink: 0; font-size: 8px; padding: 0 2px;">REG</span>
                 </div>
-                <span id="ticker-chg-SPCH" style="font-size: 11px; font-weight: 700; color: var(--success); flex-shrink: 0;">+0.1%</span>
+                <span id="ticker-chg-SPCH" style="font-size: 11px; font-weight: 700; color: var(--success); flex-shrink: 0;">+0.0%</span>
             </a>
 
 </section>
@@ -132,20 +132,20 @@ h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
                     <div style="display: grid; grid-template-columns: 45px 1fr 1fr 1fr; gap: 4px; font-size: 14px; margin-bottom: 8px; text-align: right; align-items: center;">
                         <div style="text-align: left; color: var(--text-dim); font-size: 13px;">TQQQ</div>
                         <div class="pg-val">$84.81</div>
-                        <div class="pg-val" style="color:var(--accent);">$69.09</div>
-                        <div class="pg-val" style="color:var(--accent); font-size: 14px;">+22.8%</div>
+                        <div class="pg-val" style="color:var(--accent);">$68.93</div>
+                        <div class="pg-val" style="color:var(--accent); font-size: 14px;">+23.0%</div>
                     </div>
                     <div style="display: grid; grid-template-columns: 45px 1fr 1fr 1fr; gap: 4px; font-size: 14px; text-align: right; align-items: center; padding-bottom: 4px; border-bottom: 1px dashed var(--border);">
                         <div style="text-align: left; color: var(--text-dim); font-size: 13px;">SOXL</div>
-                        <div class="pg-val">$135.65</div>
-                        <div class="pg-val" style="color:var(--accent);">$110.51</div>
-                        <div class="pg-val" style="color:var(--accent); font-size: 14px;">+22.8%</div>
+                        <div class="pg-val">$135.62</div>
+                        <div class="pg-val" style="color:var(--accent);">$110.22</div>
+                        <div class="pg-val" style="color:var(--accent); font-size: 14px;">+23.0%</div>
                     </div>
                 </div>
-                <div class="detail-row" style="margin-top: 15px;"><span>雜費利潤進度</span><span class="detail-val">10.3%</span></div>
-                <div class="progress-bg"><div class="progress-fill" style="width: 10.320601373333329%"></div></div>
-                <div class="detail-row" style="margin-top: 8px;"><span>可用利潤</span><span class="detail-val">$46,443</span></div>
-                <div class="detail-row" style="margin-top: 4px;"><span>尚欠金額</span><span class="detail-val" style="color:var(--accent);">$403,557</span></div>
+                <div class="detail-row" style="margin-top: 15px;"><span>雜費利潤進度</span><span class="detail-val">9.4%</span></div>
+                <div class="progress-bg"><div class="progress-fill" style="width: 9.392176040000024%"></div></div>
+                <div class="detail-row" style="margin-top: 8px;"><span>可用利潤</span><span class="detail-val">$42,265</span></div>
+                <div class="detail-row" style="margin-top: 4px;"><span>尚欠金額</span><span class="detail-val" style="color:var(--accent);">$407,735</span></div>
             </div><div class="m-strategy">觸及即走：沽出約 455 股，套現 $45 萬現金鎖定稅項與佣金。</div>
                 </div>
             </div><div class="milestone-card ">
@@ -168,15 +168,15 @@ h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
                     </div>
                     <div style="display: grid; grid-template-columns: 45px 1fr 1fr 1fr; gap: 4px; font-size: 14px; margin-bottom: 8px; text-align: right; align-items: center;">
                         <div style="text-align: left; color: var(--text-dim); font-size: 13px;">TQQQ</div>
-                        <div class="pg-val">$123.76</div>
-                        <div class="pg-val" style="color:var(--accent);">$69.09</div>
-                        <div class="pg-val" style="color:var(--accent); font-size: 14px;">+79.1%</div>
+                        <div class="pg-val">$123.77</div>
+                        <div class="pg-val" style="color:var(--accent);">$68.93</div>
+                        <div class="pg-val" style="color:var(--accent); font-size: 14px;">+79.6%</div>
                     </div>
                     <div style="display: grid; grid-template-columns: 45px 1fr 1fr 1fr; gap: 4px; font-size: 14px; text-align: right; align-items: center; padding-bottom: 4px; border-bottom: 1px dashed var(--border);">
                         <div style="text-align: left; color: var(--text-dim); font-size: 13px;">SOXL</div>
-                        <div class="pg-val">$197.96</div>
-                        <div class="pg-val" style="color:var(--accent);">$110.51</div>
-                        <div class="pg-val" style="color:var(--accent); font-size: 14px;">+79.1%</div>
+                        <div class="pg-val">$197.91</div>
+                        <div class="pg-val" style="color:var(--accent);">$110.22</div>
+                        <div class="pg-val" style="color:var(--accent); font-size: 14px;">+79.6%</div>
                     </div>
                 </div>
                 <div class="detail-row" style="margin-top: 15px;"><span>首期利潤進度</span><span class="detail-val">0.0%</span></div>
@@ -206,14 +206,14 @@ h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
                     <div style="display: grid; grid-template-columns: 45px 1fr 1fr 1fr; gap: 4px; font-size: 14px; margin-bottom: 8px; text-align: right; align-items: center;">
                         <div style="text-align: left; color: var(--text-dim); font-size: 13px;">TQQQ</div>
                         <div class="pg-val">$145.19</div>
-                        <div class="pg-val" style="color:var(--accent);">$69.09</div>
-                        <div class="pg-val" style="color:var(--accent); font-size: 14px;">+110.1%</div>
+                        <div class="pg-val" style="color:var(--accent);">$68.93</div>
+                        <div class="pg-val" style="color:var(--accent); font-size: 14px;">+110.6%</div>
                     </div>
                     <div style="display: grid; grid-template-columns: 45px 1fr 1fr 1fr; gap: 4px; font-size: 14px; text-align: right; align-items: center; padding-bottom: 4px; border-bottom: 1px dashed var(--border);">
                         <div style="text-align: left; color: var(--text-dim); font-size: 13px;">SOXL</div>
-                        <div class="pg-val">$232.23</div>
-                        <div class="pg-val" style="color:var(--accent);">$110.51</div>
-                        <div class="pg-val" style="color:var(--accent); font-size: 14px;">+110.1%</div>
+                        <div class="pg-val">$232.17</div>
+                        <div class="pg-val" style="color:var(--accent);">$110.22</div>
+                        <div class="pg-val" style="color:var(--accent); font-size: 14px;">+110.6%</div>
                     </div>
                 </div>
                 <div class="detail-row" style="margin-top: 15px;"><span>裝修利潤進度</span><span class="detail-val">0.0%</span></div>
@@ -232,10 +232,10 @@ h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
             </div>
             <div class="m-body">
                 <div class="progress-details" style="margin-top: 10px;">
-                    <div class="detail-row"><span>整體利潤進度</span><span class="detail-val">2.3%</span></div>
-                    <div class="progress-bg"><div class="progress-fill" style="width: 2.322135308999999%; background: linear-gradient(90deg, #3b82f6, #10b981);"></div></div>
-                    <div class="detail-row" style="margin-top: 8px;"><span>目前總純利</span><span class="detail-val" style="color:var(--success);">$46,443</span></div>
-                    <div class="detail-row" style="margin-top: 4px;"><span>距離 200 萬尚欠</span><span class="detail-val" style="color:var(--accent);">$1,953,557</span></div>
+                    <div class="detail-row"><span>整體利潤進度</span><span class="detail-val">2.1%</span></div>
+                    <div class="progress-bg"><div class="progress-fill" style="width: 2.113239609000005%; background: linear-gradient(90deg, #3b82f6, #10b981);"></div></div>
+                    <div class="detail-row" style="margin-top: 8px;"><span>目前總純利</span><span class="detail-val" style="color:var(--success);">$42,265</span></div>
+                    <div class="detail-row" style="margin-top: 4px;"><span>距離 200 萬尚欠</span><span class="detail-val" style="color:var(--accent);">$1,957,735</span></div>
                 </div>
                 <div class="m-strategy">不計成本，目標純利達到 $2,000,000 以完成所有規劃 (雜費、首期、裝修)。</div>
             </div>
@@ -243,29 +243,29 @@ h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 <section style="margin-top: 32px; margin-bottom: 32px;"><h2>Combined Positions</h2><div class="asset-row" style="border-left: 4px solid var(--accent);">
                     <div class="asset-info">
                         <div class="asset-name">TQQQ <span class="qty">總共: 2700</span></div>
-                        <div class="asset-cost">平均成本 $57.804 | 現價 $69.09</div>
+                        <div class="asset-cost">平均成本 $57.804 | 現價 $68.93</div>
                     </div>
                     <div style="text-align: right;">
-                        <div class="asset-status up">+19.5%</div>
-                        <div style="font-size: 10px; color: var(--text-dim);">$237,681</div>
+                        <div class="asset-status up">+19.2%</div>
+                        <div style="font-size: 10px; color: var(--text-dim);">$234,311</div>
                     </div>
                 </div><div class="asset-row" style="border-left: 4px solid var(--accent);">
                     <div class="asset-info">
                         <div class="asset-name">SOXL <span class="qty">總共: 347</span></div>
-                        <div class="asset-cost">平均成本 $175.178 | 現價 $110.51</div>
+                        <div class="asset-cost">平均成本 $175.178 | 現價 $110.22</div>
                     </div>
                     <div style="text-align: right;">
-                        <div class="asset-status down">-36.9%</div>
-                        <div style="font-size: 10px; color: var(--text-dim);">$-175,030</div>
+                        <div class="asset-status down">-37.1%</div>
+                        <div style="font-size: 10px; color: var(--text-dim);">$-175,815</div>
                     </div>
                 </div><div class="asset-row" style="border-left: 4px solid var(--accent);">
                     <div class="asset-info">
                         <div class="asset-name">SPCH <span class="qty">總共: 300</span></div>
-                        <div class="asset-cost">平均成本 $15.257 | 現價 $8.33</div>
+                        <div class="asset-cost">平均成本 $15.257 | 現價 $8.32</div>
                     </div>
                     <div style="text-align: right;">
-                        <div class="asset-status down">-45.4%</div>
-                        <div style="font-size: 10px; color: var(--text-dim);">$-16,208</div>
+                        <div class="asset-status down">-45.5%</div>
+                        <div style="font-size: 10px; color: var(--text-dim);">$-16,232</div>
                     </div>
                 </div></section>
 <section style="margin-top: 32px; margin-bottom: 32px;"><h2>Holdings</h2><div class="account-block collapsed">
@@ -274,47 +274,47 @@ h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
                         <span>帳戶 A (滾動首期)</span>
                         <span class="toggle-icon" style="font-size: 10px; color: var(--text-dim); transition: transform 0.3s ease;">▼</span>
                     </div>
-                    <span class="acc-val">$415,126</span>
+                    <span class="acc-val">$414,158</span>
                 </div>
                 <div class="holdings-list"><div class="asset-row"><div class="asset-info">
                     <div class="asset-name">TQQQ <span class="qty">× 563</span></div>
-                    <div class="asset-cost">成本 $58.465 | 現價 $69.09</div></div>
-                    <div style="text-align: right;"><div class="asset-status up">+18.2%</div>
-                    <div style="font-size: 10px; color: var(--text-dim);">$46,659</div></div></div><div class="asset-row"><div class="asset-info">
+                    <div class="asset-cost">成本 $58.465 | 現價 $68.93</div></div>
+                    <div style="text-align: right;"><div class="asset-status up">+17.9%</div>
+                    <div style="font-size: 10px; color: var(--text-dim);">$45,956</div></div></div><div class="asset-row"><div class="asset-info">
                     <div class="asset-name">SOXL <span class="qty">× 107</span></div>
-                    <div class="asset-cost">成本 $179.7857 | 現價 $110.51</div></div>
-                    <div style="text-align: right;"><div class="asset-status down">-38.5%</div>
-                    <div style="font-size: 10px; color: var(--text-dim);">$-57,817</div></div></div><div class="asset-row"><div class="asset-info">
+                    <div class="asset-cost">成本 $179.7857 | 現價 $110.22</div></div>
+                    <div style="text-align: right;"><div class="asset-status down">-38.7%</div>
+                    <div style="font-size: 10px; color: var(--text-dim);">$-58,060</div></div></div><div class="asset-row"><div class="asset-info">
                     <div class="asset-name">SPCH <span class="qty">× 300</span></div>
-                    <div class="asset-cost">成本 $15.2567 | 現價 $8.33</div></div>
-                    <div style="text-align: right;"><div class="asset-status down">-45.4%</div>
-                    <div style="font-size: 10px; color: var(--text-dim);">$-16,208</div></div></div></div>
+                    <div class="asset-cost">成本 $15.2567 | 現價 $8.32</div></div>
+                    <div style="text-align: right;"><div class="asset-status down">-45.5%</div>
+                    <div style="font-size: 10px; color: var(--text-dim);">$-16,232</div></div></div></div>
             </div><div class="account-block collapsed">
                 <div class="account-header" onclick="this.parentElement.classList.toggle('collapsed')" style="cursor: pointer; user-select: none;">
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <span>帳戶 B (固定基金)</span>
                         <span class="toggle-icon" style="font-size: 10px; color: var(--text-dim); transition: transform 0.3s ease;">▼</span>
                     </div>
-                    <span class="acc-val">$1,151,634</span>
+                    <span class="acc-val">$1,148,967</span>
                 </div>
                 <div class="holdings-list"><div class="asset-row"><div class="asset-info">
                     <div class="asset-name">TQQQ <span class="qty">× 2137</span></div>
-                    <div class="asset-cost">成本 $57.63 | 現價 $69.09</div></div>
-                    <div style="text-align: right;"><div class="asset-status up">+19.9%</div>
-                    <div style="font-size: 10px; color: var(--text-dim);">$191,022</div></div></div></div>
+                    <div class="asset-cost">成本 $57.63 | 現價 $68.93</div></div>
+                    <div style="text-align: right;"><div class="asset-status up">+19.6%</div>
+                    <div style="font-size: 10px; color: var(--text-dim);">$188,355</div></div></div></div>
             </div><div class="account-block collapsed">
                 <div class="account-header" onclick="this.parentElement.classList.toggle('collapsed')" style="cursor: pointer; user-select: none;">
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <span>帳戶 C (中銀香港)</span>
                         <span class="toggle-icon" style="font-size: 10px; color: var(--text-dim); transition: transform 0.3s ease;">▼</span>
                     </div>
-                    <span class="acc-val">$206,875</span>
+                    <span class="acc-val">$206,332</span>
                 </div>
                 <div class="holdings-list"><div class="asset-row"><div class="asset-info">
                     <div class="asset-name">SOXL <span class="qty">× 240</span></div>
-                    <div class="asset-cost">成本 $173.1233 | 現價 $110.51</div></div>
-                    <div style="text-align: right;"><div class="asset-status down">-36.2%</div>
-                    <div style="font-size: 10px; color: var(--text-dim);">$-117,212</div></div></div></div>
+                    <div class="asset-cost">成本 $173.1233 | 現價 $110.22</div></div>
+                    <div style="text-align: right;"><div class="asset-status down">-36.3%</div>
+                    <div style="font-size: 10px; color: var(--text-dim);">$-117,755</div></div></div></div>
             </div></section>
 <section style="margin-top: 32px; margin-bottom: 32px;">
             <h2>Profit Stats (Today & History)</h2>
@@ -359,7 +359,7 @@ h2::after { content: ''; flex: 1; height: 1px; background: var(--border); }
     🔄 手動觸發雲端更新 (GitHub Actions)
 </a>
 </div><script>
-const APP_DATA = {"last_updated": "2026-08-25 07:30:09", "market_prices": {"tqqq_usd": 69.09, "soxl_usd": 110.51, "usd_hkd_rate": 7.8, "spcx_usd": 192.5, "spch_usd": 8.33}, "portfolio_summary": {"total_value_hkd": 1773634, "total_cost_hkd": 1727191, "total_profit_hkd": 46443}, "accounts": [{"account_name": "\u5e33\u6236 A (\u6efe\u52d5\u9996\u671f)", "total_value_hkd": 415126, "total_profit_hkd": -27367, "total_cost_hkd": 442493, "holdings": [{"asset": "TQQQ", "quantity": 563, "avg_price_usd": 58.465, "current_price_usd": 69.09}, {"asset": "SOXL", "quantity": 107, "avg_price_usd": 179.7857, "current_price_usd": 110.51}, {"asset": "SPCH", "quantity": 300, "avg_price_usd": 15.2567, "current_price_usd": 8.33}]}, {"account_name": "\u5e33\u6236 B (\u56fa\u5b9a\u57fa\u91d1)", "total_value_hkd": 1151634, "total_profit_hkd": 191022, "total_cost_hkd": 960611, "is_locked": true, "holdings": [{"asset": "TQQQ", "quantity": 2137, "avg_price_usd": 57.63, "current_price_usd": 69.09}]}, {"account_name": "\u5e33\u6236 C (\u4e2d\u9280\u9999\u6e2f)", "total_value_hkd": 206875, "total_profit_hkd": -117212, "total_cost_hkd": 324087, "holdings": [{"asset": "SOXL", "quantity": 240, "avg_price_usd": 173.1233, "current_price_usd": 110.51}]}], "milestones": [{"stage": 1, "name": "\u8cb7\u6a13\u96dc\u8cbb", "target_amount_hkd": 450000, "cumulative_target_hkd": 450000, "tqqq_target_usd": 78.69, "status": "IN_PROGRESS", "strategy": "\u89f8\u53ca\u5373\u8d70\uff1a\u6cbd\u51fa\u7d04 455 \u80a1\uff0c\u5957\u73fe $45 \u842c\u73fe\u91d1\u9396\u5b9a\u7a05\u9805\u8207\u4f63\u91d1\u3002", "notes": "\u6536\u6a13\u5f8c\u9810\u671f\u53ef\u7372\u7d04 $11.9 \u842c\u6309\u63ed\u7e3d\u56de\u8d08"}, {"stage": 2, "name": "100\u842c\u9996\u671f", "target_amount_hkd": 1000000, "cumulative_target_hkd": 1450000, "tqqq_target_usd": 126.96, "status": "PENDING", "current_allocated_hkd": 122253, "progress_percentage": 14.69, "strategy": "\u79fb\u52d5\u6b62\u8cfa\uff1a\u555f\u52d5 Trailing Stop\u3002\u9ad8\u4f4d\u4efb\u98db\uff0c\u9ad8\u4f4d\u56de\u843d 10% \u5373\u5f37\u5236\u5957\u73fe $100 \u842c\u3002"}, {"stage": 3, "name": "\u88dd\u4fee\u5168\u5305", "target_amount_hkd": 550000, "cumulative_target_hkd": 2000000, "tqqq_target_usd": 153.25, "status": "PENDING", "strategy": "\u56de\u8d08\uff0b\u9918\u5175\uff1a\u6536\u6a13\u62ff\u8d70\u6309\u63ed\u56de\u8d08\u586b\u88dc\uff0c\u5176\u9918\u80a1\u4efd\u653e\u9577\u7dda\u91cd\u65b0\u6efe\u52d5\u3002"}], "history_stats": {"highest_profit_hkd": 323331.5397000001, "highest_profit_date": "2026-08-17 23:20:08", "lowest_profit_hkd": 14332.992179999826, "lowest_profit_date": "2026-08-24 22:20:08"}, "daily_stats": {"date": "2026-08-24", "highest_profit_hkd": 114164.39969999972, "lowest_profit_hkd": 14332.992179999826, "highest_time": "12:00:09", "lowest_time": "22:20:08"}};
+const APP_DATA = {"last_updated": "2026-08-25 07:45:09", "market_prices": {"tqqq_usd": 68.93, "soxl_usd": 110.22, "usd_hkd_rate": 7.8, "spcx_usd": 192.5, "spch_usd": 8.32}, "portfolio_summary": {"total_value_hkd": 1769456, "total_cost_hkd": 1727191, "total_profit_hkd": 42265}, "accounts": [{"account_name": "\u5e33\u6236 A (\u6efe\u52d5\u9996\u671f)", "total_value_hkd": 414158, "total_profit_hkd": -28335, "total_cost_hkd": 442493, "holdings": [{"asset": "TQQQ", "quantity": 563, "avg_price_usd": 58.465, "current_price_usd": 68.93}, {"asset": "SOXL", "quantity": 107, "avg_price_usd": 179.7857, "current_price_usd": 110.22}, {"asset": "SPCH", "quantity": 300, "avg_price_usd": 15.2567, "current_price_usd": 8.32}]}, {"account_name": "\u5e33\u6236 B (\u56fa\u5b9a\u57fa\u91d1)", "total_value_hkd": 1148967, "total_profit_hkd": 188355, "total_cost_hkd": 960611, "is_locked": true, "holdings": [{"asset": "TQQQ", "quantity": 2137, "avg_price_usd": 57.63, "current_price_usd": 68.93}]}, {"account_name": "\u5e33\u6236 C (\u4e2d\u9280\u9999\u6e2f)", "total_value_hkd": 206332, "total_profit_hkd": -117755, "total_cost_hkd": 324087, "holdings": [{"asset": "SOXL", "quantity": 240, "avg_price_usd": 173.1233, "current_price_usd": 110.22}]}], "milestones": [{"stage": 1, "name": "\u8cb7\u6a13\u96dc\u8cbb", "target_amount_hkd": 450000, "cumulative_target_hkd": 450000, "tqqq_target_usd": 78.69, "status": "IN_PROGRESS", "strategy": "\u89f8\u53ca\u5373\u8d70\uff1a\u6cbd\u51fa\u7d04 455 \u80a1\uff0c\u5957\u73fe $45 \u842c\u73fe\u91d1\u9396\u5b9a\u7a05\u9805\u8207\u4f63\u91d1\u3002", "notes": "\u6536\u6a13\u5f8c\u9810\u671f\u53ef\u7372\u7d04 $11.9 \u842c\u6309\u63ed\u7e3d\u56de\u8d08"}, {"stage": 2, "name": "100\u842c\u9996\u671f", "target_amount_hkd": 1000000, "cumulative_target_hkd": 1450000, "tqqq_target_usd": 126.96, "status": "PENDING", "current_allocated_hkd": 122253, "progress_percentage": 14.69, "strategy": "\u79fb\u52d5\u6b62\u8cfa\uff1a\u555f\u52d5 Trailing Stop\u3002\u9ad8\u4f4d\u4efb\u98db\uff0c\u9ad8\u4f4d\u56de\u843d 10% \u5373\u5f37\u5236\u5957\u73fe $100 \u842c\u3002"}, {"stage": 3, "name": "\u88dd\u4fee\u5168\u5305", "target_amount_hkd": 550000, "cumulative_target_hkd": 2000000, "tqqq_target_usd": 153.25, "status": "PENDING", "strategy": "\u56de\u8d08\uff0b\u9918\u5175\uff1a\u6536\u6a13\u62ff\u8d70\u6309\u63ed\u56de\u8d08\u586b\u88dc\uff0c\u5176\u9918\u80a1\u4efd\u653e\u9577\u7dda\u91cd\u65b0\u6efe\u52d5\u3002"}], "history_stats": {"highest_profit_hkd": 323331.5397000001, "highest_profit_date": "2026-08-17 23:20:08", "lowest_profit_hkd": 14332.992179999826, "lowest_profit_date": "2026-08-24 22:20:08"}, "daily_stats": {"date": "2026-08-24", "highest_profit_hkd": 114164.39969999972, "lowest_profit_hkd": 14332.992179999826, "highest_time": "12:00:09", "lowest_time": "22:20:08"}};
 const ACTIVE_TICKERS = ["TQQQ", "SOXL", "SPCH"];
 const USD_HKD_RATE = 7.8;
 const TOTAL_COST_HKD = 1727191.25982;
