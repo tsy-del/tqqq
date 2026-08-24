@@ -62,8 +62,8 @@
       "holdings": [
         {
           "asset": "SOXL",
-          "quantity": 200,
-          "avg_price_usd": 185.388,
+          "quantity": 220,
+          "avg_price_usd": 178.9709,
           "current_price_usd": 114.77
         }
       ]
