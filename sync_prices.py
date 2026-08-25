@@ -711,9 +711,31 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
 <section style="margin-top: 32px; margin-bottom: 32px;"><h2>Holdings</h2>{accounts_html}</section>
 {history_html}
 
-<a href="https://github.com/tsy-del/tqqq/actions/workflows/sync.yml" target="_blank" class="sync-btn">
+<button class="sync-btn" id="triggerBtn" onclick="triggerSync()">
     🔄 手動觸發雲端更新 (GitHub Actions)
-</a>
+</button>
+<script>
+async function triggerSync() {{
+    const btn = document.getElementById('triggerBtn');
+    btn.textContent = '⏳ 觸發中...';
+    btn.disabled = true;
+    try {{
+        const r = await fetch('http://127.0.0.1:19999/trigger', {{method:'POST'}});
+        const d = await r.json();
+        if (d.status === 204) {{
+            btn.textContent = '✅ 已觸發！約 30 秒後更新';
+            btn.style.borderColor = 'var(--success)';
+            setTimeout(() => {{ btn.textContent = '🔄 手動觸發雲端更新 (GitHub Actions)'; btn.disabled = false; btn.style.borderColor = ''; }}, 15000);
+        }} else {{
+            btn.textContent = '❌ 失敗 (' + d.status + ')';
+            setTimeout(() => {{ btn.textContent = '🔄 手動觸發雲端更新 (GitHub Actions)'; btn.disabled = false; }}, 5000);
+        }}
+    }} catch(e) {{
+        btn.textContent = '❌ 連線失敗';
+        setTimeout(() => {{ btn.textContent = '🔄 手動觸發雲端更新 (GitHub Actions)'; btn.disabled = false; }}, 5000);
+    }}
+}}
+</script>
 </div><script>
 const APP_DATA = {app_data_json};
 const ACTIVE_TICKERS = {active_tickers_json};
