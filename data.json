@@ -1,23 +1,23 @@
 {
-  "last_updated": "2026-08-26 01:30:10",
+  "last_updated": "2026-08-26 01:45:10",
   "market_prices": {
     "tqqq_usd": 69.91,
-    "soxl_usd": 114.89,
-    "usd_hkd_rate": 7.8383,
+    "soxl_usd": 115.09,
+    "usd_hkd_rate": 7.8388,
     "spcx_usd": 192.5,
     "spch_usd": 8.74
   },
   "portfolio_summary": {
-    "total_value_hkd": 1812574,
-    "total_cost_hkd": 1735672,
-    "total_profit_hkd": 76902
+    "total_value_hkd": 1813234,
+    "total_cost_hkd": 1735783,
+    "total_profit_hkd": 77451
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 425420,
-      "total_profit_hkd": -19245,
-      "total_cost_hkd": 444666,
+      "total_value_hkd": 425615,
+      "total_profit_hkd": -19079,
+      "total_cost_hkd": 444694,
       "holdings": [
         {
           "asset": "TQQQ",
@@ -29,7 +29,7 @@
           "asset": "SOXL",
           "quantity": 107,
           "avg_price_usd": 179.7857,
-          "current_price_usd": 114.89
+          "current_price_usd": 115.09
         },
         {
           "asset": "SPCH",
@@ -41,9 +41,9 @@
     },
     {
       "account_name": "帳戶 B (固定基金)",
-      "total_value_hkd": 1171024,
-      "total_profit_hkd": 205695,
-      "total_cost_hkd": 965328,
+      "total_value_hkd": 1171098,
+      "total_profit_hkd": 205709,
+      "total_cost_hkd": 965390,
       "is_locked": true,
       "holdings": [
         {
@@ -56,15 +56,15 @@
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 216130,
-      "total_profit_hkd": -109548,
-      "total_cost_hkd": 325678,
+      "total_value_hkd": 216520,
+      "total_profit_hkd": -109179,
+      "total_cost_hkd": 325699,
       "holdings": [
         {
           "asset": "SOXL",
           "quantity": 240,
           "avg_price_usd": 173.1233,
-          "current_price_usd": 114.89
+          "current_price_usd": 115.09
         }
       ]
     }
@@ -114,6 +114,6 @@
     "highest_time": "20:15:09",
     "lowest_time": "22:25:08",
     "prev_close_profit_hkd": 44323,
-    "last_profit_hkd": 76902
+    "last_profit_hkd": 77451
   }
 }
