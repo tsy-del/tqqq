@@ -13,7 +13,7 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v5.15"
+SCRIPT_VERSION = "v5.14"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -95,68 +95,6 @@ def fetch_usd_hkd_rate(fallback=7.8):
     print(f"WARN: USD/HKD fetch failed, using fallback {fallback}")
     return fallback
 
-
-def downsample_history(history, now_ts):
-    """v5.15: 分層降採樣，長期保留趨勢而唔會撞 5000 上限。
-
-    分層規則（以距今時間計）：
-      - 0-2 日      : 全保留（原始解析度）
-      - 2-14 日     : 每 1 小時一個 bucket
-      - 14-90 日    : 每 4 小時一個 bucket
-      - 90 日以上   : 每 1 日一個 bucket
-
-    每個 bucket 保留最高同最低兩點（去重後按時間排序），
-    咁樣可以保住波幅上下限，唔會將尖頂尖底磨平。
-    """
-    if not history:
-        return history
-
-    DAY = 86400
-    tiers = [
-        (2 * DAY, 0),          # 全保留
-        (14 * DAY, 3600),      # 1 小時
-        (90 * DAY, 4 * 3600),  # 4 小時
-        (None, DAY),           # 1 日
-    ]
-
-    def bucket_size_for(age):
-        for max_age, size in tiers:
-            if max_age is None or age < max_age:
-                return size
-        return DAY
-
-    buckets = {}
-    keep_raw = []
-    for pt in history:
-        t = pt.get('time')
-        if t is None:
-            continue
-        age = now_ts - t
-        size = bucket_size_for(age)
-        if size == 0:
-            keep_raw.append(pt)
-        else:
-            buckets.setdefault((size, t // size), []).append(pt)
-
-    reduced = []
-    for pts in buckets.values():
-        hi = max(pts, key=lambda p: p['value'])
-        lo = min(pts, key=lambda p: p['value'])
-        picked = {hi['time']: hi, lo['time']: lo}
-        reduced.extend(picked.values())
-
-    out = reduced + keep_raw
-    out.sort(key=lambda p: p['time'])
-
-    # 去掉重複時間戳
-    deduped = []
-    seen = set()
-    for pt in out:
-        if pt['time'] in seen:
-            continue
-        seen.add(pt['time'])
-        deduped.append(pt)
-    return deduped
 
 def get_latest_prices(symbols):
     print(f"Fetching highest frequency prices ({SCRIPT_VERSION}) from yfinance for {symbols}...")
@@ -291,13 +229,6 @@ def update_files():
                 "value": int(round(total_profit_hkd))
             })
             
-        # v5.15: 分層降採樣，取代單純裁走最舊記錄
-        before_count = len(profit_history)
-        profit_history = downsample_history(profit_history, current_unix_time)
-        if len(profit_history) != before_count:
-            print(f"History downsampled: {before_count} -> {len(profit_history)} points")
-
-        # 硬上限只作最後保險
         if len(profit_history) > 5000:
             profit_history = profit_history[-5000:]
             
