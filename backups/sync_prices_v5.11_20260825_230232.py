@@ -13,7 +13,7 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v5.12"
+SCRIPT_VERSION = "v5.11"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -476,27 +476,13 @@ def update_files():
                     <div class="asset-cost">成本 ${avg} | 現價 ${h['current_price_usd']}</div></div>
                     <div style="text-align: right;"><div class="asset-status {'up' if gain >= 0 else 'down'}">{'+' if gain >= 0 else ''}{gain:.1f}%</div>
                     <div style="font-size: 10px; color: var(--text-dim);">{format_hkd(pl)}</div></div></div>"""
-            # v5.12: 帳戶層利潤 % + 顏色警示
-            a_profit = int(round(acc.get('total_profit_hkd', 0)))
-            a_cost = int(round(acc.get('total_cost_hkd', 0)))
-            a_pct = (a_profit / a_cost * 100) if a_cost > 0 else 0
-            if a_pct <= -20:
-                a_color, a_badge = '#ef4444', ' ⚠️'
-            elif a_pct < 0:
-                a_color, a_badge = '#f59e0b', ''
-            else:
-                a_color, a_badge = '#10b981', ''
-            a_sign = '+' if a_profit >= 0 else '-'
             accounts_html += f"""<div class="account-block collapsed">
-                <div class="account-header" onclick="this.parentElement.classList.toggle('collapsed')" style="cursor: pointer; user-select: none; border-left: 3px solid {a_color}; padding-left: 8px;">
+                <div class="account-header" onclick="this.parentElement.classList.toggle('collapsed')" style="cursor: pointer; user-select: none;">
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <span>{acc['account_name']}{a_badge}</span>
+                        <span>{acc['account_name']}</span>
                         <span class="toggle-icon" style="font-size: 10px; color: var(--text-dim); transition: transform 0.3s ease;">▼</span>
                     </div>
-                    <div style="text-align: right;">
-                        <span class="acc-val">{format_hkd(acc['total_value_hkd'])}</span>
-                        <div style="font-size: 10px; font-weight: 700; color: {a_color}; margin-top: 2px;">{a_sign}{format_hkd(abs(a_profit))} · {a_pct:+.1f}%</div>
-                    </div>
+                    <span class="acc-val">{format_hkd(acc['total_value_hkd'])}</span>
                 </div>
                 <div class="holdings-list">{rows}</div>
             </div>"""
