@@ -1,0 +1,56 @@
+const { JSDOM } = require('jsdom');
+
+const html = `
+<!DOCTYPE html>
+<html>
+<body>
+<div id="chart-container" style="width: 100%; height: 220px;"></div>
+<script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+    try {
+        const chartOptions = { 
+            layout: { textColor: '#71717a', background: { type: 'solid', color: 'transparent' } },
+            grid: { vertLines: { visible: false }, horzLines: { color: 'rgba(255, 255, 255, 0.05)' } },
+            timeScale: { timeVisible: true, secondsVisible: false, borderVisible: false },
+            rightPriceScale: { borderVisible: false }
+        };
+        const chartContainer = document.getElementById('chart-container');
+        const chart = LightweightCharts.createChart(chartContainer, chartOptions);
+        const baselineSeries = chart.addBaselineSeries({
+            baseValue: { type: 'price', price: 0 },
+            topFillColor1: 'rgba(16, 185, 129, 0.28)',
+            topFillColor2: 'rgba(16, 185, 129, 0.05)',
+            topLineColor: 'rgba(16, 185, 129, 1)',
+            bottomFillColor1: 'rgba(239, 68, 68, 0.05)',
+            bottomFillColor2: 'rgba(239, 68, 68, 0.28)',
+            bottomLineColor: 'rgba(239, 68, 68, 1)',
+            lineWidth: 2,
+        });
+        
+        const profitData = [{"time": 1787146883, "value": 152818}, {"time": 1787147279, "value": 153100}, {"time": 1787147345, "value": 134223}];
+        const uniqueData = [];
+        const seenTimes = new Set();
+        for (const point of profitData) {
+            if (!seenTimes.has(point.time)) {
+                seenTimes.add(point.time);
+                uniqueData.push(point);
+            }
+        }
+        
+        uniqueData.sort((a,b) => a.time - b.time);
+
+        if (uniqueData.length === 1) {
+            uniqueData.unshift({ time: uniqueData[0].time - 3600, value: uniqueData[0].value });
+        }
+        
+        baselineSeries.setData(uniqueData);
+        chart.timeScale().fitContent();
+        
+    } catch (err) {
+        console.error("Caught JS error: ", err.message);
+    }
+</script>
+</body>
+</html>
+`;
+console.log("Written");

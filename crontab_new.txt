@@ -1,0 +1,8 @@
+# 21:30 - 21:59 (Every 5 mins)
+30,35,40,45,50,55 21 * * * cd /Users/tsy/.openclaw/workspace/tqqq-plan && /usr/bin/python3 sync_prices.py >> sync.log 2>&1
+# 22:00 - 00:59 (Every 5 mins)
+*/5 22-23,0 * * * cd /Users/tsy/.openclaw/workspace/tqqq-plan && /usr/bin/python3 sync_prices.py >> sync.log 2>&1
+# 01:00 - 20:59 (Every 15 mins)
+*/15 1-20 * * * cd /Users/tsy/.openclaw/workspace/tqqq-plan && /usr/bin/python3 sync_prices.py >> sync.log 2>&1
+# 21:00 - 21:15 (Every 15 mins)
+0,15 21 * * * cd /Users/tsy/.openclaw/workspace/tqqq-plan && /usr/bin/python3 sync_prices.py >> sync.log 2>&1
