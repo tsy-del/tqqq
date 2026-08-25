@@ -103,25 +103,6 @@ def get_latest_prices(symbols):
 def update_files():
     try:
 
-        # --- PATCH: Trading Date Logic ---
-        ny_tz = ZoneInfo("America/New_York")
-        ny_now = datetime.now(ny_tz)
-        if ny_now.hour < 9 or (ny_now.hour == 9 and ny_now.minute < 30):
-            trading_date = (ny_now - timedelta(days=1)).date()
-        else:
-            trading_date = ny_now.date()
-        trading_date_str = trading_date.strftime("%Y-%m-%d")
-
-        if 'daily_stats' not in data:
-            data['daily_stats'] = {'date': trading_date_str, 'highest_profit_hkd': int(round(total_profit_hkd)), 'lowest_profit_hkd': int(round(total_profit_hkd))}
-        
-        if data['daily_stats'].get('date') != trading_date_str:
-            data['daily_stats'] = {
-                'date': trading_date_str,
-                'highest_profit_hkd': int(round(total_profit_hkd)),
-                'lowest_profit_hkd': int(round(total_profit_hkd))
-            }
-        # ---------------------------------
         # 在開始任何動作前，先強制與 GitHub 同步 (防止手動更新造成的 Git Push Rejected)
         if not os.environ.get('GITHUB_ACTIONS'):
             run_git(["fetch", "origin", "main"])
@@ -191,6 +172,39 @@ def update_files():
         data['portfolio_summary']['total_value_hkd'] = int(round(total_value_hkd))
         data['portfolio_summary']['total_cost_hkd'] = int(round(total_cost_hkd))
         data['portfolio_summary']['total_profit_hkd'] = int(round(total_profit_hkd))
+
+        # --- Trading Date Logic (v5.7) ---
+        ny_tz = ZoneInfo("America/New_York")
+        ny_now = datetime.now(ny_tz)
+        if ny_now.hour < 9 or (ny_now.hour == 9 and ny_now.minute < 30):
+            trading_date = (ny_now - timedelta(days=1)).date()
+        else:
+            trading_date = ny_now.date()
+        trading_date_str = trading_date.strftime("%Y-%m-%d")
+
+        # Initialize or reset daily_stats
+        if 'daily_stats' not in data:
+            data['daily_stats'] = {
+                'date': trading_date_str,
+                'highest_profit_hkd': int(round(total_profit_hkd)),
+                'lowest_profit_hkd': int(round(total_profit_hkd))
+            }
+        elif data['daily_stats'].get('date') != trading_date_str:
+            # New trading day - reset stats
+            data['daily_stats'] = {
+                'date': trading_date_str,
+                'highest_profit_hkd': int(round(total_profit_hkd)),
+                'lowest_profit_hkd': int(round(total_profit_hkd))
+            }
+        else:
+            # Same trading day - update high/low
+            current_profit = int(round(total_profit_hkd))
+            if current_profit > data['daily_stats']['highest_profit_hkd']:
+                data['daily_stats']['highest_profit_hkd'] = current_profit
+            if current_profit < data['daily_stats']['lowest_profit_hkd']:
+                data['daily_stats']['lowest_profit_hkd'] = current_profit
+        # -------------------------------------
+
 
         # Profit History Logging for Chart
         if os.path.exists(PROFIT_HISTORY_FILE):
