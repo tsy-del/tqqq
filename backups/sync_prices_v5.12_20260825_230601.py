@@ -13,7 +13,7 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v5.13"
+SCRIPT_VERSION = "v5.12"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -374,19 +374,12 @@ def update_files():
                 gap_color = "var(--accent)"
                 t_target_str = f"${stage_target_tqqq:.2f}"
                 s_target_str = f"${stage_target_soxl:.2f}"
-                # v5.13: 價格進度 (現價 / 目標價)
-                price_prog = min(100.0, max(0.0, (tqqq_price / stage_target_tqqq * 100))) if stage_target_tqqq > 0 else 0.0
-                price_prog_note = f"仲差 {price_diff_pct:.1f}% 到 ${stage_target_tqqq:.2f}"
-                price_prog_color = "linear-gradient(90deg, #f59e0b, #3b82f6)"
             else:
                 gap_label = "目標狀態"
                 gap_val = "已達標"
                 gap_color = "var(--success)"
                 t_target_str = "達標"
                 s_target_str = "達標"
-                price_prog = 100.0
-                price_prog_note = "已達標"
-                price_prog_color = "linear-gradient(90deg, #10b981, #34d399)"
 
             status_class = f"status-{m['status']}"
 
@@ -412,9 +405,6 @@ def update_files():
                         <div class="pg-val" style="color:{gap_color}; font-size: 14px;">{gap_val}</div>
                     </div>
                 </div>
-                <div class="detail-row" style="margin-top: 14px;"><span>TQQQ 價格進度</span><span class="detail-val">{price_prog:.1f}%</span></div>
-                <div class="progress-bg"><div class="progress-fill" style="width: {price_prog}%; background: {price_prog_color};"></div></div>
-                <div style="font-size: 10px; color: var(--text-dim); margin-top: 4px; text-align: right;">{price_prog_note}</div>
                 <div class="detail-row" style="margin-top: 15px;"><span>{prog_label}</span><span class="detail-val">{stage_prog:.1f}%</span></div>
                 <div class="progress-bg"><div class="progress-fill" style="width: {stage_prog}%"></div></div>
                 <div class="detail-row" style="margin-top: 8px;"><span>可用利潤</span><span class="detail-val">{avail_profit_str}</span></div>
