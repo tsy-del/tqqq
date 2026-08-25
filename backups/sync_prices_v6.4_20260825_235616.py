@@ -13,7 +13,7 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v6.5"
+SCRIPT_VERSION = "v6.4"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -786,7 +786,8 @@ h1 {{ font-size: 26px; font-weight: 800; margin: 0; }}
 .v-tag {{ font-size: 10px; color: var(--text-dim); background: var(--glass); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); }}
 .last-update {{ font-size: 11px; color: var(--text-dim); margin-top: 6px; }}
 .main-summary {{ display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }}
-.summary-card {{ background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 18px 18px 18px 15px; border-radius: 20px; position: relative; overflow: hidden; }}
+.summary-card {{ background: var(--card); border: 1px solid var(--border); padding: 18px; border-radius: 20px; position: relative; overflow: hidden; }}
+.summary-card::before {{ content: ''; position: absolute; top: 16px; bottom: 16px; left: 0; width: 4px; border-radius: 0 4px 4px 0; background: var(--accent); }}
 .summary-label {{ font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; margin-bottom: 6px; }}
 .summary-value {{ font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }}
 .profit-display {{ display: flex; align-items: baseline; gap: 8px; }}
