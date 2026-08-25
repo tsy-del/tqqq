@@ -13,7 +13,7 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v5.11"
+SCRIPT_VERSION = "v5.10"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -202,12 +202,34 @@ def update_files():
         data['portfolio_summary']['total_cost_hkd'] = int(round(total_cost_hkd))
         data['portfolio_summary']['total_profit_hkd'] = int(round(total_profit_hkd))
 
-        # --- Trading Date (US Eastern Time 00:00~23:59) ---
+        # --- Trading Date Logic v5.8 (US Eastern Time 00:00~23:59) ---
         ny_tz = ZoneInfo("America/New_York")
         ny_now = datetime.now(ny_tz)
-        trading_date_str = ny_now.strftime("%Y-%m-%d")
+        trading_date_str = ny_now.strftime("%Y-%m-%d")  # 美國東岸時間嘅日期
         current_profit = int(round(total_profit_hkd))
-        # daily_stats 統一喺下面單一 block 處理 (v5.11)
+
+        # Initialize daily_stats if not exists
+        if 'daily_stats' not in data:
+            data['daily_stats'] = {
+                'date': trading_date_str,
+                'highest_profit_hkd': current_profit,
+                'lowest_profit_hkd': current_profit
+            }
+        # Check if it's a new trading day
+        elif data['daily_stats'].get('date') != trading_date_str:
+            # New day - reset stats
+            data['daily_stats'] = {
+                'date': trading_date_str,
+                'highest_profit_hkd': current_profit,
+                'lowest_profit_hkd': current_profit
+            }
+        else:
+            # Same day - update high/low only if changed
+            if current_profit > data['daily_stats']['highest_profit_hkd']:
+                data['daily_stats']['highest_profit_hkd'] = current_profit
+            if current_profit < data['daily_stats']['lowest_profit_hkd']:
+                data['daily_stats']['lowest_profit_hkd'] = current_profit
+        # ----------------------------------------------------
 
 
 
@@ -235,70 +257,40 @@ def update_files():
         with open(PROFIT_HISTORY_FILE, 'w', encoding='utf-8') as f:
             json.dump(profit_history, f, ensure_ascii=False)
 
-        # History Stats Tracking (v5.11: 統一整數)
+        # History Stats Tracking
         if 'history_stats' not in data:
             data['history_stats'] = {
-                "highest_profit_hkd": current_profit,
+                "highest_profit_hkd": total_profit_hkd,
                 "highest_profit_date": current_time_str,
-                "lowest_profit_hkd": current_profit,
+                "lowest_profit_hkd": total_profit_hkd,
                 "lowest_profit_date": current_time_str
             }
         else:
-            if current_profit > int(round(data['history_stats'].get('highest_profit_hkd', -float('inf')))):
-                data['history_stats']['highest_profit_hkd'] = current_profit
+            if total_profit_hkd > data['history_stats'].get('highest_profit_hkd', -float('inf')):
+                data['history_stats']['highest_profit_hkd'] = total_profit_hkd
                 data['history_stats']['highest_profit_date'] = current_time_str
-            if current_profit < int(round(data['history_stats'].get('lowest_profit_hkd', float('inf')))):
-                data['history_stats']['lowest_profit_hkd'] = current_profit
+            if total_profit_hkd < data['history_stats'].get('lowest_profit_hkd', float('inf')):
+                data['history_stats']['lowest_profit_hkd'] = total_profit_hkd
                 data['history_stats']['lowest_profit_date'] = current_time_str
-        # 清理歷史遺留小數位
-        data['history_stats']['highest_profit_hkd'] = int(round(data['history_stats']['highest_profit_hkd']))
-        data['history_stats']['lowest_profit_hkd'] = int(round(data['history_stats']['lowest_profit_hkd']))
 
-        # Daily Stats Tracking (v5.11: 單一 block, 整數, 加今日變化基準)
-        current_ny_date_str = trading_date_str
-        now_hms = current_time_str.split(' ')[1]
-
-        def _prev_close_from_history():
-            """由 profit_history 找出上一個美東日期嘅最後一筆利潤，作為昨收基準。"""
-            try:
-                for pt in reversed(profit_history):
-                    pt_date = datetime.fromtimestamp(pt['time'], ny_tz).strftime('%Y-%m-%d')
-                    if pt_date < current_ny_date_str:
-                        return int(round(pt['value']))
-            except Exception:
-                pass
-            return None
-
-        prev_day = data.get('daily_stats') or {}
-        if prev_day.get('date') != current_ny_date_str:
-            # 新一日：昨收 = 上一日最後記錄嘅利潤
-            prev_close = prev_day.get('last_profit_hkd')
-            if prev_close is None:
-                prev_close = _prev_close_from_history()
+        # Daily Stats Tracking
+        ny_tz = ZoneInfo("America/New_York")
+        current_ny_date_str = datetime.now(ny_tz).strftime('%Y-%m-%d')
+        if 'daily_stats' not in data or data['daily_stats'].get('date') != current_ny_date_str:
             data['daily_stats'] = {
                 "date": current_ny_date_str,
-                "highest_profit_hkd": current_profit,
-                "lowest_profit_hkd": current_profit,
-                "highest_time": now_hms,
-                "lowest_time": now_hms,
-                "prev_close_profit_hkd": int(round(prev_close)) if prev_close is not None else None,
-                "last_profit_hkd": current_profit
+                "highest_profit_hkd": total_profit_hkd,
+                "lowest_profit_hkd": total_profit_hkd,
+                "highest_time": current_time_str.split(' ')[1],
+                "lowest_time": current_time_str.split(' ')[1]
             }
         else:
-            ds = data['daily_stats']
-            if current_profit > int(round(ds.get('highest_profit_hkd', -float('inf')))):
-                ds['highest_profit_hkd'] = current_profit
-                ds['highest_time'] = now_hms
-            if current_profit < int(round(ds.get('lowest_profit_hkd', float('inf')))):
-                ds['lowest_profit_hkd'] = current_profit
-                ds['lowest_time'] = now_hms
-            if ds.get('prev_close_profit_hkd') is None:
-                bootstrap = _prev_close_from_history()
-                if bootstrap is not None:
-                    ds['prev_close_profit_hkd'] = bootstrap
-            ds['last_profit_hkd'] = current_profit
-            ds['highest_profit_hkd'] = int(round(ds['highest_profit_hkd']))
-            ds['lowest_profit_hkd'] = int(round(ds['lowest_profit_hkd']))
+            if total_profit_hkd > data['daily_stats'].get('highest_profit_hkd', -float('inf')):
+                data['daily_stats']['highest_profit_hkd'] = total_profit_hkd
+                data['daily_stats']['highest_time'] = current_time_str.split(' ')[1]
+            if total_profit_hkd < data['daily_stats'].get('lowest_profit_hkd', float('inf')):
+                data['daily_stats']['lowest_profit_hkd'] = total_profit_hkd
+                data['daily_stats']['lowest_time'] = current_time_str.split(' ')[1]
 
         total_profit_pct = (total_profit_hkd / total_cost_hkd) * 100 if total_cost_hkd > 0 else 0
         total_profit_color = '#10b981' if total_profit_hkd >= 0 else '#ef4444'
@@ -561,31 +553,6 @@ def update_files():
         d_highest_color = '#10b981' if d_highest_hkd >= 0 else '#ef4444'
         d_lowest_color = '#10b981' if d_lowest_hkd >= 0 else '#ef4444'
 
-        # v5.11: 今日變化 (現時利潤 vs 昨日收市利潤)
-        d_prev_close = daily_stats.get('prev_close_profit_hkd')
-        if d_prev_close is not None:
-            d_change_hkd = int(round(total_profit_hkd)) - int(round(d_prev_close))
-            d_change_color = '#10b981' if d_change_hkd >= 0 else '#ef4444'
-            d_change_sign = '+' if d_change_hkd >= 0 else '-'
-            d_change_pct_txt = ''
-            if total_cost_hkd > 0:
-                d_change_pct_txt = f"{d_change_hkd / total_cost_hkd * 100:+.2f}%"
-            d_change_row = f'''<div class="detail-row" style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
-                        <span style="font-size: 13px; font-weight: 700;">今日變化</span>
-                        <div style="text-align: right;">
-                            <div style="font-size: 17px; font-weight: 800; color: {d_change_color};">{d_change_sign}{format_hkd(abs(d_change_hkd))}</div>
-                            <div style="font-size: 10px; color: var(--text-dim); margin-top: 2px;">{d_change_pct_txt} · 昨收 {format_hkd(d_prev_close)}</div>
-                        </div>
-                    </div>'''
-        else:
-            d_change_row = '''<div class="detail-row" style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
-                        <span style="font-size: 13px; font-weight: 700;">今日變化</span>
-                        <div style="text-align: right;">
-                            <div style="font-size: 13px; color: var(--text-dim);">建立基準中…</div>
-                            <div style="font-size: 10px; color: var(--text-dim); margin-top: 2px;">明日起可比較</div>
-                        </div>
-                    </div>'''
-
         profit_history_json_str = json.dumps(profit_history)
         
         chart_html = f'''<section style="margin-top: 32px; margin-bottom: 32px;">
@@ -645,7 +612,6 @@ def update_files():
             <div class="milestone-card" style="border: 1px dashed var(--border); box-shadow: none;">
                 <div class="m-body" style="display: block;">
                     <div style="font-size: 11px; font-weight: 700; color: var(--text-dim); margin-bottom: 8px;">今日 ({current_ny_date_str} US)</div>
-                    {d_change_row}
                     <div class="detail-row" style="margin-bottom: 12px;">
                         <span style="font-size: 13px;">今日最高利潤</span>
                         <div style="text-align: right;">
