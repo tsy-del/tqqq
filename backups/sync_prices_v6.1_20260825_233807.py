@@ -13,7 +13,7 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v6.2"
+SCRIPT_VERSION = "v6.1"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -773,12 +773,12 @@ def update_files():
         </section>"""
 
         new_html = f"""<!DOCTYPE html>
-<html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><title>TQQQ Plan | {SCRIPT_VERSION} (Auto Cloud Sync)</title>
+<html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><title>TQQQ Plan | {SCRIPT_VERSION} (Auto Cloud Sync)</title>
 <style>
 @keyframes pulse {{ 0% {{ opacity: 1; }} 50% {{ opacity: 0.3; }} 100% {{ opacity: 1; }} }}
 :root {{ --bg: #09090b; --card: #18181b; --glass: rgba(255, 255, 255, 0.03); --border: rgba(255, 255, 255, 0.08); --accent: #3b82f6; --success: #10b981; --danger: #ef4444; --text-main: #fafafa; --text-dim: #71717a; }}
 * {{ box-sizing: border-box; }}
-body {{ font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text-main); margin: 0; display: flex; justify-content: center; padding: calc(24px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left)); }}
+body {{ font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 24px 16px; display: flex; justify-content: center; }}
 .container {{ max-width: 480px; width: 100%; }}
 header {{ margin-bottom: 28px; }}
 .header-top {{ display: flex; justify-content: space-between; align-items: center; }}
@@ -893,7 +893,7 @@ async function triggerSync() {{
 }}
 </script>
 </div><script>
-let APP_DATA = {app_data_json};
+const APP_DATA = {app_data_json};
 const ACTIVE_TICKERS = {active_tickers_json};
 const USD_HKD_RATE = {rate};
 const TOTAL_COST_HKD = {total_cost_hkd};
@@ -991,68 +991,6 @@ async function fetchLivePrices() {{
 
 setInterval(fetchLivePrices, 10000);
 setTimeout(fetchLivePrices, 1500);
-
-// v6.2: 靜默同步後台 data.json (每 60 秒)，唔需要人手 refresh
-let LAST_SEEN_UPDATE = APP_DATA.last_updated;
-
-function isMarketOpenNow() {{
-    const nyTime = new Date(new Date().toLocaleString("en-US", {{timeZone: "America/New_York"}}));
-    const day = nyTime.getDay();
-    const t = nyTime.getHours() * 100 + nyTime.getMinutes();
-    return (day >= 1 && day <= 5) && (t >= 930 && t < 1600);
-}}
-
-function fmtSigned(n) {{
-    return (n >= 0 ? '$' : '-$') + Math.abs(Math.round(n)).toLocaleString('en-US');
-}}
-
-async function syncBackendData() {{
-    try {{
-        const res = await fetch('data.json?t=' + Date.now(), {{ cache: 'no-store' }});
-        if (!res.ok) return;
-        const fresh = await res.json();
-        if (!fresh || !fresh.last_updated) return;
-        if (fresh.last_updated === LAST_SEEN_UPDATE) return;
-
-        LAST_SEEN_UPDATE = fresh.last_updated;
-        APP_DATA = fresh;
-
-        const upEl = document.querySelector('.last-update');
-        if (upEl) upEl.innerText = 'Last Update: ' + fresh.last_updated;
-
-        // 開市時 summary 由 Finnhub live 主導，唔好覆蓋；收市就用後台數字
-        if (!isMarketOpenNow() && fresh.portfolio_summary) {{
-            const s = fresh.portfolio_summary;
-            const valEl = document.getElementById('summary-total-value');
-            if (valEl) valEl.innerText = '$' + Math.round(s.total_value_hkd).toLocaleString('en-US');
-            const costEl = document.getElementById('summary-total-cost');
-            if (costEl) costEl.innerText = '$' + Math.round(s.total_cost_hkd).toLocaleString('en-US');
-            const profitEl = document.getElementById('summary-total-profit');
-            if (profitEl) profitEl.innerText = fmtSigned(s.total_profit_hkd);
-            const pctEl = document.getElementById('summary-profit-pct');
-            const dispEl = document.getElementById('summary-profit-display');
-            if (pctEl && s.total_cost_hkd) {{
-                const pct = (s.total_profit_hkd / s.total_cost_hkd) * 100;
-                pctEl.innerText = (s.total_profit_hkd >= 0 ? '+' : '') + pct.toFixed(1) + '%';
-            }}
-            if (dispEl) dispEl.style.color = s.total_profit_hkd >= 0 ? '#10b981' : '#ef4444';
-        }}
-
-        // 閃一下 Last Update 提示收到新數據
-        if (upEl) {{
-            upEl.style.transition = 'color 0.3s';
-            upEl.style.color = 'var(--success)';
-            setTimeout(() => {{ upEl.style.color = 'var(--text-dim)'; }}, 1200);
-        }}
-    }} catch(e) {{
-        console.error('Backend sync failed:', e);
-    }}
-}}
-
-setInterval(syncBackendData, 60000);
-document.addEventListener('visibilitychange', () => {{
-    if (!document.hidden) syncBackendData();
-}});
 </script>
 </body></html>"""
 
