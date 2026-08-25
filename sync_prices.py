@@ -13,7 +13,7 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v5.6"
+SCRIPT_VERSION = "v5.7"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -102,6 +102,26 @@ def get_latest_prices(symbols):
 
 def update_files():
     try:
+
+        # --- PATCH: Trading Date Logic ---
+        ny_tz = ZoneInfo("America/New_York")
+        ny_now = datetime.now(ny_tz)
+        if ny_now.hour < 9 or (ny_now.hour == 9 and ny_now.minute < 30):
+            trading_date = (ny_now - timedelta(days=1)).date()
+        else:
+            trading_date = ny_now.date()
+        trading_date_str = trading_date.strftime("%Y-%m-%d")
+
+        if 'daily_stats' not in data:
+            data['daily_stats'] = {'date': trading_date_str, 'highest_profit_hkd': int(round(total_profit_hkd)), 'lowest_profit_hkd': int(round(total_profit_hkd))}
+        
+        if data['daily_stats'].get('date') != trading_date_str:
+            data['daily_stats'] = {
+                'date': trading_date_str,
+                'highest_profit_hkd': int(round(total_profit_hkd)),
+                'lowest_profit_hkd': int(round(total_profit_hkd))
+            }
+        # ---------------------------------
         # 在開始任何動作前，先強制與 GitHub 同步 (防止手動更新造成的 Git Push Rejected)
         if not os.environ.get('GITHUB_ACTIONS'):
             run_git(["fetch", "origin", "main"])
