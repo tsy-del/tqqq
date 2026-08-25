@@ -13,7 +13,7 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v5.7"
+SCRIPT_VERSION = "v5.8"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -173,37 +173,35 @@ def update_files():
         data['portfolio_summary']['total_cost_hkd'] = int(round(total_cost_hkd))
         data['portfolio_summary']['total_profit_hkd'] = int(round(total_profit_hkd))
 
-        # --- Trading Date Logic (v5.7) ---
+        # --- Trading Date Logic v5.8 (US Eastern Time 00:00~23:59) ---
         ny_tz = ZoneInfo("America/New_York")
         ny_now = datetime.now(ny_tz)
-        if ny_now.hour < 9 or (ny_now.hour == 9 and ny_now.minute < 30):
-            trading_date = (ny_now - timedelta(days=1)).date()
-        else:
-            trading_date = ny_now.date()
-        trading_date_str = trading_date.strftime("%Y-%m-%d")
+        trading_date_str = ny_now.strftime("%Y-%m-%d")  # 美國東岸時間嘅日期
+        current_profit = int(round(total_profit_hkd))
 
-        # Initialize or reset daily_stats
+        # Initialize daily_stats if not exists
         if 'daily_stats' not in data:
             data['daily_stats'] = {
                 'date': trading_date_str,
-                'highest_profit_hkd': int(round(total_profit_hkd)),
-                'lowest_profit_hkd': int(round(total_profit_hkd))
+                'highest_profit_hkd': current_profit,
+                'lowest_profit_hkd': current_profit
             }
+        # Check if it's a new trading day
         elif data['daily_stats'].get('date') != trading_date_str:
-            # New trading day - reset stats
+            # New day - reset stats
             data['daily_stats'] = {
                 'date': trading_date_str,
-                'highest_profit_hkd': int(round(total_profit_hkd)),
-                'lowest_profit_hkd': int(round(total_profit_hkd))
+                'highest_profit_hkd': current_profit,
+                'lowest_profit_hkd': current_profit
             }
         else:
-            # Same trading day - update high/low
-            current_profit = int(round(total_profit_hkd))
+            # Same day - update high/low only if changed
             if current_profit > data['daily_stats']['highest_profit_hkd']:
                 data['daily_stats']['highest_profit_hkd'] = current_profit
             if current_profit < data['daily_stats']['lowest_profit_hkd']:
                 data['daily_stats']['lowest_profit_hkd'] = current_profit
-        # -------------------------------------
+        # ----------------------------------------------------
+
 
 
         # Profit History Logging for Chart
