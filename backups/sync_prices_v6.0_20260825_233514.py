@@ -13,7 +13,7 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v6.1"
+SCRIPT_VERSION = "v6.0"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -632,9 +632,8 @@ def update_files():
         lowest_hkd = history_stats.get('lowest_profit_hkd', 0)
         lowest_date = history_stats.get('lowest_profit_date', 'N/A')
         
-        # v6.1: 高/低分主次 —— 最高用鮮色，最低用暗色/中性，避免四個數一樣綠
         highest_color = '#10b981' if highest_hkd >= 0 else '#ef4444'
-        lowest_color = '#a1a1aa' if lowest_hkd >= 0 else '#f87171'
+        lowest_color = '#10b981' if lowest_hkd >= 0 else '#ef4444'
 
         daily_stats = data.get('daily_stats', {})
         d_highest_hkd = daily_stats.get('highest_profit_hkd', 0)
@@ -643,7 +642,7 @@ def update_files():
         d_lowest_time = daily_stats.get('lowest_time', 'N/A')
         
         d_highest_color = '#10b981' if d_highest_hkd >= 0 else '#ef4444'
-        d_lowest_color = '#a1a1aa' if d_lowest_hkd >= 0 else '#f87171'
+        d_lowest_color = '#10b981' if d_lowest_hkd >= 0 else '#ef4444'
 
         # v5.11: 今日變化 (現時利潤 vs 昨日收市利潤)
         d_prev_close = daily_stats.get('prev_close_profit_hkd')
@@ -734,7 +733,7 @@ def update_files():
 
         history_html = f"""<section style="margin-top: 32px; margin-bottom: 32px;">
             <h2>Profit Stats (Today & History)</h2>
-            <div class="milestone-card stats-card" style="border: 1px dashed var(--border); box-shadow: none;">
+            <div class="milestone-card" style="border: 1px dashed var(--border); box-shadow: none;">
                 <div class="m-body" style="display: block;">
                     <div style="font-size: 11px; font-weight: 700; color: var(--text-dim); margin-bottom: 8px;">今日 ({current_ny_date_str} US)</div>
                     {d_change_row}
@@ -789,14 +788,14 @@ h1 {{ font-size: 26px; font-weight: 800; margin: 0; }}
 .summary-card {{ background: var(--card); border: 1px solid var(--border); padding: 18px; border-radius: 20px; position: relative; }}
 .summary-card::before {{ content: ''; position: absolute; top:0; left:0; width:4px; height:100%; background: var(--accent); }}
 .summary-label {{ font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; margin-bottom: 6px; }}
-.summary-value {{ font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }}
+.summary-value {{ font-size: 20px; font-weight: 700; }}
 .profit-display {{ display: flex; align-items: baseline; gap: 8px; }}
-.profit-pct {{ font-size: 14px; font-weight: 700; padding-bottom: 1px; font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }}
+.profit-pct {{ font-size: 14px; font-weight: 700; padding-bottom: 1px; }}
 
 .ticker-bar {{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 24px; }}
 .ticker-item {{ background: var(--glass); border: 1px solid var(--border); padding: 10px 14px; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; gap: 4px; }}
 .ticker-symbol {{ font-weight: 700; font-size: 13px; color: var(--text-dim); }}
-.ticker-price {{ font-family: monospace; font-size: 13px; color: #fff; font-variant-numeric: tabular-nums; }}
+.ticker-price {{ font-family: monospace; font-size: 13px; color: #fff; }}
 .session-tag {{ font-size: 9px; padding: 1px 4px; border-radius: 3px; background: rgba(59,130,246,0.2); color: var(--accent); margin-left: 4px; border: 0.5px solid var(--accent); }}
 
 .sync-btn {{ display: block; width: 100%; padding: 14px; background: rgba(255,255,255,0.05); color: #fff; text-align: center; text-decoration: none; border-radius: 14px; font-size: 14px; font-weight: 600; border: 1px solid var(--border); margin-bottom: 32px; transition: background 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }}
@@ -818,12 +817,12 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
 .status-PENDING {{ background: rgba(161,161,170,0.1); color: var(--text-dim); border: 1px solid var(--border); }}
 .price-gap-box {{ background: rgba(255,255,255,0.03); padding: 12px; border-radius: 16px; border: 1px solid var(--border); }}
 .pg-row {{ display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; color: var(--text-dim); }}
-.pg-val {{ color: #fff; font-weight: 600; font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }}
+.pg-val {{ color: #fff; font-weight: 600; }}
 .main-gap {{ margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); color: #fff; }}
 .main-gap .pg-val {{ font-size: 15px; }}
 .progress-details {{ margin-bottom: 14px; }}
 .detail-row {{ display: flex; justify-content: space-between; font-size: 12px; color: var(--text-dim); margin-bottom: 4px; }}
-.detail-val {{ font-weight: 700; color: #fff; font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }}
+.detail-val {{ font-weight: 700; color: #fff; }}
 .m-strategy {{ font-size: 12px; color: var(--text-dim); line-height: 1.6; padding-top: 14px; border-top: 1px solid var(--border); margin-top: 15px; }}
 .progress-bg {{ background: rgba(255,255,255,0.03); height: 8px; border-radius: 10px; overflow: hidden; }}
 .progress-fill {{ background: linear-gradient(90deg, var(--accent), #60a5fa); height: 100%; border-radius: 10px; transition: width 0.5s ease; }}
@@ -836,8 +835,8 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
 .asset-row {{ background: var(--card); border: 1px solid var(--border); padding: 14px 18px; border-radius: 18px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }}
 .asset-name {{ font-weight: 700; font-size: 15px; }}
 .qty {{ font-size: 11px; color: var(--text-dim); margin-left: 6px; }}
-.asset-cost {{ font-size: 11px; color: var(--text-dim); margin-top: 2px; font-variant-numeric: tabular-nums; }}
-.asset-status {{ font-weight: 800; font-size: 15px; font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }}
+.asset-cost {{ font-size: 11px; color: var(--text-dim); margin-top: 2px; }}
+.asset-status {{ font-weight: 800; font-size: 15px; }}
 .up {{ color: var(--success); }}
 .down {{ color: var(--danger); }}
 </style></head>
