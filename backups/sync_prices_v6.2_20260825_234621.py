@@ -13,7 +13,7 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v6.3"
+SCRIPT_VERSION = "v6.2"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -840,13 +840,6 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
 .asset-status {{ font-weight: 800; font-size: 15px; font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }}
 .up {{ color: var(--success); }}
 .down {{ color: var(--danger); }}
-.tab-bar {{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: var(--glass); border: 1px solid var(--border); border-radius: 14px; padding: 4px; margin-bottom: 24px; position: sticky; top: calc(8px + env(safe-area-inset-top)); z-index: 20; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }}
-.tab-btn {{ appearance: none; border: 0; background: transparent; color: var(--text-dim); font-family: inherit; font-size: 13px; font-weight: 700; padding: 9px 0; border-radius: 10px; cursor: pointer; transition: background 0.2s, color 0.2s; }}
-.tab-btn.active {{ background: var(--card); color: var(--text-main); box-shadow: 0 1px 3px rgba(0,0,0,0.35); }}
-.tab-btn:active {{ opacity: 0.7; }}
-.tab-panel {{ display: none; }}
-.tab-panel.active {{ display: block; }}
-.tab-panel > section:first-child {{ margin-top: 0 !important; }}
 </style></head>
 <body><div class="container">
 <header><div class="header-top"><h1>📈 TQQQ Plan</h1><div><span class="v-tag" id="live-indicator" style="background: rgba(16,185,129,0.2); color: var(--success); margin-right: 4px; border: 1px solid var(--success); display: none; align-items: center; gap: 4px;">LIVE<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--success); animation: pulse 1.5s infinite;"></span></span><span class="v-tag">{SCRIPT_VERSION}</span></div></div><div class="last-update">Last Update: {current_time_str}</div></header>
@@ -868,49 +861,15 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
     {ticker_bar_html}
 </section>
 
-<nav class="tab-bar" id="tab-bar">
-    <button class="tab-btn active" data-tab="overview">走勢</button>
-    <button class="tab-btn" data-tab="targets">目標</button>
-    <button class="tab-btn" data-tab="holdings">持倉</button>
-    <button class="tab-btn" data-tab="stats">統計</button>
-</nav>
-<div class="tab-panel active" id="tab-overview">{chart_html}</div>
-<div class="tab-panel" id="tab-targets"><section><h2>Strategic Targets</h2>{milestones_html}</section></div>
-<div class="tab-panel" id="tab-holdings">{combined_html}<section style="margin-top: 32px; margin-bottom: 32px;"><h2>Holdings</h2>{accounts_html}</section></div>
-<div class="tab-panel" id="tab-stats">{history_html}</div>
+{chart_html}
+<section><h2>Strategic Targets</h2>{milestones_html}</section>
+{combined_html}
+<section style="margin-top: 32px; margin-bottom: 32px;"><h2>Holdings</h2>{accounts_html}</section>
+{history_html}
 
 <button class="sync-btn" id="triggerBtn" onclick="triggerSync()">
     🔄 手動觸發雲端更新 (GitHub Actions)
 </button>
-<script>
-// v6.3: Tab 切換（記住上次揀嗎個 tab）
-(function() {{
-    const KEY = 'tqqq_active_tab';
-    const btns = document.querySelectorAll('.tab-btn');
-    const panels = document.querySelectorAll('.tab-panel');
-
-    function activate(name) {{
-        let matched = false;
-        panels.forEach(p => {{
-            const on = p.id === 'tab-' + name;
-            p.classList.toggle('active', on);
-            if (on) matched = true;
-        }});
-        if (!matched) return false;
-        btns.forEach(b => b.classList.toggle('active', b.dataset.tab === name));
-        try {{ localStorage.setItem(KEY, name); }} catch(e) {{}}
-        // 圖表在隱藏狀態下量不到寬度，重新顯示時要叫一次 resize
-        if (name === 'overview') window.dispatchEvent(new Event('resize'));
-        return true;
-    }}
-
-    btns.forEach(b => b.addEventListener('click', () => activate(b.dataset.tab)));
-
-    let saved = null;
-    try {{ saved = localStorage.getItem(KEY); }} catch(e) {{}}
-    if (!saved || !activate(saved)) activate('overview');
-}})();
-</script>
 <script>
 async function triggerSync() {{
     const btn = document.getElementById('triggerBtn');
