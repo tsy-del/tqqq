@@ -13,7 +13,7 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v6.0"
+SCRIPT_VERSION = "v5.15"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -674,15 +674,8 @@ def update_files():
         chart_html = f'''<section style="margin-top: 32px; margin-bottom: 32px;">
             <h2>Profit Trend</h2>
             <div id="chart-container" style="width: 100%; height: 220px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; position: relative;"></div>
-            <div id="chart-fallback" style="display:none; font-size: 11px; color: var(--text-dim); text-align: center; margin-top: 8px;">圖表載入失敗（離線或 CDN 阻塞）</div>
-            <script src="https://unpkg.com/lightweight-charts@4.2.3/dist/lightweight-charts.standalone.production.js"></script>
+            <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
             <script>
-            (function() {{
-                if (typeof LightweightCharts === 'undefined') {{
-                    document.getElementById('chart-container').style.display = 'none';
-                    document.getElementById('chart-fallback').style.display = 'block';
-                    return;
-                }}
                 const chartOptions = {{ 
                     layout: {{ textColor: '#71717a', background: {{ type: 'solid', color: 'transparent' }} }},
                     grid: {{ vertLines: {{ visible: false }}, horzLines: {{ color: 'rgba(255, 255, 255, 0.05)' }} }},
@@ -724,7 +717,6 @@ def update_files():
                     const newRect = entries[0].contentRect;
                     chart.applyOptions({{ width: newRect.width, height: newRect.height }});
                 }}).observe(chartContainer);
-            }})();
             </script>
         </section>'''
 
@@ -860,7 +852,6 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
     {ticker_bar_html}
 </section>
 
-{chart_html}
 <section><h2>Strategic Targets</h2>{milestones_html}</section>
 {combined_html}
 <section style="margin-top: 32px; margin-bottom: 32px;"><h2>Holdings</h2>{accounts_html}</section>
