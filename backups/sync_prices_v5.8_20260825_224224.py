@@ -13,7 +13,7 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v5.9"
+SCRIPT_VERSION = "v5.8"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -69,32 +69,6 @@ def get_ticker_data(symbol, retries=3, delay=5):
         print(f"Retry {attempt + 1}/{retries} for {symbol}...")
         time.sleep(delay)
     raise RuntimeError(f"Failed to fetch valid data for {symbol}: {last_err}")
-
-def fetch_usd_hkd_rate(fallback=7.8):
-    """Fetch live USD/HKD rate from yfinance. Falls back to previous value on failure."""
-    for attempt in range(3):
-        try:
-            t = yf.Ticker("HKD=X")
-            info = t.info
-            candidates = [
-                info.get('regularMarketPrice'),
-                info.get('bid'),
-                info.get('ask'),
-                info.get('previousClose'),
-            ]
-            try:
-                candidates.insert(0, t.fast_info.last_price)
-            except Exception:
-                pass
-            for c in candidates:
-                if c and 7.0 < float(c) < 8.5:
-                    return round(float(c), 4)
-        except Exception:
-            pass
-        time.sleep(2)
-    print(f"WARN: USD/HKD fetch failed, using fallback {fallback}")
-    return fallback
-
 
 def get_latest_prices(symbols):
     print(f"Fetching highest frequency prices ({SCRIPT_VERSION}) from yfinance for {symbols}...")
@@ -164,10 +138,7 @@ def update_files():
         #     print(f"Prices unchanged (TQQQ: {tqqq_price}, SOXL: {soxl_price}). Skipping Git push to save history.")
         #     return True
 
-        prev_rate = data['market_prices'].get('usd_hkd_rate', 7.8)
-        rate = fetch_usd_hkd_rate(fallback=prev_rate)
-        data['market_prices']['usd_hkd_rate'] = rate
-        print(f"USD/HKD rate: {rate} (prev {prev_rate})")
+        rate = data['market_prices']['usd_hkd_rate']
 
         for sym, d in prices_data.items():
             data['market_prices'][f"{sym.lower()}_usd"] = d['price']
