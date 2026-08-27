@@ -848,7 +848,7 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
 .tab-panel > section:first-child {{ margin-top: 0 !important; }}
 </style></head>
 <body><div class="container">
-<header><div class="header-top"><h1>📈 TQQQ Plan</h1><div><span class="v-tag" id="live-indicator" style="background: rgba(16,185,129,0.2); color: var(--success); margin-right: 4px; border: 1px solid var(--success); display: none; align-items: center; gap: 4px;">LIVE<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--success); animation: pulse 1.5s infinite;"></span></span><span class="v-tag">{SCRIPT_VERSION}</span></div></div><div class="last-update">Last Update: {current_time_str}<span id="js-update-time" style="margin-left:6px;"></span></div></header>
+<header><div class="header-top"><h1>📈 TQQQ Plan</h1><div><span class="v-tag" id="live-indicator" style="background: rgba(16,185,129,0.2); color: var(--success); margin-right: 4px; border: 1px solid var(--success); display: none; align-items: center; gap: 4px;">LIVE<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--success); animation: pulse 1.5s infinite;"></span></span><span class="v-tag">{SCRIPT_VERSION}</span></div></div><div class="last-update"><span id="backend-update-time">Last Update: {current_time_str}</span><span id="js-update-time" style="margin-left:6px;"></span></div></header>
 <section class="main-summary">
     <div class="summary-card">
         <div class="summary-label">Total Value (HKD)</div>
@@ -1052,7 +1052,8 @@ async function syncBackendData() {{
         APP_DATA = fresh;
 
         const upEl = document.querySelector('.last-update');
-        if (upEl) upEl.innerText = 'Last Update: ' + fresh.last_updated;
+        const backendTimeEl = document.getElementById('backend-update-time');
+        if (backendTimeEl) backendTimeEl.innerText = 'Last Update: ' + fresh.last_updated;
 
         // 開市時 summary 由 Finnhub live 主導，唔好覆蓋；收市就用後台數字
         if (!isMarketOpenNow() && fresh.portfolio_summary) {{
