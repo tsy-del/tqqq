@@ -13,7 +13,7 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v6.6"
+SCRIPT_VERSION = "v6.7"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -878,9 +878,9 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
 <div class="tab-panel" id="tab-holdings">{combined_html}<section style="margin-top: 32px; margin-bottom: 32px;"><h2>Holdings</h2>{accounts_html}</section></div>
 <div class="tab-panel" id="tab-stats">{history_html}</div>
 
-<button class="sync-btn" id="triggerBtn" onclick="triggerSync()">
-    🔄 手動觸發雲端更新 (GitHub Actions)
-</button>
+<a class="sync-btn" id="triggerBtn" href="https://github.com/tsy-del/tqqq/actions/workflows/sync.yml" target="_blank" rel="noopener noreferrer">
+    🔄 前往 GitHub Actions 手動觸發更新
+</a>
 <script>
 // v6.3: Tab 切換（記住上次揀嗎個 tab）
 (function() {{
@@ -911,26 +911,6 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
 }})();
 </script>
 <script>
-async function triggerSync() {{
-    const btn = document.getElementById('triggerBtn');
-    btn.textContent = '⏳ 觸發中...';
-    btn.disabled = true;
-    try {{
-        const r = await fetch('http://127.0.0.1:19999/trigger', {{method:'POST'}});
-        const d = await r.json();
-        if (d.status === 204) {{
-            btn.textContent = '✅ 已觸發！約 30 秒後更新';
-            btn.style.borderColor = 'var(--success)';
-            setTimeout(() => {{ btn.textContent = '🔄 手動觸發雲端更新 (GitHub Actions)'; btn.disabled = false; btn.style.borderColor = ''; }}, 15000);
-        }} else {{
-            btn.textContent = '❌ 失敗 (' + d.status + ')';
-            setTimeout(() => {{ btn.textContent = '🔄 手動觸發雲端更新 (GitHub Actions)'; btn.disabled = false; }}, 5000);
-        }}
-    }} catch(e) {{
-        btn.textContent = '❌ 連線失敗';
-        setTimeout(() => {{ btn.textContent = '🔄 手動觸發雲端更新 (GitHub Actions)'; btn.disabled = false; }}, 5000);
-    }}
-}}
 </script>
 </div><script>
 let APP_DATA = {app_data_json};
