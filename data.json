@@ -1,70 +1,70 @@
 {
-  "last_updated": "2026-08-28 16:30:09",
+  "last_updated": "2026-08-28 16:45:09",
   "market_prices": {
-    "tqqq_usd": 72.62,
-    "soxl_usd": 118.9,
-    "usd_hkd_rate": 7.8391,
+    "tqqq_usd": 72.8,
+    "soxl_usd": 119.37,
+    "usd_hkd_rate": 7.8396,
     "spcx_usd": 192.5,
-    "spch_usd": 8.94
+    "spch_usd": 8.97
   },
   "portfolio_summary": {
-    "total_value_hkd": 1900137,
-    "total_cost_hkd": 1754663,
-    "total_profit_hkd": 145474
+    "total_value_hkd": 1905492,
+    "total_cost_hkd": 1754775,
+    "total_profit_hkd": 150716
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 459899,
-      "total_profit_hkd": -3626,
-      "total_cost_hkd": 463525,
+      "total_value_hkd": 461262,
+      "total_profit_hkd": -2293,
+      "total_cost_hkd": 463555,
       "holdings": [
         {
           "asset": "TQQQ",
           "quantity": 563,
           "avg_price_usd": 58.465,
-          "current_price_usd": 72.62
+          "current_price_usd": 72.8
         },
         {
           "asset": "SOXL",
           "quantity": 127,
           "avg_price_usd": 170.3706,
-          "current_price_usd": 118.9
+          "current_price_usd": 119.37
         },
         {
           "asset": "SPCH",
           "quantity": 300,
           "avg_price_usd": 15.2567,
-          "current_price_usd": 8.94
+          "current_price_usd": 8.97
         }
       ]
     },
     {
       "account_name": "帳戶 B (固定基金)",
-      "total_value_hkd": 1216542,
-      "total_profit_hkd": 251115,
-      "total_cost_hkd": 965427,
+      "total_value_hkd": 1219635,
+      "total_profit_hkd": 254146,
+      "total_cost_hkd": 965488,
       "is_locked": true,
       "holdings": [
         {
           "asset": "TQQQ",
           "quantity": 2137,
           "avg_price_usd": 57.63,
-          "current_price_usd": 72.62
+          "current_price_usd": 72.8
         }
       ]
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 223697,
-      "total_profit_hkd": -102015,
-      "total_cost_hkd": 325711,
+      "total_value_hkd": 224595,
+      "total_profit_hkd": -101137,
+      "total_cost_hkd": 325732,
       "holdings": [
         {
           "asset": "SOXL",
           "quantity": 240,
           "avg_price_usd": 173.1233,
-          "current_price_usd": 118.9
+          "current_price_usd": 119.37
         }
       ]
     }
@@ -109,11 +109,11 @@
   },
   "daily_stats": {
     "date": "2026-08-28",
-    "highest_profit_hkd": 149125,
+    "highest_profit_hkd": 150716,
     "lowest_profit_hkd": 142979,
-    "highest_time": "16:00:10",
+    "highest_time": "16:45:09",
     "lowest_time": "16:15:10",
     "prev_close_profit_hkd": 148825,
-    "last_profit_hkd": 145474
+    "last_profit_hkd": 150716
   }
 }
