@@ -1,35 +1,35 @@
 {
-  "last_updated": "2026-08-28 21:30:10",
+  "last_updated": "2026-08-28 21:35:10",
   "market_prices": {
-    "tqqq_usd": 72.84,
-    "soxl_usd": 120.0,
+    "tqqq_usd": 72.71,
+    "soxl_usd": 118.16,
     "usd_hkd_rate": 7.8397,
     "spcx_usd": 192.5,
     "spch_usd": 8.86
   },
   "portfolio_summary": {
-    "total_value_hkd": 1907916,
+    "total_value_hkd": 1899871,
     "total_cost_hkd": 1754797,
-    "total_profit_hkd": 153119
+    "total_profit_hkd": 145073
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 461813,
-      "total_profit_hkd": -1748,
+      "total_value_hkd": 459407,
+      "total_profit_hkd": -4154,
       "total_cost_hkd": 463560,
       "holdings": [
         {
           "asset": "TQQQ",
           "quantity": 563,
           "avg_price_usd": 58.465,
-          "current_price_usd": 72.84
+          "current_price_usd": 72.71
         },
         {
           "asset": "SOXL",
           "quantity": 127,
           "avg_price_usd": 170.3706,
-          "current_price_usd": 120.0
+          "current_price_usd": 118.16
         },
         {
           "asset": "SPCH",
@@ -41,8 +41,8 @@
     },
     {
       "account_name": "帳戶 B (固定基金)",
-      "total_value_hkd": 1220320,
-      "total_profit_hkd": 254820,
+      "total_value_hkd": 1218143,
+      "total_profit_hkd": 252642,
       "total_cost_hkd": 965501,
       "is_locked": true,
       "holdings": [
@@ -50,21 +50,21 @@
           "asset": "TQQQ",
           "quantity": 2137,
           "avg_price_usd": 57.63,
-          "current_price_usd": 72.84
+          "current_price_usd": 72.71
         }
       ]
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 225783,
-      "total_profit_hkd": -99953,
+      "total_value_hkd": 222321,
+      "total_profit_hkd": -103415,
       "total_cost_hkd": 325736,
       "holdings": [
         {
           "asset": "SOXL",
           "quantity": 240,
           "avg_price_usd": 173.1233,
-          "current_price_usd": 120.0
+          "current_price_usd": 118.16
         }
       ]
     }
@@ -114,6 +114,6 @@
     "highest_time": "21:15:10",
     "lowest_time": "16:15:10",
     "prev_close_profit_hkd": 148825,
-    "last_profit_hkd": 153119
+    "last_profit_hkd": 145073
   }
 }
