@@ -13,7 +13,7 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v6.7"
+SCRIPT_VERSION = "v6.8"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -918,6 +918,9 @@ const ACTIVE_TICKERS = {active_tickers_json};
 const USD_HKD_RATE = {rate};
 const TOTAL_COST_HKD = {int(round(total_cost_hkd))};
 
+// v6.8: 記住每個 symbol 上一次驗證過嘅正常 previousClose，用嚟過濾 bad tick
+const lastGoodPrevClose = {{}};
+
 async function fetchLivePrices() {{
     // 檢查美股開市時間 (紐約時間)
     const nyTime = new Date(new Date().toLocaleString("en-US", {{timeZone: "America/New_York"}}));
@@ -962,8 +965,20 @@ async function fetchLivePrices() {{
             if(priceEl) priceEl.innerText = `$${{price.toFixed(2)}}`;
             
             const chgEl = document.getElementById(`ticker-chg-${{sym}}`);
-            if(chgEl && q.pc) {{
-                const chgPct = ((price - q.pc) / q.pc) * 100;
+            // v6.8: Finnhub previousClose 喺同一交易日內應保持穩定 (只有隔日先會變)。
+            // 如果單次 poll 攞到嘅 pc 同上一次已知嘅正常值相差超過 1%，
+            // 當係 API bad tick，沿用上次正常值，避免 %變動顯示大幅假跳動。
+            let pc = q.pc;
+            const prevGoodPc = lastGoodPrevClose[sym];
+            if (prevGoodPc && pc && Math.abs(pc - prevGoodPc) / prevGoodPc > 0.01) {{
+                console.warn(`[Anomaly] ${{sym}} previousClose jumped from ${{prevGoodPc}} to ${{pc}}, ignoring bad tick`);
+                pc = prevGoodPc;
+            }} else if (pc) {{
+                lastGoodPrevClose[sym] = pc;
+            }}
+
+            if(chgEl && pc) {{
+                const chgPct = ((price - pc) / pc) * 100;
                 chgEl.innerText = (chgPct >= 0 ? '+' : '') + chgPct.toFixed(1) + '%';
                 chgEl.style.color = chgPct >= 0 ? 'var(--success)' : 'var(--danger)';
             }}
