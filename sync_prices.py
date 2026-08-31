@@ -1041,12 +1041,14 @@ async function fetchLivePrices() {{
         }}
         
     }} catch(e) {{
-        console.error("Live update failed:", e);
+        console.error('[v7.0] fetchLivePrices ERROR:', e);
     }}
 }}
 
+// v7.0: 立即執行，避免等待
+if (DEBUG) console.log('[v7.0] Init - calling fetchLivePrices immediately');
+fetchLivePrices();
 setInterval(fetchLivePrices, 10000);
-setTimeout(fetchLivePrices, 1500);
 
 // v6.2: 靜默同步後台 data.json (每 60 秒)，唔需要人手 refresh
 let LAST_SEEN_UPDATE = APP_DATA.last_updated;
