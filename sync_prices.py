@@ -13,7 +13,7 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v6.9"
+SCRIPT_VERSION = "v7.0"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -925,9 +925,12 @@ const ACTIVE_TICKERS = {active_tickers_json};
 const USD_HKD_RATE = {rate};
 const TOTAL_COST_HKD = {int(round(total_cost_hkd))};
 
-// v6.9: 直接从後台 (yfinance) 攻嚟每個 symbol 嘅 previousClose，唔再信 Finnhub 自己嘅 pc
+// v7.0: 直接从後台 (yfinance) 攻嚟每個 symbol 嘅 previousClose，唔再信 Finnhub 自己嘅 pc
 // (發現 Finnhub 免費版对高波動 3x 槓杆 ETF 嘅 previousClose 持續性不正確)
 const PREV_CLOSE = {{{prev_close_json}}};
+
+// v7.0: Debug mode
+const DEBUG = true;
 
 async function fetchLivePrices() {{
     // 檢查美股開市時間 (紐約時間)
@@ -937,6 +940,7 @@ async function fetchLivePrices() {{
     const isMarketOpen = (day >= 1 && day <= 5) && (time >= 930 && time < 1600);
     
     const ind = document.getElementById('live-indicator');
+    if (DEBUG) console.log('[v7.0] Market check - day:', day, 'time:', time, 'isOpen:', isMarketOpen);
     if (!isMarketOpen) {{
         if(ind) {{
             ind.innerHTML = 'CLOSED';
@@ -944,7 +948,9 @@ async function fetchLivePrices() {{
             ind.style.color = 'var(--text-dim)';
             ind.style.borderColor = 'var(--border)';
             ind.style.display = 'inline-flex';
+            if (DEBUG) console.log('[v7.0] LIVE indicator activated');
         }}
+        if (DEBUG) console.log('[v7.0] Market closed, early return');
         return; // 盤前/盤後停用 Finnhub (因其免費版無盤後數據)，保留後台 yfinance 的盤後價
     }}
 
@@ -973,7 +979,7 @@ async function fetchLivePrices() {{
             if(priceEl) priceEl.innerText = `$${{price.toFixed(2)}}`;
             
             const chgEl = document.getElementById(`ticker-chg-${{sym}}`);
-            // v6.9: 用後台 yfinance 嘅 previousClose 計 %变動，唔利用 Finnhub 自己嘅 pc
+            // v7.0: 用後台 yfinance 嘅 previousClose 計 %变動，唔利用 Finnhub 自己嘅 pc
             const pc = PREV_CLOSE[sym];
 
             if(chgEl && pc) {{
@@ -983,7 +989,7 @@ async function fetchLivePrices() {{
             }}
         }});
 
-        // v6.6: 記錄 JS 前端實際跳價嘅本機時間 (唔靠後台 cron 時間)
+        // v7.0: 記錄 JS 前端實際跳價嘅本機時間 (唔靠後台 cron 時間)
         if (gotAnyPrice) {{
             const jsTimeEl = document.getElementById('js-update-time');
             if (jsTimeEl) {{
@@ -992,6 +998,7 @@ async function fetchLivePrices() {{
                 const mm = String(nowLocal.getMinutes()).padStart(2, '0');
                 const ss = String(nowLocal.getSeconds()).padStart(2, '0');
                 jsTimeEl.innerText = ' · 跳價 ' + hh + ':' + mm + ':' + ss;
+                if (DEBUG) console.log('[v7.0] Update time:', jsTimeEl.innerText);
             }}
         }}
 
@@ -1030,6 +1037,7 @@ async function fetchLivePrices() {{
             ind.style.color = 'var(--success)';
             ind.style.borderColor = 'var(--success)';
             ind.style.display = 'inline-flex';
+            if (DEBUG) console.log('[v7.0] LIVE indicator activated');
         }}
         
     }} catch(e) {{
