@@ -13,7 +13,7 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v7.0"
+SCRIPT_VERSION = "v7.1"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -925,34 +925,17 @@ const ACTIVE_TICKERS = {active_tickers_json};
 const USD_HKD_RATE = {rate};
 const TOTAL_COST_HKD = {int(round(total_cost_hkd))};
 
-// v7.0: 直接从後台 (yfinance) 攻嚟每個 symbol 嘅 previousClose，唔再信 Finnhub 自己嘅 pc
+// v7.1: 直接从後台 (yfinance) 攻嚟每個 symbol 嘅 previousClose，唔再信 Finnhub 自己嘅 pc
 // (發現 Finnhub 免費版对高波動 3x 槓杆 ETF 嘅 previousClose 持續性不正確)
 const PREV_CLOSE = {{{prev_close_json}}};
 
-// v7.0: Debug mode
+// v7.1: Debug mode
 const DEBUG = true;
 
 async function fetchLivePrices() {{
-    // 檢查美股開市時間 (紐約時間)
-    const nyTime = new Date(new Date().toLocaleString("en-US", {{timeZone: "America/New_York"}}));
-    const day = nyTime.getDay();
-    const time = nyTime.getHours() * 100 + nyTime.getMinutes();
-    const isMarketOpen = (day >= 1 && day <= 5) && (time >= 930 && time < 1600);
-    
+    // v7.1: 移除市場判斷，強制每 10 秒 call Finnhub（收市都 call，反正會返最後價）
     const ind = document.getElementById('live-indicator');
-    if (DEBUG) console.log('[v7.0] Market check - day:', day, 'time:', time, 'isOpen:', isMarketOpen);
-    if (!isMarketOpen) {{
-        if(ind) {{
-            ind.innerHTML = 'CLOSED';
-            ind.style.background = 'rgba(161,161,170,0.2)';
-            ind.style.color = 'var(--text-dim)';
-            ind.style.borderColor = 'var(--border)';
-            ind.style.display = 'inline-flex';
-            if (DEBUG) console.log('[v7.0] LIVE indicator activated');
-        }}
-        if (DEBUG) console.log('[v7.0] Market closed, early return');
-        return; // 盤前/盤後停用 Finnhub (因其免費版無盤後數據)，保留後台 yfinance 的盤後價
-    }}
+    if (DEBUG) console.log('[v7.1] fetchLivePrices called');
 
     try {{
         const symbols = ACTIVE_TICKERS.join(',');
@@ -979,7 +962,7 @@ async function fetchLivePrices() {{
             if(priceEl) priceEl.innerText = `$${{price.toFixed(2)}}`;
             
             const chgEl = document.getElementById(`ticker-chg-${{sym}}`);
-            // v7.0: 用後台 yfinance 嘅 previousClose 計 %变動，唔利用 Finnhub 自己嘅 pc
+            // v7.1: 用後台 yfinance 嘅 previousClose 計 %变動，唔利用 Finnhub 自己嘅 pc
             const pc = PREV_CLOSE[sym];
 
             if(chgEl && pc) {{
@@ -989,7 +972,7 @@ async function fetchLivePrices() {{
             }}
         }});
 
-        // v7.0: 記錄 JS 前端實際跳價嘅本機時間 (唔靠後台 cron 時間)
+        // v7.1: 記錄 JS 前端實際跳價嘅本機時間 (唔靠後台 cron 時間)
         if (gotAnyPrice) {{
             const jsTimeEl = document.getElementById('js-update-time');
             if (jsTimeEl) {{
@@ -998,7 +981,7 @@ async function fetchLivePrices() {{
                 const mm = String(nowLocal.getMinutes()).padStart(2, '0');
                 const ss = String(nowLocal.getSeconds()).padStart(2, '0');
                 jsTimeEl.innerText = ' · 跳價 ' + hh + ':' + mm + ':' + ss;
-                if (DEBUG) console.log('[v7.0] Update time:', jsTimeEl.innerText);
+                if (DEBUG) console.log('[v7.1] Update time:', jsTimeEl.innerText);
             }}
         }}
 
@@ -1037,16 +1020,16 @@ async function fetchLivePrices() {{
             ind.style.color = 'var(--success)';
             ind.style.borderColor = 'var(--success)';
             ind.style.display = 'inline-flex';
-            if (DEBUG) console.log('[v7.0] LIVE indicator activated');
+            if (DEBUG) console.log('[v7.1] LIVE indicator activated');
         }}
         
     }} catch(e) {{
-        console.error('[v7.0] fetchLivePrices ERROR:', e);
+        console.error('[v7.1] fetchLivePrices ERROR:', e);
     }}
 }}
 
-// v7.0: 立即執行，避免等待
-if (DEBUG) console.log('[v7.0] Init - calling fetchLivePrices immediately');
+// v7.1: 立即執行，避免等待
+if (DEBUG) console.log('[v7.1] Init - calling fetchLivePrices immediately');
 fetchLivePrices();
 setInterval(fetchLivePrices, 10000);
 
