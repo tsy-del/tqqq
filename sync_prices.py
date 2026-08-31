@@ -13,7 +13,7 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v6.8"
+SCRIPT_VERSION = "v6.9"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -185,7 +185,10 @@ def get_latest_prices(symbols):
         chg_pct = ((price - ref_price) / ref_price * 100) if ref_price > 0 else 0
         
         label = "EXT" if abs(price - reg) > 0.01 else "REG"
-        prices[sym] = {'price': price, 'label': label, 'change_pct': chg_pct}
+        # v6.9: 存下 yfinance 嘅 previousClose，用嚟前端計 % 变動，
+        # 唔再信 Finnhub 自己嘅 pc（發現嘅 SOXL previousClose 持續性錯誤）。
+        prev_close = info.get('previousClose') or ref_price
+        prices[sym] = {'price': price, 'label': label, 'change_pct': chg_pct, 'prev_close': prev_close}
     return prices
 
 def update_files():
@@ -233,6 +236,7 @@ def update_files():
 
         for sym, d in prices_data.items():
             data['market_prices'][f"{sym.lower()}_usd"] = d['price']
+            data['market_prices'][f"{sym.lower()}_prev_close"] = d['prev_close']
         # 確保使用香港時間 (GitHub Server 預設是 UTC)
         hk_tz = timezone(timedelta(hours=8))
         current_time_str = datetime.now(hk_tz).strftime('%Y-%m-%d %H:%M:%S')
@@ -731,6 +735,9 @@ def update_files():
 
         app_data_json = json.dumps(data)
         active_tickers_json = json.dumps(active_tickers_sorted)
+        # v6.9: 前端 ticker bar 用嘅 previousClose，直接从後台 prices_data 攻，唔信 Finnhub 自己嘅 pc
+        prev_close_map = {sym: d['prev_close'] for sym, d in prices_data.items()}
+        prev_close_json = json.dumps(prev_close_map)
 
         history_html = f"""<section style="margin-top: 32px; margin-bottom: 32px;">
             <h2>Profit Stats (Today & History)</h2>
@@ -918,8 +925,9 @@ const ACTIVE_TICKERS = {active_tickers_json};
 const USD_HKD_RATE = {rate};
 const TOTAL_COST_HKD = {int(round(total_cost_hkd))};
 
-// v6.8: 記住每個 symbol 上一次驗證過嘅正常 previousClose，用嚟過濾 bad tick
-const lastGoodPrevClose = {{}};
+// v6.9: 直接从後台 (yfinance) 攻嚟每個 symbol 嘅 previousClose，唔再信 Finnhub 自己嘅 pc
+// (發現 Finnhub 免費版对高波動 3x 槓杆 ETF 嘅 previousClose 持續性不正確)
+const PREV_CLOSE = {{{prev_close_json}}};
 
 async function fetchLivePrices() {{
     // 檢查美股開市時間 (紐約時間)
@@ -965,17 +973,8 @@ async function fetchLivePrices() {{
             if(priceEl) priceEl.innerText = `$${{price.toFixed(2)}}`;
             
             const chgEl = document.getElementById(`ticker-chg-${{sym}}`);
-            // v6.8: Finnhub previousClose 喺同一交易日內應保持穩定 (只有隔日先會變)。
-            // 如果單次 poll 攞到嘅 pc 同上一次已知嘅正常值相差超過 1%，
-            // 當係 API bad tick，沿用上次正常值，避免 %變動顯示大幅假跳動。
-            let pc = q.pc;
-            const prevGoodPc = lastGoodPrevClose[sym];
-            if (prevGoodPc && pc && Math.abs(pc - prevGoodPc) / prevGoodPc > 0.01) {{
-                console.warn(`[Anomaly] ${{sym}} previousClose jumped from ${{prevGoodPc}} to ${{pc}}, ignoring bad tick`);
-                pc = prevGoodPc;
-            }} else if (pc) {{
-                lastGoodPrevClose[sym] = pc;
-            }}
+            // v6.9: 用後台 yfinance 嘅 previousClose 計 %变動，唔利用 Finnhub 自己嘅 pc
+            const pc = PREV_CLOSE[sym];
 
             if(chgEl && pc) {{
                 const chgPct = ((price - pc) / pc) * 100;
