@@ -13,7 +13,7 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v7.1"
+SCRIPT_VERSION = "v7.2"
 
 def format_hkd(num):
     return f"${num:,.0f}"
