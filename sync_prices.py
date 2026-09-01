@@ -927,7 +927,7 @@ const TOTAL_COST_HKD = {int(round(total_cost_hkd))};
 
 // v7.1: 直接从後台 (yfinance) 攻嚟每個 symbol 嘅 previousClose，唔再信 Finnhub 自己嘅 pc
 // (發現 Finnhub 免費版对高波動 3x 槓杆 ETF 嘅 previousClose 持續性不正確)
-const PREV_CLOSE = {{{prev_close_json}}};
+const PREV_CLOSE = {prev_close_json};
 
 // v7.1: Debug mode
 const DEBUG = true;
