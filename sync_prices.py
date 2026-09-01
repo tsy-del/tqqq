@@ -13,7 +13,7 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v7.2"
+SCRIPT_VERSION = "v7.3"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -933,9 +933,20 @@ const PREV_CLOSE = {prev_close_json};
 const DEBUG = true;
 
 async function fetchLivePrices() {{
-    // v7.1: 移除市場判斷，強制每 10 秒 call Finnhub（收市都 call，反正會返最後價）
+    // v7.3: 收市時唔 call Finnhub（免費版冇盤前盤後），開市先 poll
     const ind = document.getElementById('live-indicator');
-    if (DEBUG) console.log('[v7.1] fetchLivePrices called');
+    const isOpen = isMarketOpenNow();
+    
+    if (!isOpen) {{
+        // 收市：隱藏 LIVE indicator
+        if (ind) {{
+            ind.style.display = 'none';
+        }}
+        if (DEBUG) console.log('[v7.3] Market closed, skipping Finnhub call');
+        return;
+    }}
+    
+    if (DEBUG) console.log('[v7.3] Market open, fetching live prices');
 
     try {{
         const symbols = ACTIVE_TICKERS.join(',');
@@ -1014,13 +1025,14 @@ async function fetchLivePrices() {{
             }}
         }}
 
+        // v7.3: 開市時顯示綠色 LIVE indicator
         if(ind) {{
             ind.innerHTML = 'LIVE<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--success); animation: pulse 1.5s infinite;"></span>';
             ind.style.background = 'rgba(16,185,129,0.2)';
             ind.style.color = 'var(--success)';
             ind.style.borderColor = 'var(--success)';
             ind.style.display = 'inline-flex';
-            if (DEBUG) console.log('[v7.1] LIVE indicator activated');
+            if (DEBUG) console.log('[v7.3] LIVE indicator: GREEN (market open)');
         }}
         
     }} catch(e) {{
