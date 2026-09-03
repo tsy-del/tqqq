@@ -802,7 +802,7 @@ header {{ margin-bottom: 28px; }}
 h1 {{ font-size: 26px; font-weight: 800; margin: 0; }}
 .v-tag {{ font-size: 10px; color: var(--text-dim); background: var(--glass); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); }}
 .last-update {{ font-size: 11px; color: var(--text-dim); margin-top: 6px; }}
-.main-summary { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 18px; border-radius: 20px; margin-bottom: 24px; }
+.main-summary {{ background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 18px; border-radius: 20px; margin-bottom: 24px; }}
 .summary-card {{ background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 18px 18px 18px 15px; border-radius: 20px; position: relative; overflow: hidden; }}
 .summary-label {{ font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; margin-bottom: 6px; }}
 .summary-value {{ font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }}
