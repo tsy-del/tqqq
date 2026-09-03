@@ -13,7 +13,7 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v7.7"
+SCRIPT_VERSION = "v7.8"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -868,11 +868,6 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
 <header><div class="header-top"><h1>📈 TQQQ Plan</h1><div><span class="v-tag" id="live-indicator" style="background: rgba(16,185,129,0.2); color: var(--success); margin-right: 4px; border: 1px solid var(--success); display: none; align-items: center; gap: 4px;">LIVE<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--success); animation: pulse 1.5s infinite;"></span></span><span class="v-tag">{SCRIPT_VERSION}</span></div></div><div class="last-update"><span id="backend-update-time">Last Update: {current_time_str}</span><span id="js-update-time" style="margin-left:6px;"></span></div></header>
 <section class="main-summary">
     <div class="summary-card">
-        <div class="summary-label">Total Value (HKD)</div>
-        <div class="summary-value" id="summary-total-value">{format_hkd(total_value_hkd)}</div>
-        <div style="font-size: 11px; color: var(--text-dim); margin-top: 6px;">總成本: <span id="summary-total-cost">{format_hkd(total_cost_hkd)}</span></div>
-    </div>
-    <div class="summary-card">
         <div class="summary-label">Profit</div>
         <div style="display: flex; flex-direction: column; gap: 8px;">
             <div style="display: flex; align-items: baseline; gap: 6px;">
@@ -890,6 +885,11 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
                 </div>
             </div>
         </div>
+    </div>
+    <div class="summary-card">
+        <div class="summary-label">Total Value (HKD)</div>
+        <div class="summary-value" id="summary-total-value">{format_hkd(total_value_hkd)}</div>
+        <div style="font-size: 11px; color: var(--text-dim); margin-top: 6px;">總成本: <span id="summary-total-cost">{format_hkd(total_cost_hkd)}</span></div>
     </div>
 </section>
 <section class="ticker-bar">
