@@ -13,7 +13,7 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v7.3"
+SCRIPT_VERSION = "v7.4"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -649,23 +649,30 @@ def update_files():
         d_highest_color = '#10b981' if d_highest_hkd >= 0 else '#ef4444'
         d_lowest_color = '#a1a1aa' if d_lowest_hkd >= 0 else '#f87171'
 
-        # v5.11: 今日變化 (現時利潤 vs 昨日收市利潤)
+        # v7.4: 今日變化 (現時利潤 vs 昨日收市利潤) - 用於 summary card 同 detail section
         d_prev_close = daily_stats.get('prev_close_profit_hkd')
         if d_prev_close is not None:
             d_change_hkd = int(round(total_profit_hkd)) - int(round(d_prev_close))
             d_change_color = '#10b981' if d_change_hkd >= 0 else '#ef4444'
-            d_change_sign = '+' if d_change_hkd >= 0 else '-'
+            d_change_sign = '+' if d_change_hkd >= 0 else ''
             d_change_pct_txt = ''
             if total_cost_hkd > 0:
-                d_change_pct_txt = f"{d_change_hkd / total_cost_hkd * 100:+.2f}%"
+                d_change_pct = (d_change_hkd / total_cost_hkd) * 100
+                d_change_pct_txt = f"{d_change_pct:+.1f}%"
+            # Format for summary card display
+            today_profit_display = f"{d_change_sign}{format_hkd(abs(d_change_hkd))}"
+            today_profit_pct_display = d_change_pct_txt
             d_change_row = f'''<div class="detail-row" style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
                         <span style="font-size: 13px; font-weight: 700;">今日變化</span>
                         <div style="text-align: right;">
-                            <div style="font-size: 17px; font-weight: 800; color: {d_change_color};">{d_change_sign}{format_hkd(abs(d_change_hkd))}</div>
-                            <div style="font-size: 10px; color: var(--text-dim); margin-top: 2px;">{d_change_pct_txt} · 昨收 {format_hkd(d_prev_close)}</div>
+                            <div style="font-size: 17px; font-weight: 800; color: {d_change_color};">{today_profit_display}</div>
+                            <div style="font-size: 10px; color: var(--text-dim); margin-top: 2px;">{today_profit_pct_display} · 昨收 {format_hkd(d_prev_close)}</div>
                         </div>
                     </div>'''
         else:
+            today_profit_display = "—"
+            today_profit_pct_display = "—"
+            d_change_color = "var(--text-dim)"
             d_change_row = '''<div class="detail-row" style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
                         <span style="font-size: 13px; font-weight: 700;">今日變化</span>
                         <div style="text-align: right;">
@@ -863,10 +870,22 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
         <div style="font-size: 11px; color: var(--text-dim); margin-top: 6px;">總成本: <span id="summary-total-cost">{format_hkd(total_cost_hkd)}</span></div>
     </div>
     <div class="summary-card">
-        <div class="summary-label">Total Profit</div>
-        <div class="profit-display" id="summary-profit-display" style="color:{total_profit_color}">
-            <div class="summary-value" id="summary-total-profit">{format_hkd(total_profit_hkd)}</div>
-            <div class="profit-pct" id="summary-profit-pct">{total_profit_sign}{total_profit_pct:.1f}%</div>
+        <div class="summary-label">Profit</div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; align-items: baseline; gap: 6px;">
+                <span style="font-size: 11px; color: var(--text-dim); font-weight: 600;">TODAY</span>
+                <div style="display: flex; align-items: baseline; gap: 6px;">
+                    <span class="summary-value" id="summary-today-profit" style="font-size: 16px; color: {d_change_color};">{today_profit_display}</span>
+                    <span class="profit-pct" id="summary-today-pct" style="font-size: 12px; color: {d_change_color};">{today_profit_pct_display}</span>
+                </div>
+            </div>
+            <div style="display: flex; align-items: baseline; gap: 6px;">
+                <span style="font-size: 11px; color: var(--text-dim); font-weight: 600;">TOTAL</span>
+                <div class="profit-display" id="summary-profit-display" style="color:{total_profit_color}; gap: 6px;">
+                    <div class="summary-value" id="summary-total-profit" style="font-size: 16px;">{format_hkd(total_profit_hkd)}</div>
+                    <div class="profit-pct" id="summary-profit-pct" style="font-size: 12px;">{total_profit_sign}{total_profit_pct:.1f}%</div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
