@@ -13,7 +13,7 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v7.8"
+SCRIPT_VERSION = "v7.9"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -802,7 +802,7 @@ header {{ margin-bottom: 28px; }}
 h1 {{ font-size: 26px; font-weight: 800; margin: 0; }}
 .v-tag {{ font-size: 10px; color: var(--text-dim); background: var(--glass); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); }}
 .last-update {{ font-size: 11px; color: var(--text-dim); margin-top: 6px; }}
-.main-summary {{ display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }}
+.main-summary { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 18px; border-radius: 20px; margin-bottom: 24px; }
 .summary-card {{ background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 18px 18px 18px 15px; border-radius: 20px; position: relative; overflow: hidden; }}
 .summary-label {{ font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; margin-bottom: 6px; }}
 .summary-value {{ font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }}
@@ -867,29 +867,22 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
 <body><div class="container">
 <header><div class="header-top"><h1>📈 TQQQ Plan</h1><div><span class="v-tag" id="live-indicator" style="background: rgba(16,185,129,0.2); color: var(--success); margin-right: 4px; border: 1px solid var(--success); display: none; align-items: center; gap: 4px;">LIVE<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--success); animation: pulse 1.5s infinite;"></span></span><span class="v-tag">{SCRIPT_VERSION}</span></div></div><div class="last-update"><span id="backend-update-time">Last Update: {current_time_str}</span><span id="js-update-time" style="margin-left:6px;"></span></div></header>
 <section class="main-summary">
-    <div class="summary-card">
-        <div class="summary-label">Profit</div>
-        <div style="display: flex; flex-direction: column; gap: 8px;">
-            <div style="display: flex; align-items: baseline; gap: 6px;">
-                <span style="font-size: 11px; color: var(--text-dim); font-weight: 600;">TODAY</span>
-                <div style="display: flex; align-items: baseline; gap: 6px;">
-                    <span class="summary-value" id="summary-today-profit" style="font-size: 16px; color: {d_change_color};">{today_profit_display}</span>
-                    <span class="profit-pct" id="summary-today-pct" style="font-size: 12px; color: {d_change_color};">{today_profit_pct_display}</span>
-                </div>
-            </div>
-            <div style="display: flex; align-items: baseline; gap: 6px;">
-                <span style="font-size: 11px; color: var(--text-dim); font-weight: 600;">TOTAL</span>
-                <div class="profit-display" id="summary-profit-display" style="color:{total_profit_color}; gap: 6px;">
-                    <div class="summary-value" id="summary-total-profit" style="font-size: 16px;">{format_hkd(total_profit_hkd)}</div>
-                    <div class="profit-pct" id="summary-profit-pct" style="font-size: 12px;">{total_profit_sign}{total_profit_pct:.1f}%</div>
-                </div>
+    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+        <div>
+            <div class="summary-label">Total Value (HKD)</div>
+            <div class="summary-value" id="summary-total-value" style="font-size: 22px;">{format_hkd(total_value_hkd)}</div>
+        </div>
+        <div style="text-align: right;">
+            <div class="summary-label">Total Profit</div>
+            <div class="profit-display" id="summary-profit-display" style="color:{total_profit_color}; justify-content: flex-end;">
+                <div class="summary-value" id="summary-total-profit" style="font-size: 22px;">{format_hkd(total_profit_hkd)}</div>
+                <div class="profit-pct" id="summary-profit-pct">{total_profit_sign}{total_profit_pct:.1f}%</div>
             </div>
         </div>
     </div>
-    <div class="summary-card">
-        <div class="summary-label">Total Value (HKD)</div>
-        <div class="summary-value" id="summary-total-value">{format_hkd(total_value_hkd)}</div>
-        <div style="font-size: 11px; color: var(--text-dim); margin-top: 6px;">總成本: <span id="summary-total-cost">{format_hkd(total_cost_hkd)}</span></div>
+    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);">
+        <div style="font-size: 11px; color: var(--text-dim);">總成本: <span id="summary-total-cost">{format_hkd(total_cost_hkd)}</span></div>
+        <div style="text-align: right; font-size: 11px; color: var(--text-dim);">TODAY <span id="summary-today-profit" style="color: {d_change_color}; font-weight: 700;">{today_profit_display}</span> <span id="summary-today-pct" style="color: {d_change_color};">{today_profit_pct_display}</span></div>
     </div>
 </section>
 <section class="ticker-bar">
