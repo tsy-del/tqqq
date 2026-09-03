@@ -13,7 +13,7 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 
-SCRIPT_VERSION = "v7.4"
+SCRIPT_VERSION = "v7.5"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -613,10 +613,12 @@ def update_files():
                 gain_pct = ((curr_p - avg_cost) / avg_cost * 100) if avg_cost else 0
                 pl_hkd = (curr_p - avg_cost) * total_qty * rate
                 
+                total_cost_usd = avg_cost * total_qty
                 combined_html += f"""<div class="asset-row" style="border-left: 4px solid var(--accent);">
                     <div class="asset-info">
                         <div class="asset-name">{sym} <span class="qty">總共: {total_qty}</span></div>
                         <div class="asset-cost">平均成本 ${avg_cost:.3f} | 現價 ${curr_p}</div>
+                        <div style="font-size: 10px; color: var(--text-dim); margin-top: 2px;">總成本: ${total_cost_usd:,.2f}</div>
                     </div>
                     <div style="text-align: right;">
                         <div class="asset-status {'up' if gain_pct >= 0 else 'down'}">{'+' if gain_pct >= 0 else ''}{gain_pct:.1f}%</div>
