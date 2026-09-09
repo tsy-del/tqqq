@@ -1,1 +1,18 @@
 sync.log
+
+# v9.1 項目 12: 環境變數/密鑰永遠唔 commit
+.env
+.env.*
+
+# log 檔
+*.log
+
+# 備份/暫存 script
+*.bak
+*.bak2
+*.backup_before_v8
+sync_prices_v8_2.py
+implement_v8_2.py
+
+# v9.1 sync lock file
+.sync.lock
