@@ -1,0 +1,145 @@
+[
+  {
+    "date": "2026-09-03",
+    "account": "帳戶 A (滾動首期)",
+    "asset": "SOXL",
+    "action": "BUY",
+    "quantity": 10,
+    "price_usd": 99.71,
+    "fee_usd": 0,
+    "reference": "P735768",
+    "notes": ""
+  },
+  {
+    "date": "2026-09-02",
+    "account": "帳戶 A (滾動首期)",
+    "asset": "SOXL",
+    "action": "BUY",
+    "quantity": 13,
+    "price_usd": 103.99,
+    "fee_usd": 0,
+    "reference": "P695179",
+    "notes": ""
+  },
+  {
+    "date": "2026-09-01",
+    "account": "帳戶 C (中銀香港)",
+    "asset": "SOXL",
+    "action": "BUY",
+    "quantity": 20,
+    "price_usd": 109.0,
+    "fee_usd": 0,
+    "reference": null,
+    "notes": ""
+  },
+  {
+    "date": "2026-08-27",
+    "account": "帳戶 A (滾動首期)",
+    "asset": "SOXL",
+    "action": "BUY",
+    "quantity": 20,
+    "price_usd": 120.0,
+    "fee_usd": 0,
+    "reference": "P503943",
+    "notes": ""
+  },
+  {
+    "date": "2026-08-24",
+    "account": "帳戶 A (滾動首期)",
+    "asset": "SOXL",
+    "action": "BUY",
+    "quantity": 22,
+    "price_usd": 111.0,
+    "fee_usd": 0,
+    "reference": null,
+    "notes": ""
+  },
+  {
+    "date": "2026-08-24",
+    "account": "帳戶 C (中銀香港)",
+    "asset": "SOXL",
+    "action": "BUY",
+    "quantity": 20,
+    "price_usd": 108.0,
+    "fee_usd": 16,
+    "reference": null,
+    "notes": "plus $16 fee"
+  },
+  {
+    "date": "2026-08-24",
+    "account": "帳戶 C (中銀香港)",
+    "asset": "SOXL",
+    "action": "BUY",
+    "quantity": 20,
+    "price_usd": 114.0,
+    "fee_usd": 16,
+    "reference": null,
+    "notes": "plus $16 fee"
+  },
+  {
+    "date": "2026-08-24",
+    "account": "帳戶 C (中銀香港)",
+    "asset": "SOXL",
+    "action": "BUY",
+    "quantity": 20,
+    "price_usd": 113.7,
+    "fee_usd": 0,
+    "reference": null,
+    "notes": ""
+  },
+  {
+    "date": "2026-08-24",
+    "account": "帳戶 C (中銀香港)",
+    "asset": "SOXL",
+    "action": "BUY",
+    "quantity": 20,
+    "price_usd": 114.5,
+    "fee_usd": 0,
+    "reference": null,
+    "notes": ""
+  },
+  {
+    "date": "2026-07-28",
+    "account": "帳戶 A (滾動首期)",
+    "asset": "SOXL",
+    "action": "BUY",
+    "quantity": 11,
+    "price_usd": null,
+    "fee_usd": 0,
+    "reference": null,
+    "notes": "Price not recorded in commit"
+  },
+  {
+    "date": "2026-06-16",
+    "account": "帳戶 A (滾動首期)",
+    "asset": "SPCH",
+    "action": "BUY",
+    "quantity": 50,
+    "price_usd": null,
+    "fee_usd": 0,
+    "reference": null,
+    "notes": "Part of batch add, price not recorded"
+  },
+  {
+    "date": "2026-06-16",
+    "account": "帳戶 A (滾動首期)",
+    "asset": "SOXL",
+    "action": "BUY",
+    "quantity": 42,
+    "price_usd": null,
+    "fee_usd": 0,
+    "reference": null,
+    "notes": "Part of batch add, price not recorded"
+  },
+  {
+    "date": "2026-06-15",
+    "account": null,
+    "asset": "SPCX",
+    "action": "SELL",
+    "quantity": 75,
+    "price_usd": 174.85,
+    "fee_usd": 0,
+    "reference": null,
+    "notes": "Realize profit as USD cash, account unclear"
+  }
+]

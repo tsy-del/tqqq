@@ -12,8 +12,9 @@ REPO_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
+TRADES_FILE = os.path.join(REPO_DIR, 'trades.json')
 
-SCRIPT_VERSION = "v7.9"
+SCRIPT_VERSION = "v8.0"
 
 def format_hkd(num):
     return f"${num:,.0f}"
@@ -205,6 +206,14 @@ def update_files():
 
         with open(DATA_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
+        
+        # v8.0: Load trade ledger
+        trades_ledger = []
+        try:
+            with open(TRADES_FILE, 'r', encoding='utf-8') as f:
+                trades_ledger = json.load(f)
+        except FileNotFoundError:
+            print("trades.json not found, ledger unavailable")
         
         # v8.0: Load trade ledger
         try:
@@ -544,6 +553,35 @@ def update_files():
                 <div class="m-strategy">不計成本，目標純利達到 $2,000,000 以完成所有規劃 (雜費、首期、裝修)。</div>
             </div>
         </div>"""
+
+        # v8.0: Trade records HTML
+        trades_html = ""
+        if trades_ledger:
+            for t in reversed(trades_ledger):  # 最新交易喺上
+                action_badge = "BUY" if t['action'] == 'BUY' else "SELL"
+                action_color = "var(--accent)" if t['action'] == 'BUY' else "var(--danger)"
+                price_str = f"${t['price_usd']:.2f}" if t.get('price_usd') else "N/A"
+                fee_str = f"${t['fee_usd']}" if t.get('fee_usd', 0) > 0 else ""
+                ref_str = t.get('reference', '') or ''
+                notes_str = t.get('notes', '') or ''
+                trades_html += f"""<div class="asset-row" style="font-size: 12px;">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                            <span style="font-weight: 700;">{t['date']}</span>
+                            <span style="background: {action_color}; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700;">{action_badge}</span>
+                        </div>
+                        <div style="color: var(--text-dim); font-size: 11px;">{t.get('account', 'N/A')} · {t['asset']} × {t['quantity']}</div>
+                        {f'<div style="color: var(--text-dim); font-size: 10px; margin-top: 2px;">{notes_str}</div>' if notes_str else ''}
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-weight: 700;">{price_str}</div>
+                        {f'<div style="font-size: 10px; color: var(--text-dim);">Fee: {fee_str}</div>' if fee_str else ''}
+                        {f'<div style="font-size: 9px; color: var(--text-dim); margin-top: 2px;">{ref_str}</div>' if ref_str else ''}
+                    </div>
+                </div>"""
+            trades_html = f'<section style="margin-top: 32px; margin-bottom: 32px;"><h2>Trade Records</h2>{trades_html}</section>'
+        else:
+            trades_html = '<section style="margin-top: 32px; margin-bottom: 32px;"><h2>Trade Records</h2><div style="text-align: center; color: var(--text-dim); padding: 32px;">No trade records available</div></section>'
 
         accounts_html = ""
         for acc in data['accounts']:
@@ -892,6 +930,7 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
         <div style="font-size: 11px; color: var(--text-dim);">總成本: <span id="summary-total-cost">{format_hkd(total_cost_hkd)}</span></div>
         <div style="text-align: right; font-size: 11px; color: var(--text-dim);">TODAY <span id="summary-today-profit" style="color: {d_change_color}; font-weight: 700;">{today_profit_display}</span> <span id="summary-today-pct" style="color: {d_change_color};">{today_profit_pct_display}</span></div>
     </div>
+    <div style="font-size: 10px; color: var(--text-dim); margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--border);">未實現: {format_hkd(total_profit_hkd)} | 已實現: $0 (無沽出記錄)</div>
 </section>
 <section class="ticker-bar">
     {ticker_bar_html}
@@ -901,11 +940,13 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
     <button class="tab-btn active" data-tab="overview">走勢</button>
     <button class="tab-btn" data-tab="targets">目標</button>
     <button class="tab-btn" data-tab="holdings">持倉</button>
+    <button class="tab-btn" data-tab="trades">交易</button>
     <button class="tab-btn" data-tab="stats">統計</button>
 </nav>
 <div class="tab-panel active" id="tab-overview">{chart_html}</div>
 <div class="tab-panel" id="tab-targets"><section><h2>Strategic Targets</h2>{milestones_html}</section></div>
 <div class="tab-panel" id="tab-holdings">{combined_html}<section style="margin-top: 32px; margin-bottom: 32px;"><h2>Holdings</h2>{accounts_html}</section></div>
+<div class="tab-panel" id="tab-trades">{trades_html}</div>
 <div class="tab-panel" id="tab-stats">{history_html}</div>
 
 <a class="sync-btn" id="triggerBtn" href="https://github.com/tsy-del/tqqq/actions/workflows/sync.yml" target="_blank" rel="noopener noreferrer">
