@@ -375,7 +375,7 @@ def render_page(data, prices_data, rate, total_value_hkd, total_cost_hkd, total_
     if d_prev_close is not None:
         d_change_hkd = int(round(total_profit_hkd)) - int(round(d_prev_close))
         d_change_color = '#10b981' if d_change_hkd >= 0 else '#ef4444'
-        d_change_sign = '+' if d_change_hkd >= 0 else ''
+        d_change_sign = '+' if d_change_hkd >= 0 else '-'
         d_change_pct_txt = ''
         if total_cost_hkd > 0:
             d_change_pct = (d_change_hkd / total_cost_hkd) * 100
