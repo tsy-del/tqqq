@@ -205,6 +205,14 @@ def update_files():
 
         with open(DATA_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
+        
+        # v8.0: Load trade ledger
+        try:
+            with open(TRADES_FILE, 'r', encoding='utf-8') as f:
+                trades_ledger = json.load(f)
+        except FileNotFoundError:
+            trades_ledger = []
+            print("trades.json not found, ledger unavailable")
 
         active_tickers = set()
         for acc in data['accounts']:
