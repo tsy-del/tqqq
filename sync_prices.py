@@ -12,6 +12,7 @@ import os
 import json
 import traceback
 import subprocess
+import fcntl
 from datetime import datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 
@@ -29,8 +30,16 @@ DATA_FILE = os.path.join(REPO_DIR, 'data.json')
 INDEX_FILE = os.path.join(REPO_DIR, 'index.html')
 PROFIT_HISTORY_FILE = os.path.join(REPO_DIR, 'profit_history.json')
 TRADES_FILE = os.path.join(REPO_DIR, 'trades.json')
+LOCK_FILE = os.path.join(REPO_DIR, '.sync.lock')
 
-SCRIPT_VERSION = "v9.0"
+# v9.1 項目 10: 由 script 自動生成/管理嘅檔案 —— reset 時只清呢啲，
+# 唔會清走 trades.json 等手動維護嘅資料檔案 (項目 11)
+GENERATED_FILES = [
+    'data.json', 'index.html', 'profit_history.json', 'sync_prices.py',
+    'price_fetcher.py', 'portfolio_calculator.py', 'trade_manager.py', 'html_renderer.py',
+]
+
+SCRIPT_VERSION = "v9.1"
 
 
 def run_git(args, **kwargs):
@@ -38,11 +47,30 @@ def run_git(args, **kwargs):
 
 
 def update_files():
+    # v9.1 項目 11: lock file 防止手動執行同 cron 自動 sync 同時進行
+    # (flock 隨進程結束自動釋放，唔會有 stale lock 問題)
+    lock_fp = open(LOCK_FILE, 'w')
+    try:
+        fcntl.flock(lock_fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        print("另一個 sync_prices.py 正在執行，跳過呢次執行。")
+        lock_fp.close()
+        return True
+
+    try:
+        return _update_files_locked()
+    finally:
+        fcntl.flock(lock_fp, fcntl.LOCK_UN)
+        lock_fp.close()
+
+
+def _update_files_locked():
     try:
         # 在開始任何動作前，先強制與 GitHub 同步 (防止手動更新造成的 Git Push Rejected)
+        # v9.1 項目 11: 只 reset 已知由 script 生成嘅檔案，唔動 trades.json 等手動資料檔
         if not os.environ.get('GITHUB_ACTIONS'):
             run_git(["fetch", "origin", "main"])
-            run_git(["reset", "--hard", "origin/main"])
+            run_git(["checkout", "origin/main", "--"] + GENERATED_FILES)
 
         if not os.path.exists(DATA_FILE):
             print("data.json not found")
