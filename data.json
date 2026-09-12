@@ -1,9 +1,9 @@
 {
-  "last_updated": "2026-09-13 06:45:12",
+  "last_updated": "2026-09-13 07:00:13",
   "market_prices": {
     "tqqq_usd": 71.0,
     "soxl_usd": 122.28,
-    "usd_hkd_rate": 7.8412,
+    "usd_hkd_rate": 7.8422,
     "spcx_usd": 192.5,
     "spch_usd": 10.12,
     "tqqq_prev_close": 69.21,
@@ -11,16 +11,16 @@
     "spch_prev_close": 9.87
   },
   "portfolio_summary": {
-    "total_value_hkd": 1920081,
-    "total_cost_hkd": 1791023,
-    "total_profit_hkd": 129057
+    "total_value_hkd": 1920326,
+    "total_cost_hkd": 1791252,
+    "total_profit_hkd": 129074
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 481065,
-      "total_profit_hkd": -1002,
-      "total_cost_hkd": 482068,
+      "total_value_hkd": 481127,
+      "total_profit_hkd": -1003,
+      "total_cost_hkd": 482129,
       "holdings": [
         {
           "asset": "TQQQ",
@@ -44,9 +44,9 @@
     },
     {
       "account_name": "帳戶 B (固定基金)",
-      "total_value_hkd": 1189722,
-      "total_profit_hkd": 224036,
-      "total_cost_hkd": 965685,
+      "total_value_hkd": 1189873,
+      "total_profit_hkd": 224065,
+      "total_cost_hkd": 965809,
       "is_locked": true,
       "holdings": [
         {
@@ -59,9 +59,9 @@
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 249294,
-      "total_profit_hkd": -93976,
-      "total_cost_hkd": 343270,
+      "total_value_hkd": 249325,
+      "total_profit_hkd": -93988,
+      "total_cost_hkd": 343314,
       "holdings": [
         {
           "asset": "SOXL",
@@ -117,11 +117,11 @@
     "highest_time": "12:30:10",
     "lowest_time": "05:15:10",
     "prev_close_profit_hkd": 129069,
-    "last_profit_hkd": 129057
+    "last_profit_hkd": 129074
   },
   "sync_status": {
-    "last_attempt": "2026-09-13 06:45:12",
-    "last_success": "2026-09-13 06:45:12",
+    "last_attempt": "2026-09-13 07:00:13",
+    "last_success": "2026-09-13 07:00:13",
     "api_status": "success",
     "yfinance_status": "ok",
     "github_push_status": "pending"
