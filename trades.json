@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-09-14",
+    "account": "帳戶 C (中銀香港)",
+    "asset": "SOXL",
+    "action": "BUY",
+    "quantity": 20,
+    "price_usd": 108.0,
+    "fee_usd": 16,
+    "reference": "0914060002731",
+    "notes": "生效日14/09，全數成交"
+  },
+  {
     "date": "2026-09-03",
     "account": "帳戶 A (滾動首期)",
     "asset": "SOXL",
