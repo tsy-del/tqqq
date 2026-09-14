@@ -1,6 +1,17 @@
 [
   {
     "date": "2026-09-14",
+    "account": "帳戶 D (汇豐)",
+    "asset": "SOXL",
+    "action": "BUY",
+    "quantity": 10,
+    "price_usd": 103.0,
+    "fee_usd": 0,
+    "reference": "P297246",
+    "notes": "成交10股，未成交0股"
+  },
+  {
+    "date": "2026-09-14",
     "account": "帳戶 C (中銀香港)",
     "asset": "SOXL",
     "action": "BUY",

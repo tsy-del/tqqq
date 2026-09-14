@@ -11,9 +11,9 @@
     "spch_prev_close": 10.26
   },
   "portfolio_summary": {
-    "total_value_hkd": 1866950,
-    "total_cost_hkd": 1856618,
-    "total_profit_hkd": 10332
+    "total_value_hkd": 1875081,
+    "total_cost_hkd": 1864696,
+    "total_profit_hkd": 10385
   },
   "accounts": [
     {
@@ -67,6 +67,20 @@
           "asset": "SOXL",
           "quantity": 340,
           "avg_price_usd": 153.1935,
+          "current_price_usd": 103.67
+        }
+      ]
+    },
+    {
+      "account_name": "帳戶 D (汇豐)",
+      "total_value_hkd": 8131,
+      "total_profit_hkd": 53,
+      "total_cost_hkd": 8078,
+      "holdings": [
+        {
+          "asset": "SOXL",
+          "quantity": 10,
+          "avg_price_usd": 103.0,
           "current_price_usd": 103.67
         }
       ]
