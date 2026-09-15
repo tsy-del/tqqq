@@ -18,9 +18,9 @@
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 450657,
-      "total_profit_hkd": -31558,
-      "total_cost_hkd": 482215,
+      "total_value_hkd": 458721,
+      "total_profit_hkd": -31573,
+      "total_cost_hkd": 490294,
       "holdings": [
         {
           "asset": "TQQQ",
@@ -30,8 +30,8 @@
         },
         {
           "asset": "SOXL",
-          "quantity": 150,
-          "avg_price_usd": 159.9069,
+          "quantity": 160,
+          "avg_price_usd": 156.3502,
           "current_price_usd": 102.81
         },
         {
@@ -67,20 +67,6 @@
           "asset": "SOXL",
           "quantity": 340,
           "avg_price_usd": 153.1935,
-          "current_price_usd": 102.81
-        }
-      ]
-    },
-    {
-      "account_name": "帳戶 D (汇豐)",
-      "total_value_hkd": 8064,
-      "total_profit_hkd": -15,
-      "total_cost_hkd": 8079,
-      "holdings": [
-        {
-          "asset": "SOXL",
-          "quantity": 10,
-          "avg_price_usd": 103.0,
           "current_price_usd": 102.81
         }
       ]
