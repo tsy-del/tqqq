@@ -260,7 +260,10 @@
 
                     holdingsHTML.push(`
                         <div class="holding-row">
-                            <span class="holding-name">${h.asset} × ${h.quantity}</span>
+                            <div>
+                                <div class="holding-name">${h.asset} × ${h.quantity}</div>
+                                <div class="holding-value" style="font-size: 11px; color: #a1a1aa; margin-top: 2px;">成本 ${formatHKD(cost)}</div>
+                            </div>
                             <span class="holding-value">${formatHKD(value)}</span>
                         </div>
                     `);
@@ -279,7 +282,8 @@
                         <div class="account-header">
                             <div>
                                 <div class="account-name">${acc.account_name}</div>
-                                <div class="account-change ${profitClass}">
+                                <div style="font-size: 11px; color: #a1a1aa; margin-top: 2px;">成本 ${formatHKD(accCost)}</div>
+                                <div class="account-change ${profitClass}" style="margin-top: 4px;">
                                     ${sign}${formatHKD(Math.abs(accProfit))} · ${sign}${accPercent}%
                                 </div>
                             </div>
@@ -295,7 +299,10 @@
             const profitClass = totalProfit >= 0 ? 'profit' : 'loss';
             const sign = totalProfit >= 0 ? '+' : '';
 
-            document.getElementById('total-value').textContent = formatHKD(totalValue);
+            document.getElementById('total-value').innerHTML = `
+                ${formatHKD(totalValue)}
+                <div style="font-size: 14px; color: rgba(255,255,255,0.6); font-weight: 400; margin-top: 4px;">成本 ${formatHKD(totalCost)}</div>
+            `;
             document.getElementById('total-change').textContent = 
                 `${sign}${formatHKD(Math.abs(totalProfit))} · ${sign}${totalPercent}%`;
             document.getElementById('total-change').className = `summary-change ${profitClass}`;
