@@ -668,6 +668,9 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
     </div>
     <div style="font-size: 10px; color: var(--text-dim); margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--border);">未實現: {format_hkd(total_profit_hkd)} | 已實現: $0 (無沽出記錄)</div>
 </section>
+<a href="simulator.html" style="display: block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; padding: 14px; border-radius: 14px; font-weight: 700; font-size: 14px; text-decoration: none; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); transition: transform 0.2s, box-shadow 0.2s;" onmousedown="this.style.transform='translateY(2px)'; this.style.boxShadow='0 2px 6px rgba(102, 126, 234, 0.3)';" onmouseup="this.style.transform=''; this.style.boxShadow='0 4px 12px rgba(102, 126, 234, 0.3)';" onmouseleave="this.style.transform=''; this.style.boxShadow='0 4px 12px rgba(102, 126, 234, 0.3)';">
+    💡 價格模擬計算器
+</a>
 <section class="ticker-bar">
     {ticker_bar_html}
 </section>

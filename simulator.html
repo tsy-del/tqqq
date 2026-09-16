@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TQQQ Plan - 價格模擬計算器</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #2d3748;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #1a202c;
+        }
+        .subtitle {
+            color: #718096;
+            margin-bottom: 32px;
+            font-size: 14px;
+        }
+        .input-section {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .input-row:last-child { margin-bottom: 0; }
+        label {
+            font-weight: 600;
+            min-width: 120px;
+            color: #2d3748;
+        }
+        input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .current-price {
+            font-size: 12px;
+            color: #718096;
+            min-width: 150px;
+            text-align: right;
+        }
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 24px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        .result-section {
+            display: none;
+        }
+        .result-section.show {
+            display: block;
+        }
+        .summary-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .summary-title {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+        .summary-value {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .summary-change {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .account-card {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border-left: 4px solid #667eea;
+        }
+        .account-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .account-name {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .account-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+        }
+        .account-change {
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+        .profit { color: #48bb78; }
+        .loss { color: #f56565; }
+        .holding-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .holding-row:last-child { border-bottom: none; }
+        .holding-name { font-weight: 600; }
+        .holding-value { color: #718096; }
+        @media (max-width: 640px) {
+            .container { padding: 20px; }
+            h1 { font-size: 24px; }
+            .input-row { flex-direction: column; align-items: flex-start; }
+            label { min-width: auto; }
+            .current-price { text-align: left; margin-top: 4px; }
+            .summary-value { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💰 價格模擬計算器</h1>
+        <div class="subtitle">輸入目標價，即時計算你嘅持倉市值同賺蝕</div>
+
+        <div class="input-section">
+            <div class="input-row">
+                <label>TQQQ 目標價</label>
+                <input type="number" id="tqqq-price" step="0.01" placeholder="輸入目標價 (USD)">
+                <div class="current-price">現價: $<span id="tqqq-current">--</span></div>
+            </div>
+            <div class="input-row">
+                <label>SOXL 目標價</label>
+                <input type="number" id="soxl-price" step="0.01" placeholder="輸入目標價 (USD)">
+                <div class="current-price">現價: $<span id="soxl-current">--</span></div>
+            </div>
+            <div class="input-row">
+                <label>SPCH 目標價</label>
+                <input type="number" id="spch-price" step="0.01" placeholder="輸入目標價 (USD)">
+                <div class="current-price">現價: $<span id="spch-current">--</span></div>
+            </div>
+            <div class="input-row">
+                <label>USD/HKD 匯率</label>
+                <input type="number" id="usd-hkd" step="0.0001" placeholder="輸入匯率">
+                <div class="current-price">現價: <span id="rate-current">--</span></div>
+            </div>
+        </div>
+
+        <button class="btn" onclick="calculate()">💡 計算模擬結果</button>
+
+        <div class="result-section" id="results">
+            <div class="summary-card">
+                <div class="summary-title">總組合模擬市值</div>
+                <div class="summary-value" id="total-value">--</div>
+                <div class="summary-change" id="total-change">--</div>
+            </div>
+
+            <div id="accounts-container"></div>
+        </div>
+    </div>
+
+    <script>
+        let portfolioData = null;
+
+        // Load data
+        fetch('data.json')
+            .then(r => r.json())
+            .then(data => {
+                portfolioData = data;
+                document.getElementById('tqqq-current').textContent = data.market_prices.tqqq_usd;
+                document.getElementById('soxl-current').textContent = data.market_prices.soxl_usd;
+                document.getElementById('spch-current').textContent = data.market_prices.spch_usd;
+                document.getElementById('rate-current').textContent = data.market_prices.usd_hkd_rate;
+                
+                // Pre-fill with current prices
+                document.getElementById('tqqq-price').value = data.market_prices.tqqq_usd;
+                document.getElementById('soxl-price').value = data.market_prices.soxl_usd;
+                document.getElementById('spch-price').value = data.market_prices.spch_usd;
+                document.getElementById('usd-hkd').value = data.market_prices.usd_hkd_rate;
+            });
+
+        function formatHKD(num) {
+            return '$' + Math.round(num).toLocaleString('en-US');
+        }
+
+        function calculate() {
+            if (!portfolioData) {
+                alert('數據載入中，請稍候...');
+                return;
+            }
+
+            const tqqq = parseFloat(document.getElementById('tqqq-price').value);
+            const soxl = parseFloat(document.getElementById('soxl-price').value);
+            const spch = parseFloat(document.getElementById('spch-price').value);
+            const rate = parseFloat(document.getElementById('usd-hkd').value);
+
+            if (isNaN(tqqq) || isNaN(soxl) || isNaN(spch) || isNaN(rate)) {
+                alert('請填寫所有價格');
+                return;
+            }
+
+            const prices = { TQQQ: tqqq, SOXL: soxl, SPCH: spch };
+            let totalValue = 0;
+            let totalCost = 0;
+            const accountsHTML = [];
+
+            portfolioData.accounts.forEach(acc => {
+                let accValue = 0;
+                let accCost = 0;
+                const holdingsHTML = [];
+
+                acc.holdings.forEach(h => {
+                    const value = h.quantity * prices[h.asset] * rate;
+                    const cost = h.quantity * h.avg_price_usd * rate;
+                    accValue += value;
+                    accCost += cost;
+
+                    holdingsHTML.push(`
+                        <div class="holding-row">
+                            <span class="holding-name">${h.asset} × ${h.quantity}</span>
+                            <span class="holding-value">${formatHKD(value)}</span>
+                        </div>
+                    `);
+                });
+
+                totalValue += accValue;
+                totalCost += accCost;
+
+                const accProfit = accValue - accCost;
+                const accPercent = ((accValue - accCost) / accCost * 100).toFixed(1);
+                const profitClass = accProfit >= 0 ? 'profit' : 'loss';
+                const sign = accProfit >= 0 ? '+' : '';
+
+                accountsHTML.push(`
+                    <div class="account-card">
+                        <div class="account-header">
+                            <div>
+                                <div class="account-name">${acc.account_name}</div>
+                                <div class="account-change ${profitClass}">
+                                    ${sign}${formatHKD(Math.abs(accProfit))} · ${sign}${accPercent}%
+                                </div>
+                            </div>
+                            <div class="account-value">${formatHKD(accValue)}</div>
+                        </div>
+                        ${holdingsHTML.join('')}
+                    </div>
+                `);
+            });
+
+            const totalProfit = totalValue - totalCost;
+            const totalPercent = ((totalValue - totalCost) / totalCost * 100).toFixed(1);
+            const profitClass = totalProfit >= 0 ? 'profit' : 'loss';
+            const sign = totalProfit >= 0 ? '+' : '';
+
+            document.getElementById('total-value').textContent = formatHKD(totalValue);
+            document.getElementById('total-change').textContent = 
+                `${sign}${formatHKD(Math.abs(totalProfit))} · ${sign}${totalPercent}%`;
+            document.getElementById('total-change').className = `summary-change ${profitClass}`;
+            document.getElementById('accounts-container').innerHTML = accountsHTML.join('');
+            document.getElementById('results').classList.add('show');
+        }
+    </script>
+</body>
+</html>
