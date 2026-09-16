@@ -1,9 +1,9 @@
 {
-  "last_updated": "2026-09-16 11:45:12",
+  "last_updated": "2026-09-16 12:00:11",
   "market_prices": {
     "tqqq_usd": 68.05,
     "soxl_usd": 102.46,
-    "usd_hkd_rate": 7.844,
+    "usd_hkd_rate": 7.8439,
     "spcx_usd": 192.5,
     "spch_usd": 9.13,
     "tqqq_prev_close": 69.27,
@@ -11,16 +11,16 @@
     "spch_prev_close": 9.84
   },
   "portfolio_summary": {
-    "total_value_hkd": 1864550,
-    "total_cost_hkd": 1864911,
+    "total_value_hkd": 1864526,
+    "total_cost_hkd": 1864887,
     "total_profit_hkd": -360
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 450597,
-      "total_profit_hkd": -39723,
-      "total_cost_hkd": 490319,
+      "total_value_hkd": 450591,
+      "total_profit_hkd": -39722,
+      "total_cost_hkd": 490313,
       "holdings": [
         {
           "asset": "TQQQ",
@@ -44,9 +44,9 @@
     },
     {
       "account_name": "帳戶 B (固定基金)",
-      "total_value_hkd": 1140697,
-      "total_profit_hkd": 174667,
-      "total_cost_hkd": 966030,
+      "total_value_hkd": 1140682,
+      "total_profit_hkd": 174664,
+      "total_cost_hkd": 966018,
       "is_locked": true,
       "holdings": [
         {
@@ -59,9 +59,9 @@
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 273257,
-      "total_profit_hkd": -135304,
-      "total_cost_hkd": 408561,
+      "total_value_hkd": 273253,
+      "total_profit_hkd": -135302,
+      "total_cost_hkd": 408556,
       "holdings": [
         {
           "asset": "SOXL",
@@ -111,17 +111,17 @@
     "lowest_profit_date": "2026-09-14 21:10:12"
   },
   "daily_stats": {
-    "date": "2026-09-15",
-    "highest_profit_hkd": 34696,
-    "lowest_profit_hkd": -9507,
-    "highest_time": "21:05:11",
-    "lowest_time": "03:40:11",
-    "prev_close_profit_hkd": 31014,
+    "date": "2026-09-16",
+    "highest_profit_hkd": -360,
+    "lowest_profit_hkd": -360,
+    "highest_time": "12:00:11",
+    "lowest_time": "12:00:11",
+    "prev_close_profit_hkd": -360,
     "last_profit_hkd": -360
   },
   "sync_status": {
-    "last_attempt": "2026-09-16 11:45:12",
-    "last_success": "2026-09-16 11:45:12",
+    "last_attempt": "2026-09-16 12:00:11",
+    "last_success": "2026-09-16 12:00:11",
     "api_status": "success",
     "yfinance_status": "ok",
     "github_push_status": "pending"
