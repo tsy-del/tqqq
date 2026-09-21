@@ -112,6 +112,9 @@ def _fetch_prices_via_futu(symbols):
         ret, data = quote_ctx.get_market_snapshot(futu_codes)
         if ret != ft.RET_OK:
             raise RuntimeError(f"Futu get_market_snapshot 失敗: {data}")
+
+        ret_state, state = quote_ctx.get_global_state()
+        market_us = state.get('market_us', '').upper() if ret_state == ft.RET_OK else ''
     finally:
         quote_ctx.close()
 
@@ -132,18 +135,23 @@ def _fetch_prices_via_futu(symbols):
         def _valid(p):
             return p is not None and p == p and float(p) > 0
 
-        # 優先用最新的延伸時段價：夜盤 > 盤後 > 盤前 > 正常成交價
-        # Futu 的 last_price 只反映最後一筆已成交，不会自動跟隨夜盤/盤後開始而切換，
-        # 所以需手動根據哪個欄位有有效数值來判定現在處於哪個時段。
-        if _valid(overnight_price):
-            price = round(float(overnight_price), 2)
-            label = "NIGHT"
-        elif _valid(after_price):
-            price = round(float(after_price), 2)
-            label = "AFTER"
-        elif _valid(pre_price):
+        # 根據 Futu 回傳嘅實際市場狀態（market_us）決定顯示邊個時段嘅價，
+        # 而唔係靠「欄位有冇值」猜——因為 pre_price/after_price/overnight_price
+        # 一旦喺某個時段出現過數值，過咗時段之後都唔會自動清空，
+        # 純粹靠有效值判斷會導致夜盤結束、盤前已開始時仍錯誤顯示夜盤價。
+        if market_us in ('PRE_MARKET_BEGIN', 'PRE_MARKET_END') and _valid(pre_price):
             price = round(float(pre_price), 2)
             label = "PRE"
+        elif market_us in ('AFTER_HOURS_BEGIN', 'AFTER_HOURS_END') and _valid(after_price):
+            price = round(float(after_price), 2)
+            label = "AFTER"
+        elif market_us in ('NIGHT_OPEN', 'NIGHT_END') and _valid(overnight_price):
+            price = round(float(overnight_price), 2)
+            label = "NIGHT"
+        elif market_us == 'MORNING' and _valid(overnight_price):
+            # 夜盤延續到開市前一刻，Futu 未必即時切換狀態，仍容許 overnight 價
+            price = round(float(overnight_price), 2)
+            label = "NIGHT"
         else:
             price = round(last_price, 2) if last_price > 0 else 0
             label = "REG"
