@@ -35,11 +35,42 @@ THROTTLE_SECONDS = 60
 WATCHDOG_IDLE_SECONDS = 300
 
 _lock = threading.Lock()
-_latest_prices = {}   # sym -> last_price（跳價收到嘅最新值）
+_latest_prices = {}   # sym -> 顯示價（根據時段揀選的 pre/after/overnight/last）
 _last_pushed_prices = {}  # sym -> 上次觸發 update_files() 時嘅價格，用嚟判斷有冇變
 _last_tick_at = 0.0
 _last_update_at = 0.0
+_current_market_us = ''  # 最新嘅 market_us 狀態，由背景 thread 定期更新
 _stop = threading.Event()
+
+# 每幾秒刷新一次 market_us 狀態（唔需要每次推送都查，因為市場狀態唔會喺好短時間內跟著變）
+MARKET_STATE_REFRESH_SECONDS = 20
+
+
+def _valid(p):
+    return p is not None and p == p and float(p) > 0
+
+
+def _pick_display_price(row, market_us):
+    """同 price_fetcher._fetch_prices_via_futu 用一致邏輯：根據實際市場狀態
+    （market_us）揀返啱嗰個時段欄位，而唔係淨係睇 last_price（成交價）。
+    盤前/盤後/夜盤好多時冇成交，last_price 唔會變，但 pre/after/overnight
+    價會跟報價跳動，所以必須睇返呢啲欄位先偵測到變動。"""
+    pre_price = row.get('pre_price')
+    after_price = row.get('after_price')
+    overnight_price = row.get('overnight_price')
+    last_price = row.get('last_price')
+
+    if market_us in ('PRE_MARKET_BEGIN', 'PRE_MARKET_END') and _valid(pre_price):
+        return round(float(pre_price), 4)
+    if market_us in ('AFTER_HOURS_BEGIN', 'AFTER_HOURS_END') and _valid(after_price):
+        return round(float(after_price), 4)
+    if market_us in ('NIGHT_OPEN', 'NIGHT_END') and _valid(overnight_price):
+        return round(float(overnight_price), 4)
+    if market_us == 'MORNING' and _valid(overnight_price):
+        return round(float(overnight_price), 4)
+    if _valid(last_price):
+        return round(float(last_price), 4)
+    return None
 
 
 class TickHandler(ft.StockQuoteHandlerBase):
@@ -57,8 +88,8 @@ class TickHandler(ft.StockQuoteHandlerBase):
                 sym = code.split('.', 1)[1]
                 if sym not in SYMBOLS:
                     continue
-                price = float(row['last_price'])
-                if price > 0:
+                price = _pick_display_price(row, _current_market_us)
+                if price is not None and price > 0:
                     _latest_prices[sym] = price
             _last_tick_at = time.time()
         return ft.RET_OK, data
@@ -109,6 +140,23 @@ def _throttled_update_loop():
             _last_update_at = time.time()
 
 
+def _market_state_refresh_loop(quote_ctx_holder):
+    """背景 thread：定期查詢一次 market_us 狀態，供 TickHandler 判斷用嗰個時段欄位。
+    quote_ctx_holder 係一個 list，[0] 位放住目前活躍嘅 quote_ctx（可能會被主 loop 換走）。"""
+    global _current_market_us
+    while not _stop.is_set():
+        ctx = quote_ctx_holder[0]
+        if ctx is not None:
+            try:
+                ret, state = ctx.get_global_state()
+                if ret == ft.RET_OK:
+                    with _lock:
+                        _current_market_us = state.get('market_us', '').upper()
+            except Exception as e:
+                print(f"[{_hk_now_str()}] 查詢市場狀態失敗: {e}")
+        time.sleep(MARKET_STATE_REFRESH_SECONDS)
+
+
 def _connect_and_subscribe():
     quote_ctx = ft.OpenQuoteContext(host=FUTU_HOST, port=FUTU_PORT)
     quote_ctx.set_handler(TickHandler())
@@ -117,6 +165,18 @@ def _connect_and_subscribe():
         quote_ctx.close()
         raise RuntimeError(f"訂閱失敗: {data}")
     print(f"[{_hk_now_str()}] 已訂閱跳價推送: {FUTU_CODES}")
+
+    # 連線後立即查一次市場狀態，唔使等第一個 refresh 週期
+    global _current_market_us
+    try:
+        ret_state, state = quote_ctx.get_global_state()
+        if ret_state == ft.RET_OK:
+            with _lock:
+                _current_market_us = state.get('market_us', '').upper()
+            print(f"[{_hk_now_str()}] 目前市場狀態: {_current_market_us}")
+    except Exception as e:
+        print(f"[{_hk_now_str()}] 初始查詢市場狀態失敗: {e}")
+
     return quote_ctx
 
 
@@ -126,11 +186,16 @@ def main():
     updater_thread.start()
 
     quote_ctx = None
+    quote_ctx_holder = [None]
+    state_thread = threading.Thread(target=_market_state_refresh_loop, args=(quote_ctx_holder,), daemon=True)
+    state_thread.start()
+
     try:
         while not _stop.is_set():
             try:
                 if quote_ctx is None:
                     quote_ctx = _connect_and_subscribe()
+                    quote_ctx_holder[0] = quote_ctx
                     _last_tick_at = time.time()
 
                 time.sleep(10)
@@ -143,6 +208,7 @@ def main():
                     except Exception:
                         pass
                     quote_ctx = None
+                    quote_ctx_holder[0] = None
 
             except KeyboardInterrupt:
                 raise
@@ -155,6 +221,7 @@ def main():
                     except Exception:
                         pass
                     quote_ctx = None
+                    quote_ctx_holder[0] = None
                 time.sleep(10)
     except KeyboardInterrupt:
         print("收到中斷信號，停止監聽...")
