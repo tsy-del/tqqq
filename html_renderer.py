@@ -841,13 +841,15 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
 
 <nav class="tab-bar" id="tab-bar">
     <button class="tab-btn active" data-tab="overview">走勢</button>
+    <button class="tab-btn" data-tab="kline">K線</button>
     <button class="tab-btn" data-tab="targets">目標</button>
     <button class="tab-btn" data-tab="holdings">持倉</button>
     <button class="tab-btn" data-tab="trades">交易</button>
     <button class="tab-btn" data-tab="risk">風險</button>
     <button class="tab-btn" data-tab="stats">統計</button>
 </nav>
-<div class="tab-panel active" id="tab-overview">{chart_html}{kline_html}</div>
+<div class="tab-panel active" id="tab-overview">{chart_html}</div>
+<div class="tab-panel" id="tab-kline">{kline_html}</div>
 <div class="tab-panel" id="tab-targets"><section><h2>Strategic Targets</h2>{milestones_html}</section></div>
 <div class="tab-panel" id="tab-holdings">{combined_html}<section style="margin-top: 32px; margin-bottom: 32px;"><h2>Holdings</h2>{accounts_html}</section></div>
 <div class="tab-panel" id="tab-trades">{trades_html}</div>
