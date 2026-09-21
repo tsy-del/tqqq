@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-09-21 16:01:35",
+  "last_updated": "2026-09-21 16:05:21",
   "market_prices": {
     "tqqq_usd": 74.52,
     "soxl_usd": 129.62,
@@ -120,8 +120,8 @@
     "last_profit_hkd": 246635
   },
   "sync_status": {
-    "last_attempt": "2026-09-21 16:01:35",
-    "last_success": "2026-09-21 16:01:35",
+    "last_attempt": "2026-09-21 16:05:21",
+    "last_success": "2026-09-21 16:05:21",
     "api_status": "success",
     "yfinance_status": "ok",
     "github_push_status": "pending"
