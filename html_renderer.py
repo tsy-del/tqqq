@@ -690,7 +690,7 @@ def render_page(data, prices_data, rate, total_value_hkd, total_cost_hkd, total_
 
     app_data_json = json.dumps(data)
     active_tickers_json = json.dumps(active_tickers_sorted)
-    # v6.9: 前端 ticker bar 用嘅 previousClose，直接从後台 prices_data 攻，唔信 Finnhub 自己嘅 pc
+    # v11.0: 前端 ticker bar 用嘅 previousClose，由後台 Futu prices_data 提供
     prev_close_map = {sym: d['prev_close'] for sym, d in prices_data.items()}
     prev_close_json = json.dumps(prev_close_map)
 
@@ -903,125 +903,32 @@ const ACTIVE_TICKERS = {active_tickers_json};
 const USD_HKD_RATE = {rate};
 const TOTAL_COST_HKD = {int(round(total_cost_hkd))};
 
-// v7.1: 直接从後台 (yfinance) 攻嚟每個 symbol 嘅 previousClose，唔再信 Finnhub 自己嘅 pc
-// (發現 Finnhub 免費版对高波動 3x 槓杆 ETF 嘅 previousClose 持續性不正確)
+// v11.0: 每個 symbol 嘅 previousClose，由後台 Futu (牛牛) 快照提供。
 const PREV_CLOSE = {prev_close_json};
 
 // v7.1: Debug mode
 const DEBUG = true;
 
-async function fetchLivePrices() {{
-    // v7.3: 收市時唔 call Finnhub（免費版冇盤前盤後），開市先 poll
+// v11.0: 全面轉用 Futu (牛牛) 作唯一價格來源。
+// Futu OpenAPI 只可經本機 OpenD 存取，瀏覽器直接 call 唔到，
+// 所以前端唔再自行抓報價，統一由後台用 Futu 寫入 data.json，前端只讀呢個單一來源。
+// 好處：消除兩個寫入者搶同一個 DOM 造成嘅價格跳動，亦唔再有 API key 曝露喺前端。
+function updateLiveIndicator() {{
     const ind = document.getElementById('live-indicator');
-    const isOpen = isMarketOpenNow();
-    
-    if (!isOpen) {{
-    // 收市：隱藏 LIVE indicator
-    if (ind) {{
-        ind.style.display = 'none';
-    }}
-    if (DEBUG) console.log('[v7.3] Market closed, skipping Finnhub call');
-    return;
-    }}
-    
-    if (DEBUG) console.log('[v7.3] Market open, fetching live prices');
-
-    try {{
-    const symbols = ACTIVE_TICKERS.join(',');
-    const fhKey = 'da47k3hr01qo2j879nc0da47k3hr01qo2j879ncg'; // Updated to valid API key
-    
-    const promises = ACTIVE_TICKERS.map(sym => 
-        fetch(`https://finnhub.io/api/v1/quote?symbol=${{sym}}&token=${{fhKey}}`).then(res => res.json())
-    );
-    const results = await Promise.all(promises);
-    
-    let newTotalValueHkd = 0;
-    const prices = {{}};
-    let gotAnyPrice = false;
-
-    ACTIVE_TICKERS.forEach((sym, index) => {{
-        const q = results[index];
-        if (!q || !q.c) return;
-        // q.c: Current price, q.pc: Previous close
-        const price = q.c;
-        prices[sym] = price;
-        gotAnyPrice = true;
-        
-        const priceEl = document.getElementById(`ticker-price-${{sym}}`);
-        if(priceEl) priceEl.innerText = `$${{price.toFixed(2)}}`;
-        
-        const chgEl = document.getElementById(`ticker-chg-${{sym}}`);
-        // v7.1: 用後台 yfinance 嘅 previousClose 計 %变動，唔利用 Finnhub 自己嘅 pc
-        const pc = PREV_CLOSE[sym];
-
-        if(chgEl && pc) {{
-            const chgPct = ((price - pc) / pc) * 100;
-            chgEl.innerText = (chgPct >= 0 ? '+' : '') + chgPct.toFixed(1) + '%';
-            chgEl.style.color = chgPct >= 0 ? 'var(--success)' : 'var(--danger)';
-        }}
-    }});
-
-    // v7.1: 記錄 JS 前端實際跳價嘅本機時間 (唔靠後台 cron 時間)
-    if (gotAnyPrice) {{
-        const jsTimeEl = document.getElementById('js-update-time');
-        if (jsTimeEl) {{
-            const nowLocal = new Date();
-            const hh = String(nowLocal.getHours()).padStart(2, '0');
-            const mm = String(nowLocal.getMinutes()).padStart(2, '0');
-            const ss = String(nowLocal.getSeconds()).padStart(2, '0');
-            jsTimeEl.innerText = ' · 跳價 ' + hh + ':' + mm + ':' + ss;
-            if (DEBUG) console.log('[v7.1] Update time:', jsTimeEl.innerText);
-        }}
-    }}
-
-    APP_DATA.accounts.forEach(acc => {{
-        acc.holdings.forEach(h => {{
-            if (h.asset !== 'USD 現金' && prices[h.asset]) {{
-                newTotalValueHkd += (h.quantity * prices[h.asset] * USD_HKD_RATE);
-            }} else if (h.asset === 'USD 現金') {{
-                newTotalValueHkd += (h.quantity * USD_HKD_RATE);
-            }}
-        }});
-    }});
-    
-    if (newTotalValueHkd > 0) {{
-        newTotalValueHkd = Math.round(newTotalValueHkd);
-        const newTotalProfit = Math.round(newTotalValueHkd - TOTAL_COST_HKD);
-        const newTotalProfitPct = (newTotalProfit / TOTAL_COST_HKD) * 100;
-        
-        const valEl = document.getElementById('summary-total-value');
-        if(valEl) valEl.innerText = '$' + newTotalValueHkd.toLocaleString('en-US');
-        
-        const profitEl = document.getElementById('summary-total-profit');
-        if(profitEl) profitEl.innerText = (newTotalProfit >= 0 ? '$' : '-$') + Math.abs(newTotalProfit).toLocaleString('en-US');
-        
-        const profitPctEl = document.getElementById('summary-profit-pct');
-        const displayEl = document.getElementById('summary-profit-display');
-        if(profitPctEl && displayEl) {{
-            profitPctEl.innerText = (newTotalProfit >= 0 ? '+' : '') + newTotalProfitPct.toFixed(1) + '%';
-            displayEl.style.color = newTotalProfit >= 0 ? '#10b981' : '#ef4444';
-        }}
-    }}
-
-    // v7.3: 開市時顯示綠色 LIVE indicator
-    if(ind) {{
+    if (!ind) return;
+    if (isMarketOpenNow()) {{
         ind.innerHTML = 'LIVE<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--success); animation: pulse 1.5s infinite;"></span>';
         ind.style.background = 'rgba(16,185,129,0.2)';
         ind.style.color = 'var(--success)';
         ind.style.borderColor = 'var(--success)';
         ind.style.display = 'inline-flex';
-        if (DEBUG) console.log('[v7.3] LIVE indicator: GREEN (market open)');
-    }}
-    
-    }} catch(e) {{
-    console.error('[v7.1] fetchLivePrices ERROR:', e);
+    }} else {{
+        ind.style.display = 'none';
     }}
 }}
 
-// v7.1: 立即執行，避免等待
-if (DEBUG) console.log('[v7.1] Init - calling fetchLivePrices immediately');
-fetchLivePrices();
-setInterval(fetchLivePrices, 10000);
+updateLiveIndicator();
+setInterval(updateLiveIndicator, 30000);
 
 // v6.2: 靜默同步後台 data.json (每 60 秒)，唔需要人手 refresh
 let LAST_SEEN_UPDATE = APP_DATA.last_updated;
@@ -1052,9 +959,17 @@ async function syncBackendData() {{
     const backendTimeEl = document.getElementById('backend-update-time');
     if (backendTimeEl) backendTimeEl.innerText = 'Last Update: ' + fresh.last_updated;
 
+    const jsTimeEl = document.getElementById('js-update-time');
+    if (jsTimeEl) {{
+        const n = new Date();
+        jsTimeEl.innerText = ' · 跳價 '
+            + String(n.getHours()).padStart(2, '0') + ':'
+            + String(n.getMinutes()).padStart(2, '0') + ':'
+            + String(n.getSeconds()).padStart(2, '0');
+    }}
+
     // v10.7: 唔理開市/收市，都用後台 data.json 更新個股卡片價格/標籤/變動百分比。
-    // 之前只喺收市先更新 summary，個股價格淨係靠 Finnhub（僅開市先 call），
-    // 導致盤前/盤後/夜盤時個股價格畫面凍結喺頁面首次載入嗰刻嘅靜態值。
+    // v11.0: 唔理開市/收市，一律用後台 Futu data.json 更新個股價格/標籤/變動百分比。
     if (fresh.market_prices) {{
         const mp = fresh.market_prices;
         (ACTIVE_TICKERS || []).forEach(sym => {{
@@ -1066,7 +981,7 @@ async function syncBackendData() {{
             if (price === undefined) return;
 
             const priceEl = document.getElementById(`ticker-price-${{sym}}`);
-            if (priceEl) priceEl.innerText = `$${{price}}`;
+            if (priceEl) priceEl.innerText = `$${{Number(price).toFixed(2)}}`;
 
             const sessionEl = document.getElementById(`ticker-session-${{sym}}`);
             if (sessionEl) {{
@@ -1086,8 +1001,8 @@ async function syncBackendData() {{
         }});
     }}
 
-    // 開市時 summary 由 Finnhub live 主導，唔好覆蓋；收市就用後台數字
-    if (!isMarketOpenNow() && fresh.portfolio_summary) {{
+    // v11.0: data.json (Futu) 係唯一來源，開市收市都用佢更新 summary
+    if (fresh.portfolio_summary) {{
         const s = fresh.portfolio_summary;
         const valEl = document.getElementById('summary-total-value');
         if (valEl) valEl.innerText = '$' + Math.round(s.total_value_hkd).toLocaleString('en-US');
@@ -1115,7 +1030,9 @@ async function syncBackendData() {{
     }}
 }}
 
-setInterval(syncBackendData, 60000);
+// v11.0: data.json 係唯一來源，15 秒 sync 一次，載入即刻行一次。
+syncBackendData();
+setInterval(syncBackendData, 15000);
 document.addEventListener('visibilitychange', () => {{
     if (!document.hidden) syncBackendData();
 }});

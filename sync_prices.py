@@ -35,13 +35,14 @@ LOCK_FILE = os.path.join(REPO_DIR, '.sync.lock')
 
 # v9.1 項目 10: 由 script 自動生成/管理嘅檔案 —— reset 時只清呢啲，
 # 唔會清走 trades.json 等手動維護嘅資料檔案 (項目 11)
+# v11.0: 只 reset 由 script 生成嘅「資料檔」。
+# 原本連 .py 原始碼都 reset，會將任何未 commit 嘅本地程式改動靜默覆寫走
+# （改完跑一次 sync 就消失）。程式碼交由 git 正常流程管理，唔再自動 reset。
 GENERATED_FILES = [
-    'data.json', 'index.html', 'profit_history.json', 'sync_prices.py',
-    'price_fetcher.py', 'portfolio_calculator.py', 'trade_manager.py', 'html_renderer.py',
-    'kline.json', 'kline_fetcher.py',
+    'data.json', 'index.html', 'profit_history.json', 'kline.json',
 ]
 
-SCRIPT_VERSION = "v10.13"
+SCRIPT_VERSION = "v11.0"
 
 
 def run_git(args, **kwargs):
@@ -208,8 +209,9 @@ def _update_files_locked():
         with open(INDEX_FILE, 'w', encoding='utf-8') as f:
             f.write(new_html)
 
-        run_git(["add", "data.json", "index.html", "sync_prices.py", "profit_history.json",
-                 "price_fetcher.py", "portfolio_calculator.py", "trade_manager.py", "html_renderer.py"])
+        run_git(["add", "data.json", "index.html", "profit_history.json", "kline.json",
+                 "sync_prices.py", "price_fetcher.py", "portfolio_calculator.py",
+                 "trade_manager.py", "html_renderer.py", "kline_fetcher.py"])
         status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True, cwd=REPO_DIR)
         if status.stdout.strip():
             run_git(["commit", "-m", f"{SCRIPT_VERSION}: Auto price sync at {current_time_str}"])
