@@ -42,7 +42,7 @@ GENERATED_FILES = [
     'data.json', 'index.html', 'profit_history.json', 'kline.json',
 ]
 
-SCRIPT_VERSION = "v11.0"
+SCRIPT_VERSION = "v11.1"
 
 
 def run_git(args, **kwargs):
@@ -52,13 +52,16 @@ def run_git(args, **kwargs):
 def update_files():
     # v9.1 項目 11: lock file 防止手動執行同 cron 自動 sync 同時進行
     # (flock 隨進程結束自動釋放，唔會有 stale lock 問題)
+    # v11.1: 搶唔到 lock 時改返 False。之前呢度 return True 會令 watcher
+    # 誤以為呢次已經成功寫入並 _mark_pushed()，實際乜都冇寫，
+    # 中間嘅價格變動就永久遺失（call 方睇 return 值嚟決定係否 mark pushed）。
     lock_fp = open(LOCK_FILE, 'w')
     try:
         fcntl.flock(lock_fp, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except OSError:
-        print("另一個 sync_prices.py 正在執行，跳過呢次執行。")
+        print("另一個 sync_prices.py 正在執行，跳過呢次執行，本次改動未寫入。")
         lock_fp.close()
-        return True
+        return False
 
     try:
         return _update_files_locked()

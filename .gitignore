@@ -16,3 +16,4 @@ implement_v8_2.py
 
 # v9.1 sync lock file
 .sync.lock
+.admin_token
