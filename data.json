@@ -1,31 +1,31 @@
 {
-  "last_updated": "2026-09-21 22:34:21",
+  "last_updated": "2026-09-21 22:35:51",
   "market_prices": {
     "tqqq_usd": 77.06,
-    "soxl_usd": 136.46,
+    "soxl_usd": 136.67,
     "usd_hkd_rate": 7.8455,
     "spcx_usd": 192.5,
-    "spch_usd": 11.04,
+    "spch_usd": 11.02,
     "tqqq_prev_close": 72.64,
     "soxl_prev_close": 123.67,
     "spch_prev_close": 10.4,
     "tqqq_label": "REG",
     "tqqq_chg_pct": 6.08480176211454,
     "soxl_label": "REG",
-    "soxl_chg_pct": 10.34203929813213,
+    "soxl_chg_pct": 10.51184604188565,
     "spch_label": "REG",
-    "spch_chg_pct": 6.153846153846142
+    "spch_chg_pct": 5.961538461538454
   },
   "portfolio_summary": {
-    "total_value_hkd": 2193633,
+    "total_value_hkd": 2194410,
     "total_cost_hkd": 1865267,
-    "total_profit_hkd": 328366
+    "total_profit_hkd": 329143
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 537655,
-      "total_profit_hkd": 47242,
+      "total_value_hkd": 537872,
+      "total_profit_hkd": 47459,
       "total_cost_hkd": 490413,
       "holdings": [
         {
@@ -38,13 +38,13 @@
           "asset": "SOXL",
           "quantity": 160,
           "avg_price_usd": 156.3502,
-          "current_price_usd": 136.46
+          "current_price_usd": 136.67
         },
         {
           "asset": "SPCH",
           "quantity": 300,
           "avg_price_usd": 15.2567,
-          "current_price_usd": 11.04
+          "current_price_usd": 11.02
         }
       ]
     },
@@ -65,15 +65,15 @@
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 364003,
-      "total_profit_hkd": -44636,
+      "total_value_hkd": 364563,
+      "total_profit_hkd": -44076,
       "total_cost_hkd": 408639,
       "holdings": [
         {
           "asset": "SOXL",
           "quantity": 340,
           "avg_price_usd": 153.1935,
-          "current_price_usd": 136.46
+          "current_price_usd": 136.67
         }
       ]
     }
@@ -111,23 +111,23 @@
     }
   ],
   "history_stats": {
-    "highest_profit_hkd": 328767,
-    "highest_profit_date": "2026-09-21 22:32:53",
+    "highest_profit_hkd": 329143,
+    "highest_profit_date": "2026-09-21 22:35:51",
     "lowest_profit_hkd": -25834,
     "lowest_profit_date": "2026-09-14 21:10:12"
   },
   "daily_stats": {
     "date": "2026-09-21",
-    "highest_profit_hkd": 328767,
+    "highest_profit_hkd": 329143,
     "lowest_profit_hkd": 183043,
-    "highest_time": "22:32:53",
+    "highest_time": "22:35:51",
     "lowest_time": "15:12:41",
     "prev_close_profit_hkd": 183902,
-    "last_profit_hkd": 328366
+    "last_profit_hkd": 329143
   },
   "sync_status": {
-    "last_attempt": "2026-09-21 22:34:21",
-    "last_success": "2026-09-21 22:34:21",
+    "last_attempt": "2026-09-21 22:35:51",
+    "last_success": "2026-09-21 22:35:51",
     "api_status": "success",
     "yfinance_status": "ok",
     "github_push_status": "pending"
