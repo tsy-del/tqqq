@@ -135,13 +135,30 @@ def _fetch_prices_via_futu(symbols):
         def _valid(p):
             return p is not None and p == p and float(p) > 0
 
+        # v10.10: 盤前/盤後成交極稀薄，個別細單掛盤可令 pre_price/after_price
+        # 大幅脫離現實（曾出現對比昨日收市 +15% 嘅離譜報價）。偏離 prev_close
+        # 超過此百分比時，視為不可靠報價，唔用嚟顯示。
+        EXT_HOURS_SANITY_PCT = 8.0
+
+        def _sane_ext(p):
+            if not _valid(p) or prev_close <= 0:
+                return False
+            return abs(float(p) - prev_close) / prev_close * 100 <= EXT_HOURS_SANITY_PCT
+
         # 根據 Futu 回傳嘅實際市場狀態（market_us）決定顯示邊個時段嘅價，
         # 而唔係靠「欄位有冇值」猜——因為 pre_price/after_price/overnight_price
         # 一旦喺某個時段出現過數值，過咗時段之後都唔會自動清空，
         # 純粹靠有效值判斷會導致夜盤結束、盤前已開始時仍錯誤顯示夜盤價。
-        if market_us in ('PRE_MARKET_BEGIN', 'PRE_MARKET_END') and _valid(pre_price):
+        if market_us in ('PRE_MARKET_BEGIN', 'PRE_MARKET_END') and _valid(pre_price) and not _sane_ext(pre_price):
+            # 盤前報價偏離收市價過大，唔可靠，改用最後正式成交價，標籤保留 PRE
+            price = round(last_price, 2) if last_price > 0 else 0
+            label = "PRE"
+        elif market_us in ('PRE_MARKET_BEGIN', 'PRE_MARKET_END') and _valid(pre_price):
             price = round(float(pre_price), 2)
             label = "PRE"
+        elif market_us in ('AFTER_HOURS_BEGIN', 'AFTER_HOURS_END') and _valid(after_price) and not _sane_ext(after_price):
+            price = round(last_price, 2) if last_price > 0 else 0
+            label = "AFTER"
         elif market_us in ('AFTER_HOURS_BEGIN', 'AFTER_HOURS_END') and _valid(after_price):
             price = round(float(after_price), 2)
             label = "AFTER"
