@@ -884,6 +884,40 @@ async function syncBackendData() {{
     const backendTimeEl = document.getElementById('backend-update-time');
     if (backendTimeEl) backendTimeEl.innerText = 'Last Update: ' + fresh.last_updated;
 
+    // v10.7: 唔理開市/收市，都用後台 data.json 更新個股卡片價格/標籤/變動百分比。
+    // 之前只喺收市先更新 summary，個股價格淨係靠 Finnhub（僅開市先 call），
+    // 導致盤前/盤後/夜盤時個股價格畫面凍結喺頁面首次載入嗰刻嘅靜態值。
+    if (fresh.market_prices) {{
+        const mp = fresh.market_prices;
+        (ACTIVE_TICKERS || []).forEach(sym => {{
+            const key = sym.toLowerCase();
+            const price = mp[key + '_usd'];
+            const prevClose = mp[key + '_prev_close'];
+            const label = mp[key + '_label'] || 'REG';
+            const chgPct = mp[key + '_chg_pct'];
+            if (price === undefined) return;
+
+            const priceEl = document.getElementById(`ticker-price-${{sym}}`);
+            if (priceEl) priceEl.innerText = `$${{price}}`;
+
+            const sessionEl = document.getElementById(`ticker-session-${{sym}}`);
+            if (sessionEl) {{
+                sessionEl.innerText = label;
+                sessionEl.style.display = label !== 'REG' ? 'inline-block' : 'none';
+            }}
+
+            const chgEl = document.getElementById(`ticker-chg-${{sym}}`);
+            if (chgEl) {{
+                const pct = (chgPct !== undefined && chgPct !== null) ? chgPct
+                    : (prevClose ? ((price - prevClose) / prevClose * 100) : null);
+                if (pct !== null) {{
+                    chgEl.innerText = (pct >= 0 ? '+' : '') + pct.toFixed(1) + '%';
+                    chgEl.style.color = pct >= 0 ? 'var(--success)' : 'var(--danger)';
+                }}
+            }}
+        }});
+    }}
+
     // 開市時 summary 由 Finnhub live 主導，唔好覆蓋；收市就用後台數字
     if (!isMarketOpenNow() && fresh.portfolio_summary) {{
         const s = fresh.portfolio_summary;
