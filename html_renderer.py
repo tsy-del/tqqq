@@ -15,7 +15,7 @@ def render_page(data, prices_data, rate, total_value_hkd, total_cost_hkd, total_
                  script_version, prog1, profit_for_stage1, stage1_target,
                  available_for_stage2, profit_for_stage2, stage2_target, prog2,
                  available_for_stage3, profit_for_stage3, stage3_target, prog3,
-                 total_profit_color, total_profit_sign, total_profit_pct):
+                 total_profit_color, total_profit_sign, total_profit_pct, data_source_label=''):
     """組裝並回傳完整 index.html 字串。就地修改 data['milestones'] 嘅 status 欄位。"""
     SCRIPT_VERSION = script_version
 
