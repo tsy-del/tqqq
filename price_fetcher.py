@@ -129,18 +129,27 @@ def _fetch_prices_via_futu(symbols):
         after_price = row.get('after_price')
         overnight_price = row.get('overnight_price')
 
-        price = round(last_price, 2) if last_price > 0 else 0
+        def _valid(p):
+            return p is not None and p == p and float(p) > 0
+
+        # 優先用最新的延伸時段價：夜盤 > 盤後 > 盤前 > 正常成交價
+        # Futu 的 last_price 只反映最後一筆已成交，不会自動跟隨夜盤/盤後開始而切換，
+        # 所以需手動根據哪個欄位有有效数值來判定現在處於哪個時段。
+        if _valid(overnight_price):
+            price = round(float(overnight_price), 2)
+            label = "NIGHT"
+        elif _valid(after_price):
+            price = round(float(after_price), 2)
+            label = "AFTER"
+        elif _valid(pre_price):
+            price = round(float(pre_price), 2)
+            label = "PRE"
+        else:
+            price = round(last_price, 2) if last_price > 0 else 0
+            label = "REG"
+
         if price <= 0:
             raise RuntimeError(f"Futu 回傳無效價格 {code}: {last_price}")
-
-        # 判斷具體時段：優先匹配 pre/after/overnight，最後才判定為 REG
-        label = "REG"
-        if pre_price is not None and pre_price == pre_price and abs(float(pre_price) - last_price) < 0.001:
-            label = "PRE"
-        elif after_price is not None and after_price == after_price and abs(float(after_price) - last_price) < 0.001:
-            label = "AFTER"
-        elif overnight_price is not None and overnight_price == overnight_price and abs(float(overnight_price) - last_price) < 0.001:
-            label = "NIGHT"
 
         chg_pct = ((price - prev_close) / prev_close * 100) if prev_close > 0 else 0
 
