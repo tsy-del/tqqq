@@ -39,7 +39,7 @@ GENERATED_FILES = [
     'price_fetcher.py', 'portfolio_calculator.py', 'trade_manager.py', 'html_renderer.py',
 ]
 
-SCRIPT_VERSION = "v10.1"
+SCRIPT_VERSION = "v10.2"
 
 
 def run_git(args, **kwargs):

@@ -244,7 +244,7 @@ def render_page(data, prices_data, rate, total_value_hkd, total_cost_hkd, total_
             <div style="display: flex; align-items: center; gap: 6px; overflow: hidden;">
                 <span class="ticker-symbol" style="flex-shrink: 0;">{sym}</span>
                 <span class="ticker-price" id="ticker-price-{sym}" style="flex-shrink: 0;">${p_data['price']}</span>
-                <span class="session-tag" id="ticker-session-{sym}" style="display:{'inline-block' if p_data['label'] == 'EXT' else 'none'}; flex-shrink: 0; font-size: 8px; padding: 0 2px;">{p_data['label']}</span>
+                <span class="session-tag" id="ticker-session-{sym}" style="display:{'inline-block' if p_data['label'] != 'REG' else 'none'}; flex-shrink: 0; font-size: 8px; padding: 0 2px;">{p_data['label']}</span>
                 <span class="source-tag" id="ticker-source-{sym}" style="flex-shrink: 0;">{source_label}</span>
             </div>
             <span id="ticker-chg-{sym}" style="font-size: 11px; font-weight: 700; color: {chg_color}; flex-shrink: 0;">{chg_sign}{chg:.1f}%</span>
