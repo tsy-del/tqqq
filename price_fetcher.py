@@ -133,13 +133,14 @@ def _fetch_prices_via_futu(symbols):
         if price <= 0:
             raise RuntimeError(f"Futu 回傳無效價格 {code}: {last_price}")
 
-        # 判斷是否為延伸時段報價：pre/after/overnight 任一與 last_price 相符即視為 EXT
-        is_ext = False
-        for ext_p in (pre_price, after_price, overnight_price):
-            if ext_p is not None and ext_p == ext_p and abs(float(ext_p) - last_price) < 0.001:
-                is_ext = True
-                break
-        label = "EXT" if is_ext else "REG"
+        # 判斷具體時段：優先匹配 pre/after/overnight，最後才判定為 REG
+        label = "REG"
+        if pre_price is not None and pre_price == pre_price and abs(float(pre_price) - last_price) < 0.001:
+            label = "PRE"
+        elif after_price is not None and after_price == after_price and abs(float(after_price) - last_price) < 0.001:
+            label = "AFTER"
+        elif overnight_price is not None and overnight_price == overnight_price and abs(float(overnight_price) - last_price) < 0.001:
+            label = "NIGHT"
 
         chg_pct = ((price - prev_close) / prev_close * 100) if prev_close > 0 else 0
 
