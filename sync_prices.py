@@ -105,6 +105,8 @@ def _update_files_locked():
         for sym, d in prices_data.items():
             data['market_prices'][f"{sym.lower()}_usd"] = d['price']
             data['market_prices'][f"{sym.lower()}_prev_close"] = d['prev_close']
+            data['market_prices'][f"{sym.lower()}_label"] = d.get('label', 'REG')
+            data['market_prices'][f"{sym.lower()}_chg_pct"] = d.get('change_pct', 0)
 
         # 確保使用香港時間 (GitHub Server 預設是 UTC)
         hk_tz = timezone(timedelta(hours=8))
