@@ -39,7 +39,7 @@ GENERATED_FILES = [
     'price_fetcher.py', 'portfolio_calculator.py', 'trade_manager.py', 'html_renderer.py',
 ]
 
-SCRIPT_VERSION = "v10.2"
+SCRIPT_VERSION = "v10.3"
 
 
 def run_git(args, **kwargs):
@@ -185,6 +185,7 @@ def _update_files_locked():
             total_value_hkd=total_value_hkd, total_cost_hkd=total_cost_hkd, total_profit_hkd=total_profit_hkd,
             profit_history=profit_history, trades_ledger=trades_ledger, active_tickers_sorted=active_tickers_sorted,
             current_time_str=current_time_str, script_version=SCRIPT_VERSION,
+            data_source_label=next((p.get('source', '') for p in prices_data.values() if p.get('source')), ''),
             prog1=mp['prog1'], profit_for_stage1=mp['profit_for_stage1'], stage1_target=stage1_target,
             available_for_stage2=mp['available_for_stage2'], profit_for_stage2=mp['profit_for_stage2'],
             stage2_target=stage2_target, prog2=mp['prog2'],

@@ -239,13 +239,11 @@ def render_page(data, prices_data, rate, total_value_hkd, total_cost_hkd, total_
         chg = p_data['change_pct']
         chg_color = "var(--success)" if chg >= 0 else "var(--danger)"
         chg_sign = "+" if chg >= 0 else ""
-        source_label = p_data.get('source', '')
         ticker_bar_html += f"""<a href="https://hk.finance.yahoo.com/quote/{sym}" target="_blank" class="ticker-item" style="text-decoration: none;">
             <div style="display: flex; align-items: center; gap: 6px; overflow: hidden;">
                 <span class="ticker-symbol" style="flex-shrink: 0;">{sym}</span>
                 <span class="ticker-price" id="ticker-price-{sym}" style="flex-shrink: 0;">${p_data['price']}</span>
                 <span class="session-tag" id="ticker-session-{sym}" style="display:{'inline-block' if p_data['label'] != 'REG' else 'none'}; flex-shrink: 0; font-size: 8px; padding: 0 2px;">{p_data['label']}</span>
-                <span class="source-tag" id="ticker-source-{sym}" style="flex-shrink: 0;">{source_label}</span>
             </div>
             <span id="ticker-chg-{sym}" style="font-size: 11px; font-weight: 700; color: {chg_color}; flex-shrink: 0;">{chg_sign}{chg:.1f}%</span>
         </a>\n"""
@@ -650,7 +648,7 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
 .tab-panel > section:first-child {{ margin-top: 0 !important; }}
 </style></head>
 <body><div class="container">
-<header><div class="header-top"><h1>📈 TQQQ Plan</h1><div><span class="v-tag" id="live-indicator" style="background: rgba(16,185,129,0.2); color: var(--success); margin-right: 4px; border: 1px solid var(--success); display: none; align-items: center; gap: 4px;">LIVE<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--success); animation: pulse 1.5s infinite;"></span></span><span class="v-tag">{SCRIPT_VERSION}</span></div></div><div class="last-update"><span id="backend-update-time">Last Update: {current_time_str}</span><span id="js-update-time" style="margin-left:6px;"></span></div></header>
+<header><div class="header-top"><h1>📈 TQQQ Plan</h1><div><span class="v-tag" id="live-indicator" style="background: rgba(16,185,129,0.2); color: var(--success); margin-right: 4px; border: 1px solid var(--success); display: none; align-items: center; gap: 4px;">LIVE<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--success); animation: pulse 1.5s infinite;"></span></span><span class="v-tag">{SCRIPT_VERSION}</span></div></div><div class="last-update"><span id="backend-update-time">Last Update: {current_time_str}</span><span id="js-update-time" style="margin-left:6px;"></span><span class="source-tag" id="data-source-tag" style="margin-left:6px;">{data_source_label}</span></div></header>
 <section class="main-summary">
     <div style="display: flex; justify-content: space-between; align-items: baseline;">
     <div>
