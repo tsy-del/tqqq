@@ -239,11 +239,13 @@ def render_page(data, prices_data, rate, total_value_hkd, total_cost_hkd, total_
         chg = p_data['change_pct']
         chg_color = "var(--success)" if chg >= 0 else "var(--danger)"
         chg_sign = "+" if chg >= 0 else ""
+        source_label = p_data.get('source', '')
         ticker_bar_html += f"""<a href="https://hk.finance.yahoo.com/quote/{sym}" target="_blank" class="ticker-item" style="text-decoration: none;">
             <div style="display: flex; align-items: center; gap: 6px; overflow: hidden;">
                 <span class="ticker-symbol" style="flex-shrink: 0;">{sym}</span>
                 <span class="ticker-price" id="ticker-price-{sym}" style="flex-shrink: 0;">${p_data['price']}</span>
                 <span class="session-tag" id="ticker-session-{sym}" style="display:{'inline-block' if p_data['label'] == 'EXT' else 'none'}; flex-shrink: 0; font-size: 8px; padding: 0 2px;">{p_data['label']}</span>
+                <span class="source-tag" id="ticker-source-{sym}" style="flex-shrink: 0;">{source_label}</span>
             </div>
             <span id="ticker-chg-{sym}" style="font-size: 11px; font-weight: 700; color: {chg_color}; flex-shrink: 0;">{chg_sign}{chg:.1f}%</span>
         </a>\n"""
@@ -596,6 +598,7 @@ h1 {{ font-size: 26px; font-weight: 800; margin: 0; }}
 .ticker-symbol {{ font-weight: 700; font-size: 13px; color: var(--text-dim); }}
 .ticker-price {{ font-family: monospace; font-size: 13px; color: #fff; font-variant-numeric: tabular-nums; }}
 .session-tag {{ font-size: 9px; padding: 1px 4px; border-radius: 3px; background: rgba(59,130,246,0.2); color: var(--accent); margin-left: 4px; border: 0.5px solid var(--accent); }}
+.source-tag {{ font-size: 8px; padding: 1px 4px; border-radius: 3px; background: rgba(255,255,255,0.06); color: var(--text-dim); border: 0.5px solid var(--border); }}
 
 .sync-btn {{ display: block; width: 100%; padding: 14px; background: rgba(255,255,255,0.05); color: #fff; text-align: center; text-decoration: none; border-radius: 14px; font-size: 14px; font-weight: 600; border: 1px solid var(--border); margin-bottom: 32px; transition: background 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }}
 .sync-btn:active {{ background: rgba(255,255,255,0.1); transform: translateY(1px); }}
