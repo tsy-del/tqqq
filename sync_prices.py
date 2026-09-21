@@ -41,7 +41,7 @@ GENERATED_FILES = [
     'kline.json', 'kline_fetcher.py',
 ]
 
-SCRIPT_VERSION = "v10.10"
+SCRIPT_VERSION = "v10.11"
 
 
 def run_git(args, **kwargs):
