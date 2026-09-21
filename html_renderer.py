@@ -501,7 +501,8 @@ def render_page(data, prices_data, rate, total_value_hkd, total_cost_hkd, total_
             chart.timeScale().fitContent();
 
             // v8.2: 時間範圍按鈕
-            const rangeBtns = document.querySelectorAll('.range-btn');
+            // v10.8: 限定喺 #chart-range-btns 內，避免抓到 K 線圖嗰組 .range-btn
+            const rangeBtns = document.querySelectorAll('#chart-range-btns .range-btn');
             rangeBtns.forEach(btn => {{
                 btn.addEventListener('click', () => {{
                     rangeBtns.forEach(b => b.classList.remove('active'));
@@ -521,6 +522,168 @@ def render_page(data, prices_data, rate, total_value_hkd, total_cost_hkd, total_
                 const newRect = entries[0].contentRect;
                 chart.applyOptions({{ width: newRect.width, height: newRect.height }});
             }}).observe(chartContainer);
+        }})();
+        </script>
+    </section>'''
+
+    # v10.8: 股價 K 線圖（Futu 日 K）+ 買賣點標記 + MA + 平均成本線
+    kline_trades = {}
+    for t in trades_ledger:
+        sym_t = t.get('asset')
+        if not sym_t:
+            continue
+        kline_trades.setdefault(sym_t, []).append({
+            'time': t.get('date'),
+            'action': t.get('action'),
+            'qty': t.get('quantity') or 0,
+            'price': t.get('price_usd') or 0,
+        })
+
+    _cost_agg = {}
+    for _acc in data.get('accounts', []):
+        for _h in _acc.get('holdings', []):
+            _sym = _h.get('asset')
+            _q = _h.get('quantity') or 0
+            _p = _h.get('avg_price_usd') or 0
+            if not _sym or not _q:
+                continue
+            _a = _cost_agg.setdefault(_sym, {'q': 0, 'c': 0.0})
+            _a['q'] += _q
+            _a['c'] += _q * _p
+    kline_avg_cost = {s: round(v['c'] / v['q'], 4) for s, v in _cost_agg.items() if v['q']}
+
+    kline_trades_json_str = json.dumps(kline_trades, ensure_ascii=False)
+    kline_avg_cost_json_str = json.dumps(kline_avg_cost)
+    kline_symbols_json_str = json.dumps(active_tickers_sorted)
+    kline_sym_btns = "".join(
+        f'<button class="range-btn kl-sym-btn{" active" if i == 0 else ""}" data-sym="{s}">{s}</button>'
+        for i, s in enumerate(active_tickers_sorted)
+    )
+
+    kline_html = f'''<section style="margin-top: 32px; margin-bottom: 32px;">
+        <h2>股價 K 線</h2>
+        <div style="display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap;" id="kl-sym-btns">{kline_sym_btns}</div>
+        <div style="display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap;" id="kl-range-btns">
+            <button class="range-btn" data-bars="20">1M</button>
+            <button class="range-btn" data-bars="60">3M</button>
+            <button class="range-btn active" data-bars="120">6M</button>
+            <button class="range-btn" data-bars="0">All</button>
+        </div>
+        <div id="kl-container" style="width: 100%; height: 300px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; position: relative;"></div>
+        <div id="kl-legend" style="font-size: 10px; color: var(--text-dim); margin-top: 8px; display: flex; gap: 12px; flex-wrap: wrap;">
+            <span style="color:#3b82f6;">&#9650; 買入</span><span style="color:#f97316;">&#9660; 賣出</span><span style="color:#eab308;">&#8212; MA20</span><span style="color:#a855f7;">&#8212; MA50</span><span style="color:#38bdf8;">&#8213; 平均成本</span>
+        </div>
+        <div id="kl-fallback" style="display:none; font-size: 11px; color: var(--text-dim); text-align: center; margin-top: 8px;">K 線載入失敗</div>
+        <script>
+        (function() {{
+            const container = document.getElementById('kl-container');
+            const fallback = document.getElementById('kl-fallback');
+            function fail(msg) {{
+                container.style.display = 'none';
+                fallback.innerText = msg || 'K 線載入失敗';
+                fallback.style.display = 'block';
+            }}
+            if (typeof LightweightCharts === 'undefined') {{ fail('圖表庫載入失敗（離線或 CDN 阻塞）'); return; }}
+
+            const KL_TRADES = {kline_trades_json_str};
+            const KL_AVG_COST = {kline_avg_cost_json_str};
+            const KL_SYMBOLS = {kline_symbols_json_str};
+            let KL_SERIES = {{}};
+            let currentSym = KL_SYMBOLS[0];
+            let currentBars = 120;
+
+            const chart = LightweightCharts.createChart(container, {{
+                layout: {{ textColor: '#71717a', background: {{ type: 'solid', color: 'transparent' }} }},
+                grid: {{ vertLines: {{ visible: false }}, horzLines: {{ color: 'rgba(255,255,255,0.05)' }} }},
+                timeScale: {{ borderVisible: false }},
+                rightPriceScale: {{ borderVisible: false }}
+            }});
+            const candle = chart.addCandlestickSeries({{
+                upColor: '#10b981', downColor: '#ef4444',
+                borderUpColor: '#10b981', borderDownColor: '#ef4444',
+                wickUpColor: '#10b981', wickDownColor: '#ef4444'
+            }});
+            const ma20 = chart.addLineSeries({{ color: '#eab308', lineWidth: 1, priceLineVisible: false, lastValueVisible: false }});
+            const ma50 = chart.addLineSeries({{ color: '#a855f7', lineWidth: 1, priceLineVisible: false, lastValueVisible: false }});
+            let costLine = null;
+
+            function sma(bars, period) {{
+                const out = [];
+                for (let i = period - 1; i < bars.length; i++) {{
+                    let sum = 0;
+                    for (let j = i - period + 1; j <= i; j++) sum += bars[j].close;
+                    out.push({{ time: bars[i].time, value: Math.round(sum / period * 10000) / 10000 }});
+                }}
+                return out;
+            }}
+
+            function applyRange(len) {{
+                if (!currentBars || currentBars >= len) {{ chart.timeScale().fitContent(); return; }}
+                chart.timeScale().setVisibleLogicalRange({{ from: len - currentBars, to: len }});
+            }}
+
+            function draw() {{
+                const bars = KL_SERIES[currentSym] || [];
+                if (!bars.length) {{ fail(currentSym + ' 暫無 K 線數據'); return; }}
+                container.style.display = 'block';
+                fallback.style.display = 'none';
+
+                candle.setData(bars);
+                ma20.setData(bars.length >= 20 ? sma(bars, 20) : []);
+                ma50.setData(bars.length >= 50 ? sma(bars, 50) : []);
+
+                const firstTime = bars[0].time;
+                const barTimes = new Set(bars.map(b => b.time));
+                const markers = (KL_TRADES[currentSym] || [])
+                    .filter(t => t.time && t.time >= firstTime && barTimes.has(t.time))
+                    .map(t => ({{
+                        time: t.time,
+                        position: t.action === 'BUY' ? 'belowBar' : 'aboveBar',
+                        color: t.action === 'BUY' ? '#3b82f6' : '#f97316',
+                        shape: t.action === 'BUY' ? 'arrowUp' : 'arrowDown',
+                        text: (t.action === 'BUY' ? 'B ' : 'S ') + t.qty + '@' + t.price
+                    }}))
+                    .sort((a, b) => a.time < b.time ? -1 : 1);
+                if (candle.setMarkers) candle.setMarkers(markers);
+
+                if (costLine) {{ try {{ candle.removePriceLine(costLine); }} catch(e) {{}} costLine = null; }}
+                const avg = KL_AVG_COST[currentSym];
+                if (avg) {{
+                    costLine = candle.createPriceLine({{
+                        price: avg, color: '#38bdf8', lineWidth: 1,
+                        lineStyle: LightweightCharts.LineStyle.Dashed,
+                        axisLabelVisible: true, title: '成本 ' + avg
+                    }});
+                }}
+                applyRange(bars.length);
+            }}
+
+            document.querySelectorAll('#kl-sym-btns .kl-sym-btn').forEach(btn => {{
+                btn.addEventListener('click', () => {{
+                    document.querySelectorAll('#kl-sym-btns .kl-sym-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentSym = btn.dataset.sym;
+                    draw();
+                }});
+            }});
+            document.querySelectorAll('#kl-range-btns .range-btn').forEach(btn => {{
+                btn.addEventListener('click', () => {{
+                    document.querySelectorAll('#kl-range-btns .range-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentBars = parseInt(btn.dataset.bars, 10) || 0;
+                    applyRange((KL_SERIES[currentSym] || []).length);
+                }});
+            }});
+
+            new ResizeObserver(entries => {{
+                if (!entries.length || entries[0].target !== container) return;
+                chart.applyOptions({{ width: entries[0].contentRect.width, height: entries[0].contentRect.height }});
+            }}).observe(container);
+
+            fetch('kline.json?t=' + Date.now(), {{ cache: 'no-store' }})
+                .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
+                .then(j => {{ KL_SERIES = (j && j.series) || {{}}; draw(); }})
+                .catch(e => fail('K 線數據讀取失敗：' + e.message));
         }})();
         </script>
     </section>'''
@@ -644,6 +807,9 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
 .tab-btn.active {{ background: var(--card); color: var(--text-main); box-shadow: 0 1px 3px rgba(0,0,0,0.35); }}
 .tab-btn:active {{ opacity: 0.7; }}
 .tab-panel {{ display: none; }}
+.range-btn {{ appearance: none; border: 1px solid var(--border); background: var(--glass); color: var(--text-dim); font-family: inherit; font-size: 11px; font-weight: 700; padding: 5px 11px; border-radius: 9px; cursor: pointer; transition: background 0.2s, color 0.2s, border-color 0.2s; }}
+.range-btn.active {{ background: var(--card); color: var(--text-main); border-color: var(--accent); }}
+.range-btn:active {{ opacity: 0.7; }}
 .tab-panel.active {{ display: block; }}
 .tab-panel > section:first-child {{ margin-top: 0 !important; }}
 </style></head>
@@ -681,7 +847,7 @@ h2::after {{ content: ''; flex: 1; height: 1px; background: var(--border); }}
     <button class="tab-btn" data-tab="risk">風險</button>
     <button class="tab-btn" data-tab="stats">統計</button>
 </nav>
-<div class="tab-panel active" id="tab-overview">{chart_html}</div>
+<div class="tab-panel active" id="tab-overview">{chart_html}{kline_html}</div>
 <div class="tab-panel" id="tab-targets"><section><h2>Strategic Targets</h2>{milestones_html}</section></div>
 <div class="tab-panel" id="tab-holdings">{combined_html}<section style="margin-top: 32px; margin-bottom: 32px;"><h2>Holdings</h2>{accounts_html}</section></div>
 <div class="tab-panel" id="tab-trades">{trades_html}</div>

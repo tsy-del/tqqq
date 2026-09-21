@@ -23,6 +23,7 @@ from portfolio_calculator import (
 )
 from trade_manager import load_trades_ledger
 from html_renderer import render_page
+from kline_fetcher import update_kline_file
 
 # Path configurations
 REPO_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -37,9 +38,10 @@ LOCK_FILE = os.path.join(REPO_DIR, '.sync.lock')
 GENERATED_FILES = [
     'data.json', 'index.html', 'profit_history.json', 'sync_prices.py',
     'price_fetcher.py', 'portfolio_calculator.py', 'trade_manager.py', 'html_renderer.py',
+    'kline.json', 'kline_fetcher.py',
 ]
 
-SCRIPT_VERSION = "v10.7"
+SCRIPT_VERSION = "v10.8"
 
 
 def run_git(args, **kwargs):
@@ -107,6 +109,9 @@ def _update_files_locked():
             data['market_prices'][f"{sym.lower()}_prev_close"] = d['prev_close']
             data['market_prices'][f"{sym.lower()}_label"] = d.get('label', 'REG')
             data['market_prices'][f"{sym.lower()}_chg_pct"] = d.get('change_pct', 0)
+
+        # v10.8: 日 K 線（同一美東交易日內只會真正拉一次，其餘跳過）
+        update_kline_file(active_tickers_sorted, script_version=SCRIPT_VERSION)
 
         # 確保使用香港時間 (GitHub Server 預設是 UTC)
         hk_tz = timezone(timedelta(hours=8))
