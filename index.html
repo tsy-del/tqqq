@@ -1146,15 +1146,30 @@ async function syncRealtimeTick() {
     }
 }
 
-// v11.18: 每秒讀取 tick.json（即時價格），每 15 秒讀取 data.json（持倉計算）
+// v11.19: 開市時加快前端 fetch 頻率（仍用 Futu 數據來源，唔改動 backend）
+// 開市（US 09:30-16:00 ET）: data.json 每 10 秒，tick.json 每 1 秒
+// 非開市（含 pre/post market）: data.json 每 15 秒，tick.json 每 1 秒
+let _syncDataTimer = null;
+let _syncTickTimer = null;
+
+function restartSyncTimers() {
+    if (_syncDataTimer) clearInterval(_syncDataTimer);
+    if (_syncTickTimer) clearInterval(_syncTickTimer);
+    const dataInterval = isMarketOpenNow() ? 10000 : 15000;
+    _syncDataTimer = setInterval(syncBackendData, dataInterval);
+    _syncTickTimer = setInterval(syncRealtimeTick, 1000);
+}
+
 syncBackendData();
 syncRealtimeTick();
-setInterval(syncBackendData, 15000);
-setInterval(syncRealtimeTick, 1000);
+restartSyncTimers();
+// 每分鐘檢查一次是唔需要切換頻率（開市/收市倒探點）
+setInterval(restartSyncTimers, 60000);
 document.addEventListener('visibilitychange', () => {
     if (!document.hidden) {
         syncBackendData();
         syncRealtimeTick();
+        restartSyncTimers();
     }
 });
 </script>
