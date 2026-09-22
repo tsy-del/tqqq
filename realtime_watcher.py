@@ -51,23 +51,29 @@ def _valid(p):
 
 
 def _pick_display_price(row, market_us):
-    """同 price_fetcher._fetch_prices_via_futu 用一致邏輯：根據實際市場狀態
-    （market_us）揀返啱嗰個時段欄位，而唔係淨係睇 last_price（成交價）。
-    盤前/盤後/夜盤好多時冇成交，last_price 唔會變，但 pre/after/overnight
-    價會跟報價跳動，所以必須睇返呢啲欄位先偵測到變動。"""
+    """同 price_fetcher._fetch_prices_via_futu 用一致邏輯（v11.2: 夜盤有效數據優先於
+    market_us 狀態字串）：盤前/盤後/夜盤好多時冇成交，last_price 唔會變，但
+    pre/after/overnight 價會跟報價跳動，所以必須睜返嘅欄位先偵測到変動。
+    唔再純粹跟 market_us 字串對一，因為呢個狀態機可能落後於實際時鐘，
+    導致 overnight_price 已經有有效新值但 market_us 仍未跳去 NIGHT_OPEN 時，
+    若仍死守 market_us 就会一直用已凍結嘅 after_price，永不触發更新。"""
     pre_price = row.get('pre_price')
     after_price = row.get('after_price')
     overnight_price = row.get('overnight_price')
     last_price = row.get('last_price')
 
-    if market_us in ('PRE_MARKET_BEGIN', 'PRE_MARKET_END') and _valid(pre_price):
+    if market_us == 'MORNING':
+        if _valid(last_price):
+            return round(float(last_price), 4)
+    elif _valid(overnight_price) and market_us in (
+        'AFTER_HOURS_BEGIN', 'AFTER_HOURS_END', 'NIGHT_OPEN', 'NIGHT_END',
+        'PRE_MARKET_BEGIN', 'PRE_MARKET_END',
+    ):
+        return round(float(overnight_price), 4)
+    elif market_us in ('PRE_MARKET_BEGIN', 'PRE_MARKET_END') and _valid(pre_price):
         return round(float(pre_price), 4)
-    if market_us in ('AFTER_HOURS_BEGIN', 'AFTER_HOURS_END') and _valid(after_price):
+    elif market_us in ('AFTER_HOURS_BEGIN', 'AFTER_HOURS_END') and _valid(after_price):
         return round(float(after_price), 4)
-    if market_us in ('NIGHT_OPEN', 'NIGHT_END') and _valid(overnight_price):
-        return round(float(overnight_price), 4)
-    if market_us == 'MORNING' and _valid(overnight_price):
-        return round(float(overnight_price), 4)
     if _valid(last_price):
         return round(float(last_price), 4)
     return None
