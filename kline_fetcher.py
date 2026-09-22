@@ -44,14 +44,40 @@ def _load_existing():
         return {}
 
 
+def _last_bar_date(existing, symbols):
+    """現有 series 入面最新（最大）嘅 bar 日期字串；冇資料就 None。"""
+    series = existing.get('series') or {}
+    dates = []
+    for s in symbols:
+        bars = series.get(s) or []
+        if bars:
+            dates.append(bars[-1].get('time'))
+    return max(dates) if dates else None
+
+
 def _needs_refresh(existing, symbols):
-    """同一個美東交易日內已經拉過所有目標 symbol 就唔再拉。"""
+    """v11.4: 淨係睇「今日拉過未」會有個問題——如果嗰次拉嗰陣仲未收市，
+    攞到嘅最後一條 bar 就唔係最新已收市交易日，但 fetched_on_ny 已經寫成今日，
+    之後成日（甚至跨到落一個交易日先再拉一次）都唔會再拉，令 K 線長期落後一日。
+    改為：除咗睇今日拉過未，仲要睇最後一條 bar 距今日已經隔咗幾耐——
+    如果已經超過 1 個交易日仲未見到新 bar（現實中一般收市後好快就有齊全日K），
+    就照樣觸發重拉。"""
     if not existing:
+        return True
+    series = existing.get('series') or {}
+    if any(s not in series or not series[s] for s in symbols):
         return True
     if existing.get('fetched_on_ny') != _today_ny_str():
         return True
-    series = existing.get('series') or {}
-    return any(s not in series or not series[s] for s in symbols)
+
+    # 今日已經拉過，但要確認最後一條 bar 唔係停留喺舊數據。
+    # 用「上次拉嗰陣嘅美東日期」跟「最後一條 bar 日期」比較：
+    # 如果拉嗰陣仲未收市，bar 日期會落後於拉嗰個交易日，之後應該容許重試。
+    last_bar = _last_bar_date(existing, symbols)
+    fetched_on = existing.get('fetched_on_ny')
+    if last_bar is not None and fetched_on is not None and last_bar < fetched_on:
+        return True
+    return False
 
 
 def update_kline_file(symbols, force=False, script_version=''):

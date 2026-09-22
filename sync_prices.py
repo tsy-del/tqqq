@@ -42,7 +42,7 @@ GENERATED_FILES = [
     'data.json', 'index.html', 'profit_history.json', 'kline.json',
 ]
 
-SCRIPT_VERSION = "v11.3"
+SCRIPT_VERSION = "v11.4"
 
 
 def run_git(args, **kwargs):
