@@ -977,13 +977,18 @@ async function syncBackendData() {{
     const backendTimeEl = document.getElementById('backend-update-time');
     if (backendTimeEl) backendTimeEl.innerText = 'Last Update: ' + fresh.last_updated;
 
-    const jsTimeEl = document.getElementById('js-update-time');
-    if (jsTimeEl) {{
-        const n = new Date();
-        jsTimeEl.innerText = ' · 跳價 '
-            + String(n.getHours()).padStart(2, '0') + ':'
-            + String(n.getMinutes()).padStart(2, '0') + ':'
-            + String(n.getSeconds()).padStart(2, '0');
+    // v11.17: 改為讀取 tick.json 顯示真正 Futu 推送時間
+    try {{
+        const tickRes = await fetch('tick.json?t=' + Date.now(), {{ cache: 'no-store' }});
+        if (tickRes.ok) {{
+            const tickData = await tickRes.json();
+            const jsTimeEl = document.getElementById('js-update-time');
+            if (jsTimeEl && tickData.last_tick_hk) {{
+                jsTimeEl.innerText = ' · 跳價 ' + tickData.last_tick_hk;
+            }}
+        }}
+    }} catch (e) {{
+        // tick.json 未生成時跳過
     }}
 
     // v10.7: 唔理開市/收市，都用後台 data.json 更新個股卡片價格/標籤/變動百分比。
