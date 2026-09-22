@@ -245,6 +245,10 @@ def render_page(data, prices_data, rate, total_value_hkd, total_cost_hkd, total_
         hl_html = ''
         if day_high is not None and day_low is not None:
             hl_html = f'<div class="ticker-hl">High ${day_high:.2f} · Low ${day_low:.2f}</div>'
+        prev_close = p_data.get('prev_close') or 0
+        chg_usd = p_data['price'] - prev_close if prev_close else 0
+        chg_usd_sign = "+" if chg_usd >= 0 else ""
+        chg_usd_html = f'<div class="ticker-chg-usd" style="color:{chg_color};">{chg_usd_sign}${chg_usd:.2f}</div>' if prev_close else ''
         ticker_bar_html += f"""<a href="https://hk.finance.yahoo.com/quote/{sym}" target="_blank" class="ticker-item{span_class}" style="text-decoration: none;">
             <div style="display: flex; flex-direction: column; gap: 2px; overflow: hidden; flex: 1;">
                 <div style="display: flex; align-items: center; gap: 6px;">
@@ -770,6 +774,7 @@ h1 {{ font-size: 26px; font-weight: 800; margin: 0; }}
 .ticker-price {{ font-family: monospace; font-size: 13px; color: #fff; font-variant-numeric: tabular-nums; }}
 .session-tag {{ font-size: 9px; padding: 1px 4px; border-radius: 3px; background: rgba(59,130,246,0.2); color: var(--accent); margin-left: 4px; border: 0.5px solid var(--accent); }}
 .ticker-hl {{ font-size: 10px; color: var(--text-dim); font-variant-numeric: tabular-nums; }}
+.ticker-chg-usd {{ font-size: 10px; font-weight: 600; font-variant-numeric: tabular-nums; }}
 .source-tag {{ font-size: 8px; padding: 1px 4px; border-radius: 3px; background: rgba(255,255,255,0.06); color: var(--text-dim); border: 0.5px solid var(--border); }}
 
 .sync-btn {{ display: block; width: 100%; padding: 14px; background: rgba(255,255,255,0.05); color: #fff; text-align: center; text-decoration: none; border-radius: 14px; font-size: 14px; font-weight: 600; border: 1px solid var(--border); margin-bottom: 32px; transition: background 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }}
