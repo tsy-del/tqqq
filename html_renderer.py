@@ -254,11 +254,13 @@ def render_page(data, prices_data, rate, total_value_hkd, total_cost_hkd, total_
                 <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
                     <span class="ticker-symbol" style="flex-shrink: 0;">{sym}</span>
                     <span class="session-tag" id="ticker-session-{sym}" style="display:{'inline-block' if p_data['label'] != 'REG' else 'none'}; flex-shrink: 0; font-size: 8px; padding: 0 2px;">{p_data['label']}</span>
-                    <span class="ticker-price" id="ticker-price-{sym}" style="flex-shrink: 0;">${p_data['price']}</span>
                 </div>
                 {hl_html}
             </div>
-            <span id="ticker-chg-{sym}" style="font-size: 11px; font-weight: 700; color: {chg_color}; flex-shrink: 0; text-align: right;">{chg_sign}{chg:.1f}%{chg_usd_html}</span>
+            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex-shrink: 0;">
+                <span class="ticker-price" id="ticker-price-{sym}">${p_data['price']}</span>
+                <span id="ticker-chg-{sym}" style="font-size: 11px; font-weight: 700; color: {chg_color}; text-align: right;">{chg_sign}{chg:.1f}%{chg_usd_html}</span>
+            </div>
         </a>\n"""
 
     # 合併持倉 (Combined Positions) 計算
