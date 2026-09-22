@@ -239,7 +239,8 @@ def render_page(data, prices_data, rate, total_value_hkd, total_cost_hkd, total_
         chg = p_data['change_pct']
         chg_color = "var(--success)" if chg >= 0 else "var(--danger)"
         chg_sign = "+" if chg >= 0 else ""
-        ticker_bar_html += f"""<a href="https://hk.finance.yahoo.com/quote/{sym}" target="_blank" class="ticker-item" style="text-decoration: none;">
+        span_class = " ticker-span2" if len(active_tickers_sorted) % 2 == 1 and sym == active_tickers_sorted[-1] else ""
+        ticker_bar_html += f"""<a href="https://hk.finance.yahoo.com/quote/{sym}" target="_blank" class="ticker-item{span_class}" style="text-decoration: none;">
             <div style="display: flex; align-items: center; gap: 6px; overflow: hidden;">
                 <span class="ticker-symbol" style="flex-shrink: 0;">{sym}</span>
                 <span class="ticker-price" id="ticker-price-{sym}" style="flex-shrink: 0;">${p_data['price']}</span>
