@@ -259,7 +259,7 @@ def render_page(data, prices_data, rate, total_value_hkd, total_cost_hkd, total_
             </div>
             <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex-shrink: 0;">
                 <span class="ticker-price" id="ticker-price-{sym}">${p_data['price']}</span>
-                <span id="ticker-chg-{sym}" style="font-size: 11px; font-weight: 700; color: {chg_color}; text-align: right;">{chg_sign}{chg:.1f}%{chg_usd_html}</span>
+                <span id="ticker-chg-{sym}" style="font-size: 11px; font-weight: 700; color: {chg_color}; text-align: right;">{chg_sign}{chg:.1f}%</span>
             </div>
         </a>\n"""
 
