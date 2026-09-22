@@ -146,30 +146,33 @@ def _fetch_prices_via_futu(symbols):
         day_high = round(max(_valid_highs), 2) if _valid_highs else None
         day_low = round(min(_valid_lows), 2) if _valid_lows else None
 
-        # v11.2: 顯示優先次序改為 夜盤(NIGHT) > 盤前/盤後(PRE/AFTER) > 開市(REG)，
-        # 唔再純粹跟 market_us 狀態字串一對一揀值。
-        # 原因：market_us 呢個狀態機由 Futu 後台決定跳轉時間點，實測會落後於
-        # overnight_price 實際出現數值嘅時間（例如過咗 20:00 ET，overnight_price
-        # 已經有效，但 market_us 仍停留喺 AFTER_HOURS_END），導致夜盤數據已到但唔顯示。
-        # 而 MORNING（開市早段）舊邏輯優先用 overnight_price 亦係錯——一旦真正開市，
-        # 應該顯示 REG，唔應該再展示夜盤價。
-        if market_us == 'MORNING':
-            # 正式開市早段，唔理 overnight 是否仍有值，一律用開市價
-            price = round(last_price, 2) if last_price > 0 else 0
+        # v11.13: 顯示優先次序改為 開市(REG) > 盤前/盤後(PRE/AFTER) > 夜盤(NIGHT)。
+        # 邏輯：淨係憑「依家美東時間應該身處邊個時段」判斷，唔再信 market_us 呢個
+        # 狀態機（實測會落後於實際時間，例如過咗 pre-market 開始時間，market_us
+        # 仍然停留喺舊狀態，導致本應顯示 PRE 但仍顯示 NIGHT）。
+        # 時段判斷：一旦時間進入開市／盤前／盤後窗口，就用嗰個時段嘅價（如有效）；
+        # 淨係喺上面嗰啲時段都未到（或者價格無效）先 fallback 用夜盤價。
+        from datetime import datetime as _dt
+        from zoneinfo import ZoneInfo as _ZI
+        _ny_now = _dt.now(_ZI("America/New_York"))
+        _ny_t = _ny_now.time()
+        _is_weekday = _ny_now.weekday() < 5
+        _in_regular = _is_weekday and _dt.strptime("09:30", "%H:%M").time() <= _ny_t < _dt.strptime("16:00", "%H:%M").time()
+        _in_pre = _is_weekday and _dt.strptime("04:00", "%H:%M").time() <= _ny_t < _dt.strptime("09:30", "%H:%M").time()
+        _in_after = _is_weekday and _dt.strptime("16:00", "%H:%M").time() <= _ny_t < _dt.strptime("20:00", "%H:%M").time()
+
+        if _in_regular and last_price > 0:
+            price = round(last_price, 2)
             label = "REG"
-        elif _valid(overnight_price) and market_us in (
-            'AFTER_HOURS_BEGIN', 'AFTER_HOURS_END', 'NIGHT_OPEN', 'NIGHT_END',
-            'PRE_MARKET_BEGIN', 'PRE_MARKET_END',
-        ):
-            # 夜盤只喺美股常規時段以外先可能出現，且優先於盤前/盤後
-            price = round(float(overnight_price), 2)
-            label = "NIGHT"
-        elif market_us in ('PRE_MARKET_BEGIN', 'PRE_MARKET_END') and _valid(pre_price):
+        elif _in_pre and _valid(pre_price):
             price = round(float(pre_price), 2)
             label = "PRE"
-        elif market_us in ('AFTER_HOURS_BEGIN', 'AFTER_HOURS_END') and _valid(after_price):
+        elif _in_after and _valid(after_price):
             price = round(float(after_price), 2)
             label = "AFTER"
+        elif _valid(overnight_price):
+            price = round(float(overnight_price), 2)
+            label = "NIGHT"
         else:
             price = round(last_price, 2) if last_price > 0 else 0
             label = "REG"
