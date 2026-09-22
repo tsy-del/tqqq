@@ -42,10 +42,15 @@ GENERATED_FILES = [
     'data.json', 'index.html', 'profit_history.json', 'kline.json',
 ]
 
-SCRIPT_VERSION = "v11.13"
+SCRIPT_VERSION = "v11.14"
 
 
 def run_git(args, **kwargs):
+    # v11.14: 加 timeout 防止 git fetch/push 卡死網絡時，subprocess 永久 block，
+    # 令 _throttled_update_loop 個 thread 卡死喺 update_files() 入面，
+    # watchdog 淨係監察 tick 推送，監察唔到 update thread 已經卡死，
+    # 導致連續兩次（15:59、16:38）觸發過後就完全停更新。
+    kwargs.setdefault('timeout', 30)
     return subprocess.run(["git"] + args, check=True, cwd=REPO_DIR, **kwargs)
 
 
