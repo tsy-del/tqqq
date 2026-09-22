@@ -1,8 +1,8 @@
 {
-  "last_updated": "2026-09-22 10:10:43",
+  "last_updated": "2026-09-22 10:12:00",
   "market_prices": {
     "tqqq_usd": 79.6,
-    "soxl_usd": 144.8,
+    "soxl_usd": 144.95,
     "usd_hkd_rate": 7.8452,
     "spcx_usd": 192.5,
     "spch_usd": 10.39,
@@ -12,20 +12,20 @@
     "tqqq_label": "NIGHT",
     "tqqq_chg_pct": 9.58149779735682,
     "soxl_label": "NIGHT",
-    "soxl_chg_pct": 17.08579283577263,
+    "soxl_chg_pct": 17.207083367025135,
     "spch_label": "NIGHT",
     "spch_chg_pct": -0.0961538461538441
   },
   "portfolio_summary": {
-    "total_value_hkd": 2278536,
+    "total_value_hkd": 2279125,
     "total_cost_hkd": 1865196,
-    "total_profit_hkd": 413341
+    "total_profit_hkd": 413929
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 557792,
-      "total_profit_hkd": 67398,
+      "total_value_hkd": 557980,
+      "total_profit_hkd": 67586,
       "total_cost_hkd": 490394,
       "holdings": [
         {
@@ -38,7 +38,7 @@
           "asset": "SOXL",
           "quantity": 160,
           "avg_price_usd": 156.3502,
-          "current_price_usd": 144.8
+          "current_price_usd": 144.95
         },
         {
           "asset": "SPCH",
@@ -65,15 +65,15 @@
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 386235,
-      "total_profit_hkd": -22389,
+      "total_value_hkd": 386635,
+      "total_profit_hkd": -21988,
       "total_cost_hkd": 408623,
       "holdings": [
         {
           "asset": "SOXL",
           "quantity": 340,
           "avg_price_usd": 153.1935,
-          "current_price_usd": 144.8
+          "current_price_usd": 144.95
         }
       ]
     }
@@ -123,11 +123,11 @@
     "highest_time": "08:46:29",
     "lowest_time": "15:12:41",
     "prev_close_profit_hkd": 183902,
-    "last_profit_hkd": 413341
+    "last_profit_hkd": 413929
   },
   "sync_status": {
-    "last_attempt": "2026-09-22 10:10:43",
-    "last_success": "2026-09-22 10:10:43",
+    "last_attempt": "2026-09-22 10:12:00",
+    "last_success": "2026-09-22 10:12:00",
     "api_status": "success",
     "yfinance_status": "ok",
     "github_push_status": "pending"
