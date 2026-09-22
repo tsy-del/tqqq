@@ -251,10 +251,10 @@ def render_page(data, prices_data, rate, total_value_hkd, total_cost_hkd, total_
         chg_usd_html = f'<div class="ticker-chg-usd" style="color:{chg_color};">{chg_usd_sign}${chg_usd:.2f}</div>' if prev_close else ''
         ticker_bar_html += f"""<a href="https://hk.finance.yahoo.com/quote/{sym}" target="_blank" class="ticker-item{span_class}" style="text-decoration: none;">
             <div style="display: flex; flex-direction: column; gap: 2px; overflow: hidden; flex: 1;">
-                <div style="display: flex; align-items: center; gap: 6px;">
+                <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
                     <span class="ticker-symbol" style="flex-shrink: 0;">{sym}</span>
-                    <span class="ticker-price" id="ticker-price-{sym}" style="flex-shrink: 0;">${p_data['price']}</span>
                     <span class="session-tag" id="ticker-session-{sym}" style="display:{'inline-block' if p_data['label'] != 'REG' else 'none'}; flex-shrink: 0; font-size: 8px; padding: 0 2px;">{p_data['label']}</span>
+                    <span class="ticker-price" id="ticker-price-{sym}" style="flex-shrink: 0;">${p_data['price']}</span>
                 </div>
                 {hl_html}
             </div>
