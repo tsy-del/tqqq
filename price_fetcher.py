@@ -135,23 +135,30 @@ def _fetch_prices_via_futu(symbols):
         def _valid(p):
             return p is not None and p == p and float(p) > 0
 
-        # 根據 Futu 回傳嘅實際市場狀態（market_us）決定顯示邊個時段嘅價，
-        # 而唔係靠「欄位有冇值」猜——因為 pre_price/after_price/overnight_price
-        # 一旦喺某個時段出現過數值，過咗時段之後都唔會自動清空，
-        # 純粹靠有效值判斷會導致夜盤結束、盤前已開始時仍錯誤顯示夜盤價。
-        if market_us in ('PRE_MARKET_BEGIN', 'PRE_MARKET_END') and _valid(pre_price):
+        # v11.2: 顯示優先次序改為 夜盤(NIGHT) > 盤前/盤後(PRE/AFTER) > 開市(REG)，
+        # 唔再純粹跟 market_us 狀態字串一對一揀值。
+        # 原因：market_us 呢個狀態機由 Futu 後台決定跳轉時間點，實測會落後於
+        # overnight_price 實際出現數值嘅時間（例如過咗 20:00 ET，overnight_price
+        # 已經有效，但 market_us 仍停留喺 AFTER_HOURS_END），導致夜盤數據已到但唔顯示。
+        # 而 MORNING（開市早段）舊邏輯優先用 overnight_price 亦係錯——一旦真正開市，
+        # 應該顯示 REG，唔應該再展示夜盤價。
+        if market_us == 'MORNING':
+            # 正式開市早段，唔理 overnight 是否仍有值，一律用開市價
+            price = round(last_price, 2) if last_price > 0 else 0
+            label = "REG"
+        elif _valid(overnight_price) and market_us in (
+            'AFTER_HOURS_BEGIN', 'AFTER_HOURS_END', 'NIGHT_OPEN', 'NIGHT_END',
+            'PRE_MARKET_BEGIN', 'PRE_MARKET_END',
+        ):
+            # 夜盤只喺美股常規時段以外先可能出現，且優先於盤前/盤後
+            price = round(float(overnight_price), 2)
+            label = "NIGHT"
+        elif market_us in ('PRE_MARKET_BEGIN', 'PRE_MARKET_END') and _valid(pre_price):
             price = round(float(pre_price), 2)
             label = "PRE"
         elif market_us in ('AFTER_HOURS_BEGIN', 'AFTER_HOURS_END') and _valid(after_price):
             price = round(float(after_price), 2)
             label = "AFTER"
-        elif market_us in ('NIGHT_OPEN', 'NIGHT_END') and _valid(overnight_price):
-            price = round(float(overnight_price), 2)
-            label = "NIGHT"
-        elif market_us == 'MORNING' and _valid(overnight_price):
-            # 夜盤延續到開市前一刻，Futu 未必即時切換狀態，仍容許 overnight 價
-            price = round(float(overnight_price), 2)
-            label = "NIGHT"
         else:
             price = round(last_price, 2) if last_price > 0 else 0
             label = "REG"
