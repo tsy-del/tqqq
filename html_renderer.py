@@ -258,7 +258,7 @@ def render_page(data, prices_data, rate, total_value_hkd, total_cost_hkd, total_
                 </div>
                 {hl_html}
             </div>
-            <span id="ticker-chg-{sym}" style="font-size: 11px; font-weight: 700; color: {chg_color}; flex-shrink: 0;">{chg_sign}{chg:.1f}%</span>
+            <span id="ticker-chg-{sym}" style="font-size: 11px; font-weight: 700; color: {chg_color}; flex-shrink: 0; text-align: right;">{chg_sign}{chg:.1f}%{chg_usd_html}</span>
         </a>\n"""
 
     # 合併持倉 (Combined Positions) 計算
