@@ -977,20 +977,6 @@ async function syncBackendData() {{
     const backendTimeEl = document.getElementById('backend-update-time');
     if (backendTimeEl) backendTimeEl.innerText = 'Last Update: ' + fresh.last_updated;
 
-    // v11.17: 改為讀取 tick.json 顯示真正 Futu 推送時間
-    try {{
-        const tickRes = await fetch('tick.json?t=' + Date.now(), {{ cache: 'no-store' }});
-        if (tickRes.ok) {{
-            const tickData = await tickRes.json();
-            const jsTimeEl = document.getElementById('js-update-time');
-            if (jsTimeEl && tickData.last_tick_hk) {{
-                jsTimeEl.innerText = ' · 跳價 ' + tickData.last_tick_hk;
-            }}
-        }}
-    }} catch (e) {{
-        // tick.json 未生成時跳過
-    }}
-
     // v10.7: 唔理開市/收市，都用後台 data.json 更新個股卡片價格/標籤/變動百分比。
     // v11.0: 唔理開市/收市，一律用後台 Futu data.json 更新個股價格/標籤/變動百分比。
     if (fresh.market_prices) {{
@@ -1053,11 +1039,61 @@ async function syncBackendData() {{
     }}
 }}
 
-// v11.0: data.json 係唯一來源，15 秒 sync 一次，載入即刻行一次。
+// v11.18: 前端每秒讀取 tick.json 更新即時價格（夜盤/盤前/盤後），每 15 秒讀取 data.json 更新持倉計算
+async function syncRealtimeTick() {{
+    try {{
+        const tickRes = await fetch('tick.json?t=' + Date.now(), {{ cache: 'no-store' }});
+        if (!tickRes.ok) return;
+        const tickData = await tickRes.json();
+        
+        // 更新「跳價」時間戳顯示
+        const jsTimeEl = document.getElementById('js-update-time');
+        if (jsTimeEl && tickData.last_tick_hk) {{
+            jsTimeEl.innerText = ' · 跳價 ' + tickData.last_tick_hk;
+        }}
+        
+        // 更新個股卡片即時價格（來自 watcher 推送）
+        if (tickData.prices) {{
+            (ACTIVE_TICKERS || []).forEach(sym => {{
+                const tickPrice = tickData.prices[sym];
+                if (!tickPrice) return;
+                
+                const price = tickPrice.price;
+                const prevClose = tickPrice.prev_close;
+                const label = tickPrice.label || 'REG';
+                
+                const priceEl = document.getElementById(`ticker-price-${{sym}}`);
+                if (priceEl) priceEl.innerText = `$${{Number(price).toFixed(2)}}`;
+                
+                const sessionEl = document.getElementById(`ticker-session-${{sym}}`);
+                if (sessionEl) {{
+                    sessionEl.innerText = label;
+                    sessionEl.style.display = label !== 'REG' ? 'inline-block' : 'none';
+                }}
+                
+                const chgEl = document.getElementById(`ticker-chg-${{sym}}`);
+                if (chgEl && prevClose) {{
+                    const pct = ((price - prevClose) / prevClose * 100);
+                    chgEl.innerText = (pct >= 0 ? '+' : '') + pct.toFixed(1) + '%';
+                    chgEl.style.color = pct >= 0 ? 'var(--success)' : 'var(--danger)';
+                }}
+            }});
+        }}
+    }} catch(e) {{
+        console.error('Realtime tick sync failed:', e);
+    }}
+}}
+
+// v11.18: 每秒讀取 tick.json（即時價格），每 15 秒讀取 data.json（持倉計算）
 syncBackendData();
+syncRealtimeTick();
 setInterval(syncBackendData, 15000);
+setInterval(syncRealtimeTick, 1000);
 document.addEventListener('visibilitychange', () => {{
-    if (!document.hidden) syncBackendData();
+    if (!document.hidden) {{
+        syncBackendData();
+        syncRealtimeTick();
+    }}
 }});
 </script>
 </body></html>"""
