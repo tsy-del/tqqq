@@ -240,11 +240,19 @@ def render_page(data, prices_data, rate, total_value_hkd, total_cost_hkd, total_
         chg_color = "var(--success)" if chg >= 0 else "var(--danger)"
         chg_sign = "+" if chg >= 0 else ""
         span_class = " ticker-span2"
+        day_high = p_data.get('day_high')
+        day_low = p_data.get('day_low')
+        hl_html = ''
+        if day_high is not None and day_low is not None:
+            hl_html = f'<div class="ticker-hl">High ${day_high:.2f} · Low ${day_low:.2f}</div>'
         ticker_bar_html += f"""<a href="https://hk.finance.yahoo.com/quote/{sym}" target="_blank" class="ticker-item{span_class}" style="text-decoration: none;">
-            <div style="display: flex; align-items: center; gap: 6px; overflow: hidden;">
-                <span class="ticker-symbol" style="flex-shrink: 0;">{sym}</span>
-                <span class="ticker-price" id="ticker-price-{sym}" style="flex-shrink: 0;">${p_data['price']}</span>
-                <span class="session-tag" id="ticker-session-{sym}" style="display:{'inline-block' if p_data['label'] != 'REG' else 'none'}; flex-shrink: 0; font-size: 8px; padding: 0 2px;">{p_data['label']}</span>
+            <div style="display: flex; flex-direction: column; gap: 2px; overflow: hidden; flex: 1;">
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <span class="ticker-symbol" style="flex-shrink: 0;">{sym}</span>
+                    <span class="ticker-price" id="ticker-price-{sym}" style="flex-shrink: 0;">${p_data['price']}</span>
+                    <span class="session-tag" id="ticker-session-{sym}" style="display:{'inline-block' if p_data['label'] != 'REG' else 'none'}; flex-shrink: 0; font-size: 8px; padding: 0 2px;">{p_data['label']}</span>
+                </div>
+                {hl_html}
             </div>
             <span id="ticker-chg-{sym}" style="font-size: 11px; font-weight: 700; color: {chg_color}; flex-shrink: 0;">{chg_sign}{chg:.1f}%</span>
         </a>\n"""

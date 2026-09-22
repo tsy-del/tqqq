@@ -135,6 +135,17 @@ def _fetch_prices_via_futu(symbols):
         def _valid(p):
             return p is not None and p == p and float(p) > 0
 
+        # v11.7: 當日最高/最低（包含所有時段）——合併 regular/pre/after/overnight
+        # 各自嘅 high/low 欄位取全日極值，唔淨係 regular 時段嘅 high_price/low_price。
+        _day_highs = [row.get('high_price'), row.get('pre_high_price'),
+                      row.get('after_high_price'), row.get('overnight_high_price')]
+        _day_lows = [row.get('low_price'), row.get('pre_low_price'),
+                     row.get('after_low_price'), row.get('overnight_low_price')]
+        _valid_highs = [float(p) for p in _day_highs if _valid(p)]
+        _valid_lows = [float(p) for p in _day_lows if _valid(p)]
+        day_high = round(max(_valid_highs), 2) if _valid_highs else None
+        day_low = round(min(_valid_lows), 2) if _valid_lows else None
+
         # v11.2: 顯示優先次序改為 夜盤(NIGHT) > 盤前/盤後(PRE/AFTER) > 開市(REG)，
         # 唔再純粹跟 market_us 狀態字串一對一揀值。
         # 原因：market_us 呢個狀態機由 Futu 後台決定跳轉時間點，實測會落後於
@@ -168,7 +179,8 @@ def _fetch_prices_via_futu(symbols):
 
         chg_pct = ((price - prev_close) / prev_close * 100) if prev_close > 0 else 0
 
-        prices[sym] = {'price': price, 'label': label, 'change_pct': chg_pct, 'prev_close': prev_close, 'source': '牛牛'}
+        prices[sym] = {'price': price, 'label': label, 'change_pct': chg_pct, 'prev_close': prev_close,
+                       'day_high': day_high, 'day_low': day_low, 'source': '牛牛'}
     return prices
 
 
