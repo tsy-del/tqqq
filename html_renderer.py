@@ -755,6 +755,7 @@ h1 {{ font-size: 26px; font-weight: 800; margin: 0; }}
 .profit-pct {{ font-size: 14px; font-weight: 700; padding-bottom: 1px; font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }}
 
 .ticker-bar {{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 24px; }}
+.ticker-item.ticker-span2 {{ grid-column: span 2; }}
 .ticker-item {{ background: var(--glass); border: 1px solid var(--border); padding: 10px 14px; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; gap: 4px; }}
 .ticker-symbol {{ font-weight: 700; font-size: 13px; color: var(--text-dim); }}
 .ticker-price {{ font-family: monospace; font-size: 13px; color: #fff; font-variant-numeric: tabular-nums; }}
