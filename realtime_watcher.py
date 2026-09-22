@@ -86,7 +86,16 @@ class TickHandler(ft.StockQuoteHandlerBase):
         if ret_code != ft.RET_OK:
             print(f"[跳價回調錯誤] {data}")
             return ft.RET_ERROR, data
-        with _lock:
+        # v11.16: acquire 加 timeout，防止呢個 callback（Futu SDK 自己嘅 thread）
+        # 同 _throttled_update_loop 之間萌生死鎖——一旦其中一方攞住鎖唔放
+        # （例如處理中被 GIL 延遲、或例外未釋放），另一方永久等待會令
+        # 全部背景 thread（包括主 loop 嘅 watchdog）表面上「靜止」，
+        # process 冇死但完全唔再更新，之前三次卡死都符合呢個徵狀。
+        got = _lock.acquire(timeout=5)
+        if not got:
+            print(f"[{_hk_now_str()}] TickHandler 攞鎖超時，跳過呢次推送")
+            return ft.RET_OK, data
+        try:
             for _, row in data.iterrows():
                 code = row['code']
                 if not code.startswith('US.'):
@@ -98,22 +107,36 @@ class TickHandler(ft.StockQuoteHandlerBase):
                 if price is not None and price > 0:
                     _latest_prices[sym] = price
             _last_tick_at = time.time()
+        finally:
+            _lock.release()
         return ft.RET_OK, data
 
 
 def _prices_changed():
-    with _lock:
+    got = _lock.acquire(timeout=5)
+    if not got:
+        print(f"[{_hk_now_str()}] _prices_changed 攞鎖超時")
+        return False
+    try:
         if not _latest_prices:
             return False
         for sym, price in _latest_prices.items():
             if _last_pushed_prices.get(sym) != price:
                 return True
         return False
+    finally:
+        _lock.release()
 
 
 def _mark_pushed():
-    with _lock:
+    got = _lock.acquire(timeout=5)
+    if not got:
+        print(f"[{_hk_now_str()}] _mark_pushed 攞鎖超時")
+        return
+    try:
         _last_pushed_prices.update(_latest_prices)
+    finally:
+        _lock.release()
 
 
 def _hk_now_str():
@@ -159,8 +182,12 @@ def _market_state_refresh_loop(quote_ctx_holder):
             try:
                 ret, state = ctx.get_global_state()
                 if ret == ft.RET_OK:
-                    with _lock:
-                        _current_market_us = state.get('market_us', '').upper()
+                    got = _lock.acquire(timeout=5)
+                    if got:
+                        try:
+                            _current_market_us = state.get('market_us', '').upper()
+                        finally:
+                            _lock.release()
             except Exception as e:
                 print(f"[{_hk_now_str()}] 查詢市場狀態失敗: {e}")
         time.sleep(MARKET_STATE_REFRESH_SECONDS)
@@ -180,8 +207,12 @@ def _connect_and_subscribe():
     try:
         ret_state, state = quote_ctx.get_global_state()
         if ret_state == ft.RET_OK:
-            with _lock:
-                _current_market_us = state.get('market_us', '').upper()
+            got = _lock.acquire(timeout=5)
+            if got:
+                try:
+                    _current_market_us = state.get('market_us', '').upper()
+                finally:
+                    _lock.release()
             print(f"[{_hk_now_str()}] 目前市場狀態: {_current_market_us}")
     except Exception as e:
         print(f"[{_hk_now_str()}] 初始查詢市場狀態失敗: {e}")
