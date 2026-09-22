@@ -133,7 +133,10 @@ def _throttled_update_loop():
             continue
         try:
             print(f"[{_hk_now_str()}] 偵測到價格變動，觸發更新...")
+            sys.stdout.flush()
             ok = sync_prices.update_files()
+            print(f"[{_hk_now_str()}] update_files() 已回傳: {ok}")
+            sys.stdout.flush()
             _last_update_at = time.time()
             if ok:
                 _mark_pushed()
