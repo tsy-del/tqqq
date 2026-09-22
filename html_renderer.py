@@ -769,6 +769,7 @@ h1 {{ font-size: 26px; font-weight: 800; margin: 0; }}
 .ticker-symbol {{ font-weight: 700; font-size: 13px; color: var(--text-dim); }}
 .ticker-price {{ font-family: monospace; font-size: 13px; color: #fff; font-variant-numeric: tabular-nums; }}
 .session-tag {{ font-size: 9px; padding: 1px 4px; border-radius: 3px; background: rgba(59,130,246,0.2); color: var(--accent); margin-left: 4px; border: 0.5px solid var(--accent); }}
+.ticker-hl {{ font-size: 10px; color: var(--text-dim); font-variant-numeric: tabular-nums; }}
 .source-tag {{ font-size: 8px; padding: 1px 4px; border-radius: 3px; background: rgba(255,255,255,0.06); color: var(--text-dim); border: 0.5px solid var(--border); }}
 
 .sync-btn {{ display: block; width: 100%; padding: 14px; background: rgba(255,255,255,0.05); color: #fff; text-align: center; text-decoration: none; border-radius: 14px; font-size: 14px; font-weight: 600; border: 1px solid var(--border); margin-bottom: 32px; transition: background 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }}
