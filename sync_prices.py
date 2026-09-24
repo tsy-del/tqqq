@@ -42,7 +42,7 @@ GENERATED_FILES = [
     'data.json', 'index.html', 'profit_history.json', 'kline.json',
 ]
 
-SCRIPT_VERSION = "v11.19"
+SCRIPT_VERSION = "v11.20"
 
 
 def run_git(args, **kwargs):
@@ -79,7 +79,7 @@ def _update_files_locked():
     try:
         # 在開始任何動作前，先強制與 GitHub 同步 (防止手動更新造成的 Git Push Rejected)
         # v9.1 項目 11: 只 reset 已知由 script 生成嘅檔案，唔動 trades.json 等手動資料檔
-        if not os.environ.get('GITHUB_ACTIONS'):
+        if not os.environ.get('GITHUB_ACTIONS') and not os.environ.get('TQQQ_PRESERVE_LOCAL_DATA'):
             run_git(["fetch", "origin", "main"])
             run_git(["checkout", "origin/main", "--"] + GENERATED_FILES)
 

@@ -4,6 +4,7 @@ html_renderer.py — index.html 頁面生成邏輯（從 sync_prices.py v8.2 拆
 負責：把已計算好嘅持倉/利潤/風險/交易/圖表資料組裝成最終 index.html。
 """
 import json
+from html import escape
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -175,8 +176,8 @@ def render_page(data, prices_data, rate, total_value_hkd, total_cost_hkd, total_
             action_color = "var(--accent)" if t['action'] == 'BUY' else "var(--danger)"
             price_str = f"${t['price_usd']:.2f}" if t.get('price_usd') else "N/A"
             fee_str = f"${t['fee_usd']}" if t.get('fee_usd', 0) > 0 else ""
-            ref_str = t.get('reference', '') or ''
-            notes_str = t.get('notes', '') or ''
+            ref_str = escape(str(t.get('reference', '') or ''))
+            notes_str = escape(str(t.get('notes', '') or ''))
             trades_html += f"""<div class="asset-row" style="font-size: 12px;">
                 <div>
                     <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
