@@ -55,6 +55,8 @@ def _get_session_label():
     m = ny_now.minute
     hm = h * 100 + m
     
+    if ny_now.weekday() >= 5:
+        return "NIGHT"
     if 930 <= hm < 1600:
         return "REG"
     elif 400 <= hm < 930:
@@ -63,6 +65,42 @@ def _get_session_label():
         return "AFTER"
     else:
         return "NIGHT"
+
+
+def _valid_price(value):
+    try:
+        return value is not None and value == value and float(value) > 0
+    except (TypeError, ValueError):
+        return False
+
+
+def _pick_session_price(row):
+    """選取當前時段的最新有效價，規則與 price_fetcher.py 一致。"""
+    ny_now = datetime.now(ZoneInfo("America/New_York"))
+    hm = ny_now.hour * 100 + ny_now.minute
+    weekday = ny_now.weekday() < 5
+
+    last_price = row.get('last_price')
+    pre_price = row.get('pre_price')
+    after_price = row.get('after_price')
+    overnight_price = row.get('overnight_price')
+
+    if weekday and 930 <= hm < 1600 and _valid_price(last_price):
+        return float(last_price), "REG"
+
+    if weekday and 400 <= hm < 930:
+        extended = ((pre_price, "PRE"), (after_price, "AFTER"))
+    elif weekday and 1600 <= hm < 2000:
+        extended = ((after_price, "AFTER"), (pre_price, "PRE"))
+    else:
+        extended = ((pre_price, "PRE"), (after_price, "AFTER"))
+
+    for value, label in extended:
+        if _valid_price(value):
+            return float(value), label
+    if _valid_price(overnight_price):
+        return float(overnight_price), "NIGHT"
+    return None, None
 
 
 class TickHandler(ft.StockQuoteHandlerBase):
@@ -74,7 +112,6 @@ class TickHandler(ft.StockQuoteHandlerBase):
             return ft.RET_ERROR, data
         
         # v11.18: 提取價格+prev_close並判斷session標籤
-        session_label = _get_session_label()
         got = _lock.acquire(timeout=5)
         if got:
             try:
@@ -84,11 +121,11 @@ class TickHandler(ft.StockQuoteHandlerBase):
                     if not code.startswith('US.'):
                         continue
                     symbol = code.split('.', 1)[1]
-                    price = row.get('last_price', 0)
+                    price, session_label = _pick_session_price(row)
                     prev_close = row.get('prev_close_price', 0)
-                    if price > 0:
+                    if price is not None:
                         _last_prices[symbol] = {
-                            'price': price,
+                            'price': round(price, 2),
                             'prev_close': prev_close,
                             'label': session_label
                         }

@@ -17,6 +17,12 @@
             </div>
         </div>
 
+        <div class="mb-6 bg-yellow-50 border border-yellow-300 rounded p-4">
+            <label class="block text-sm font-semibold text-yellow-900 mb-1">Admin token</label>
+            <input type="password" v-model="adminToken" placeholder="輸入 api_server 啟動時顯示的 token" class="w-full border rounded px-3 py-2">
+            <p class="text-xs text-yellow-800 mt-1">Token 只保存於此瀏覽器的 localStorage，不會寫入項目檔案。</p>
+        </div>
+
         <div v-if="loading" class="text-center py-10 text-gray-500">載入中...</div>
         
         <div v-if="!loading && data" class="space-y-6">
@@ -129,6 +135,7 @@
                 return {
                     data: null,
                     loading: true,
+                    adminToken: localStorage.getItem('tqqq_admin_token') || '',
                     toast: { show: false, message: '', type: 'success' }
                 }
             },
@@ -238,10 +245,18 @@
                     });
 
                     try {
+                        if (!this.adminToken) {
+                            this.showToast('請先輸入 Admin token', 'error');
+                            return;
+                        }
+                        localStorage.setItem('tqqq_admin_token', this.adminToken);
                         this.showToast('儲存中並更新價格...', 'success');
                         const res = await fetch('/api/save_data', {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-Admin-Token': this.adminToken
+                            },
                             body: JSON.stringify(dataToSave)
                         });
                         const result = await res.json();

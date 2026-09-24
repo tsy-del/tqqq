@@ -64,7 +64,17 @@ def save_data():
         # 儲存後觸發 update_prices 和 git push
         import subprocess
         # 1. 執行更新腳本
-        subprocess.run(["python3", "sync_prices.py"], cwd=os.path.dirname(__file__))
+        # data.json 已經由 Admin 寫入；同步時跳過 generated-file checkout，
+        # 否則 sync_prices.py 的前置同步會將剛輸入的資料覆蓋回 origin/main。
+        env = os.environ.copy()
+        env['TQQQ_PRESERVE_LOCAL_DATA'] = '1'
+        result = subprocess.run(
+            ["python3", "sync_prices.py"],
+            cwd=os.path.dirname(__file__), env=env,
+            capture_output=True, text=True, timeout=180,
+        )
+        if result.returncode != 0:
+            return jsonify({"status": "error", "message": "同步失敗", "detail": result.stderr[-2000:]}), 500
         
         return jsonify({"status": "success"})
     except Exception as e:
