@@ -1,44 +1,44 @@
 {
-  "last_updated": "2026-09-24 09:33:22",
+  "last_updated": "2026-09-24 09:38:35",
   "market_prices": {
-    "tqqq_usd": 78.51,
-    "soxl_usd": 145.13,
-    "usd_hkd_rate": 7.8419,
+    "tqqq_usd": 78.5,
+    "soxl_usd": 145.45,
+    "usd_hkd_rate": 7.8415,
     "spcx_usd": 192.5,
     "spch_usd": 9.83,
     "tqqq_prev_close": 80.673988,
     "soxl_prev_close": 151.95,
     "spch_prev_close": 10.64,
     "tqqq_label": "NIGHT",
-    "tqqq_chg_pct": -2.682386297798975,
+    "tqqq_chg_pct": -2.6947818669879,
     "soxl_label": "NIGHT",
-    "soxl_chg_pct": -4.488318525830861,
+    "soxl_chg_pct": -4.277722935176046,
     "spch_label": "NIGHT",
     "spch_chg_pct": -7.612781954887223
   },
   "portfolio_summary": {
-    "total_value_hkd": 2254476,
-    "total_cost_hkd": 1864411,
-    "total_profit_hkd": 390064
+    "total_value_hkd": 2255404,
+    "total_cost_hkd": 1864316,
+    "total_profit_hkd": 391087
   },
   "accounts": [
     {
       "account_name": "帳戶 A (滾動首期)",
-      "total_value_hkd": 551842,
-      "total_profit_hkd": 61654,
-      "total_cost_hkd": 490188,
+      "total_value_hkd": 552171,
+      "total_profit_hkd": 62008,
+      "total_cost_hkd": 490163,
       "holdings": [
         {
           "asset": "TQQQ",
           "quantity": 563,
           "avg_price_usd": 58.465,
-          "current_price_usd": 78.51
+          "current_price_usd": 78.5
         },
         {
           "asset": "SOXL",
           "quantity": 160,
           "avg_price_usd": 156.3502,
-          "current_price_usd": 145.13
+          "current_price_usd": 145.45
         },
         {
           "asset": "SPCH",
@@ -50,30 +50,30 @@
     },
     {
       "account_name": "帳戶 B (固定基金)",
-      "total_value_hkd": 1315682,
-      "total_profit_hkd": 349910,
-      "total_cost_hkd": 965772,
+      "total_value_hkd": 1315447,
+      "total_profit_hkd": 349725,
+      "total_cost_hkd": 965722,
       "is_locked": true,
       "holdings": [
         {
           "asset": "TQQQ",
           "quantity": 2137,
           "avg_price_usd": 57.63,
-          "current_price_usd": 78.51
+          "current_price_usd": 78.5
         }
       ]
     },
     {
       "account_name": "帳戶 C (中銀香港)",
-      "total_value_hkd": 386952,
-      "total_profit_hkd": -21499,
-      "total_cost_hkd": 408452,
+      "total_value_hkd": 387786,
+      "total_profit_hkd": -20645,
+      "total_cost_hkd": 408431,
       "holdings": [
         {
           "asset": "SOXL",
           "quantity": 340,
           "avg_price_usd": 153.1935,
-          "current_price_usd": 145.13
+          "current_price_usd": 145.45
         }
       ]
     }
@@ -123,11 +123,11 @@
     "highest_time": "12:35:19",
     "lowest_time": "22:22:11",
     "prev_close_profit_hkd": 452802,
-    "last_profit_hkd": 390064
+    "last_profit_hkd": 391087
   },
   "sync_status": {
-    "last_attempt": "2026-09-24 09:33:22",
-    "last_success": "2026-09-24 09:33:22",
+    "last_attempt": "2026-09-24 09:38:35",
+    "last_success": "2026-09-24 09:38:35",
     "api_status": "success",
     "yfinance_status": "ok",
     "github_push_status": "pending"
