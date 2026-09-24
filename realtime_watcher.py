@@ -88,16 +88,10 @@ def _pick_session_price(row):
     if weekday and 930 <= hm < 1600 and _valid_price(last_price):
         return float(last_price), "REG"
 
-    if weekday and 400 <= hm < 930:
-        extended = ((pre_price, "PRE"), (after_price, "AFTER"))
-    elif weekday and 1600 <= hm < 2000:
-        extended = ((after_price, "AFTER"), (pre_price, "PRE"))
-    else:
-        extended = ((pre_price, "PRE"), (after_price, "AFTER"))
-
-    for value, label in extended:
-        if _valid_price(value):
-            return float(value), label
+    if weekday and 400 <= hm < 930 and _valid_price(pre_price):
+        return float(pre_price), "PRE"
+    if weekday and 1600 <= hm < 2000 and _valid_price(after_price):
+        return float(after_price), "AFTER"
     if _valid_price(overnight_price):
         return float(overnight_price), "NIGHT"
     return None, None

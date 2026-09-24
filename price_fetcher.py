@@ -146,8 +146,8 @@ def _fetch_prices_via_futu(symbols):
         day_high = round(max(_valid_highs), 2) if _valid_highs else None
         day_low = round(min(_valid_lows), 2) if _valid_lows else None
 
-        # v11.20: 價格優先次序固定為 REG > PRE/AFTER > NIGHT。
-        # 只使用當前交易窗口有更新的欄位；非交易日不把舊 REG 冒充最新價。
+        # v11.21: 只讀當前交易窗口的欄位；Futu 的 PRE/AFTER 欄位會 sticky，
+        # 絕對不可在夜市或另一個延長時段拿來 fallback。
         from datetime import datetime as _dt
         from zoneinfo import ZoneInfo as _ZI
         _ny_now = _dt.now(_ZI("America/New_York"))
@@ -160,26 +160,18 @@ def _fetch_prices_via_futu(symbols):
         if _in_regular and _valid(last_price):
             price = round(last_price, 2)
             label = "REG"
+        elif _in_pre and _valid(pre_price):
+            price = round(float(pre_price), 2)
+            label = "PRE"
+        elif _in_after and _valid(after_price):
+            price = round(float(after_price), 2)
+            label = "AFTER"
+        elif _valid(overnight_price):
+            price = round(float(overnight_price), 2)
+            label = "NIGHT"
         else:
-            # PRE/AFTER 係同一級；先揀目前窗口，再容許另一個延長時段欄位
-            # 作為資料源延遲時的 fallback，最後先落到 NIGHT。
-            ext_candidates = []
-            if _in_pre:
-                ext_candidates = [(pre_price, "PRE"), (after_price, "AFTER")]
-            elif _in_after:
-                ext_candidates = [(after_price, "AFTER"), (pre_price, "PRE")]
-            else:
-                ext_candidates = [(pre_price, "PRE"), (after_price, "AFTER")]
-            ext = next(((p, lbl) for p, lbl in ext_candidates if _valid(p)), None)
-            if ext:
-                price = round(float(ext[0]), 2)
-                label = ext[1]
-            elif _valid(overnight_price):
-                price = round(float(overnight_price), 2)
-                label = "NIGHT"
-            else:
-                # REG、PRE/AFTER、NIGHT 都無更新：假期／週末或行情源未更新。
-                raise RuntimeError(f"Futu 無任何有效時段價格 {code}（可能假期或週末）")
+            # REG、PRE/AFTER、NIGHT 都無更新：假期／週末或行情源未更新。
+            raise RuntimeError(f"Futu 無任何有效時段價格 {code}（可能假期或週末）")
 
         if price <= 0:
             raise RuntimeError(f"Futu 回傳無效價格 {code}: {last_price}")
